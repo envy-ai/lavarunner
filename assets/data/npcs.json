@@ -1,0 +1,88 @@
+{
+  "Home/main": {
+    "13,13": {
+      "sprite": 133,
+      "dialog": [
+        {
+          "pre_eval": "console.log('1');",
+          "text": "Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.",
+          "post_eval": "window.Flags.start = 1;"
+        },
+        { 
+          "condition": "window.Flag('start') == 1",
+          "pre_eval": "console.log('2');",
+          "text": "Why you?  We voted.  If you wanted to vote, you should have been there.",
+          "post_eval": "window.Flags.start = 2"
+        },
+        { 
+          "condition": "window.Flag('start') == 2",
+          "pre_eval": "console.log('3');",
+          "text": "Go on.  Go to the west and investigate, and try not to die!"
+        }
+      ]
+    }  
+  },
+  "Crash Site/main": {
+    "11,13": {
+      "sprite": 129,
+      "dialog": [
+        {
+          "text": "Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}..."
+        }
+      ]
+    },
+    "15,13": {
+      "sprite": 130,
+      "dialog": [
+        {
+          "text": "I caught Red sabotaging the navigation system just before we crashed."
+        }
+      ]
+    },
+    "17,13": {
+      "sprite": 131,
+      "dialog": [
+        {
+          "text": "Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.",
+          "post_eval": "window.Flags.maguffins = 1;"
+        },
+        {
+          "condition": "window.Flag('maguffins') == 1",
+          "text": "We still need: ${Scripts.MaguffinList()}"
+        },
+        {
+          "condition": "window.Scripts.PlayerHasMaguffins()",
+          "text": "You've got all of the parts for our ship.  Thanks to you, we can get off this rock!",
+          "post_eval": "Scripts.Ending();"
+        }        
+      ]
+    }
+  },
+  "Test/main": {
+    "11,14": {
+      "sprite": 129,
+      "dialog": [ 
+        {
+          "condition": "true",
+          "pre_eval": "console.log('pre_eval');",
+          "text": "Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...",
+          "post_eval": "console.log('Hello, world!');"
+        }
+      ]
+    }
+  },
+  "Cliff/main": {
+    "51,22": {
+      "sprite": 134,
+      "dialog": [
+        {
+          "text": "I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!"          
+        },
+        {
+          "text": "Wow, you have the double jump ring!  You can go explore that castle up there!",
+          "condition": "player.hasItem('Double Jump Ring')"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "Grenade Launcher": [ 
+    {
+      "power": 8,
+      "anim_duration": 15,
+      "sfx": "thud",
+      "knockback": { "x": 2, "y": 1 },
+      "origin": {
+        "x": 0,
+        "y": 4
+      },
+      "eval": "window.GrenadeProjectile.fire(player);"
+    }
+  ],
+  "Dagger": [
+    {
+      "power": 1,
+      "anim_duration": 15,
+      "sfx": "swoosh",
+      "knockback": { "x": 2, "y": 0 },
+      "origin": {
+        "x": 0,
+        "y": 4
+      },
+      "frames": {
+        "0": {
+          "sprite": 0,
+          "bbox": {
+            "x1": 0,
+            "y1": 5,
+            "x2": 2,
+            "y2": 5
+          }
+        },
+        "3": {
+          "sprite": 1,
+          "bbox": {
+            "x1": 0,
+            "y1": 5,
+            "x2": 5,
+            "y2": 5
+          }
+        },
+        "12": {
+          "sprite": 0,
+          "bbox": {
+            "x1": 0,
+            "y1": 5,
+            "x2": 2,
+            "y2": 5
+          }
+        }
+      }
+    } 
+  ],
+  "Sword": [
+    {
+      "power": 2,
+      "anim_duration": 35,
+      "cancel": 18,
+      "sfx": "swoosh",
+      "knockback": { "x": 1, "y": 0},
+      "origin": {
+        "x": 0,
+        "y": 8
+      },
+      "frames": {
+        "0": {
+          "sprite": [2, 2, 2],
+          "bbox": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 7,
+            "y2": 8
+          }
+        },
+        "3": {
+          "sprite": [4, 2, 2],
+          "bbox": {
+            "x1": 0,
+            "y1": 2,
+            "x2": 10,
+            "y2": 14
+          }
+        },
+        "6": {
+          "sprite": [6, 2, 2],
+          "bbox": {
+            "x1": 0,
+            "y1": 9,
+            "x2": 9,
+            "y2": 15
+          }
+        },
+        "9": {
+          "sprite": null,
+          "bbox": null
+        }
+      }
+    },
+    {
+      "power": 2,
+      "anim_duration": 35,
+      "sfx": "swoosh",
+      "knockback": { "x": 1.75, "y": -1},
+      "cancel": 12,
+      "origin": {
+        "x": 0,
+        "y": 8
+      },
+      "frames": {
+        "0": {
+          "sprite": [8, 2, 2],
+          "bbox": {
+            "x1": 0,
+            "y1": 9,
+            "x2": 9,
+            "y2": 15
+          }
+        },
+        "2": {
+          "sprite": [10, 2, 2],
+          "bbox": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 10,
+            "y2": 14
+          }
+        },
+        "10": {
+          "sprite": null,
+          "bbox": null
+        }
+      }
+    },
+    {
+      "power": 2,
+      "anim_duration": 35,
+      "sfx": "bigswoosh",
+      "knockback": { "x": 4, "y": 0},
+      "stopMove": true,
+      "origin": {
+        "x": 0,
+        "y": 4
+      },
+      "frames": {
+        "0": {
+          "sprite": 12,
+          "bbox": {
+            "x1": 0,
+            "y1": 4,
+            "x2": 3,
+            "y2": 4
+          },
+          "xm": 1.8
+        },
+        "3": {
+          "sprite": [13, 2, 1],
+          "bbox": {
+            "x1": 0,
+            "y1": 4,
+            "x2": 10,
+            "y2": 4
+          }
+        },        
+        "10": {
+          "sprite": [29, 2, 1],
+          "bbox": {
+            "x1": 0,
+            "y1": 4,
+            "x2": 10,
+            "y2": 4
+          }
+        },
+        "15": {
+          "sprite": null,
+          "bbox": null
+        }
+      }
+    }
+  ]
+}

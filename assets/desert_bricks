@@ -1,0 +1,100 @@
+Tilemancer 0.2.1
+
+Color 0 0 0
+Color 31 29 29
+Color 64 64 64
+Color 81 85 95
+Color 132 140 150
+Color 183 180 173
+Color 255 255 255
+Color 255 192 140
+Color 208 169 131
+Color 233 147 34
+Color 200 148 85
+Color 135 113 82
+Color 182 87 45
+Color 169 104 25
+Color 102 49 8
+Color 59 22 5
+Color 83 29 34
+Color 128 74 59
+Color 153 21 21
+Color 250 123 123
+Color 240 33 33
+Color 244 101 5
+Color 228 201 15
+Color 249 244 96
+Color 180 231 100
+Color 129 202 81
+Color 46 181 138
+Color 58 161 58
+Color 33 132 119
+Color 45 116 72
+Color 43 74 70
+Color 30 45 51
+Color 81 52 69
+Color 124 47 146
+Color 173 82 199
+Color 194 136 235
+Color 211 196 233
+Color 160 232 231
+Color 59 205 229
+Color 57 149 185
+Color 50 97 217
+Color 48 96 121
+Color 33 55 136
+PaletteSave1 
+PaletteSave2 
+FileSave1 \PixelBox\LavaRunner\LavaRunner\assets
+FileSave2 desert_bricks
+Indexed 0
+Size 8
+Camera -231.211 -6.92168
+Node {
+Name cells.lua
+Position 408.911 203.539
+Parameter 56 -1 -1 0
+Parameter 2 2 -1 0
+Parameter 23 0 100 0
+Parameter 100 0 -1 0
+}
+Node {
+Name lighting.lua
+Position 585.977 159.997
+Parameter 401 -1 -1 0
+Parameter 20 0 100 0
+Connection 0 4 0
+}
+Node {
+Name minmax.lua
+Position 720.004 112.639
+Parameter 1 0 1 0
+Parameter 100 0 100 0
+Parameter 0 0 100 0
+Connection 0 1 0
+}
+Node {
+Name colorizer.lua
+Position 864.575 41.3339
+Ramp {
+Point 0 37.875 0.324499 0.270439
+Point 19 28.8108 0.442991 0.432692
+Point 33 35.8377 0.35794 0.507645
+Point 51 33.0239 0.464923 0.734999
+Point 70 34.3803 0.359128 0.912048
+}
+Parameter 0 0 0 0
+Parameter 0 0 0 0
+Parameter 34.3803 0.359128 0.912048 7
+Connection 0 2 0
+}
+Node {
+Name bricks.lua
+Position 402.024 40.2052
+Parameter 0 -1 -1 0
+Parameter 2 1 -1 0
+Parameter 2 1 -1 0
+Parameter 1 1 -1 0
+Parameter 72 0 100 0
+Parameter 100 0 -1 0
+}
