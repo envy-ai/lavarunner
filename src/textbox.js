@@ -1,4 +1,4 @@
-var Texture = require('pixelbox/Texture');
+import PixelboxTexture from './pixelbox_texture.js';
 
 // https://stackoverflow.com/questions/14484787/wrap-text-in-javascript
 const wrap = (s, w) => s.replace(
@@ -69,7 +69,7 @@ var TextBox = {
   },
 
   init: function() {
-    this.texture = new Texture(128, 128);
+    this.texture = new PixelboxTexture(128, 128);
     this.map = getMap('Dialog');
   }
 };

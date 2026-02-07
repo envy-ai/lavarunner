@@ -1,4 +1,4 @@
-import Goodie from "../goodie";
+import Goodie from "../goodie.js";
 
 export default class ItemGoodie extends Goodie {
   constructor(spr) {

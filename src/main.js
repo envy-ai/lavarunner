@@ -432,7 +432,7 @@ console.log(assets);
 
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 // Update is called once per frame
-exports.update = function () {
+export function update() {
   if(window.disembugulate) debugger;
   if(firstFrame) initInput();
 
@@ -543,7 +543,7 @@ exports.update = function () {
 
   Wipe.draw();
   firstFrame = false;
-};
+}
 
 window.drawSprites = function(sheet, tile, x, y, flipH = false, flipV = false, flipR = false) {
   tilesheet(sheet);

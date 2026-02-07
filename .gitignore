@@ -12,3 +12,5 @@ distrib
 # ignore local tool settings
 /tools/settings.json
 /tools/bleeper.json
+
+tmp

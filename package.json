@@ -1,7 +1,10 @@
 {
 	"name": "LavaRunner",
 	"version": "1.0.0",
-	"description": "made with Pixelbox.js",
+	"description": "Phaser runtime with a Pixelbox API compatibility layer",
+	"scripts": {
+		"convert:maps": "node scripts/convert_maps_to_tiled.mjs"
+	},
 	"dependencies": {
 		"pixelbox": "2.0.5",
 		"audio-manager": "0.1.17",

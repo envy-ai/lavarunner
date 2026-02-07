@@ -1,0 +1,27 @@
+{
+  "bgm": {
+    "0": {
+      "file": "bgm/main.ogg",
+      "loop": true,
+      "volume": 0.8
+    },
+    "1": {
+      "file": "bgm/ending.ogg",
+      "loop": true,
+      "volume": 0.8
+    }
+  },
+  "sfx": {
+    "bounce": { "file": "sfx/bounce.ogg", "volume": 1.0 },
+    "squeak": { "file": "sfx/squeak.ogg", "volume": 1.0 },
+    "oof": { "file": "sfx/oof.ogg", "volume": 1.0 },
+    "thud": { "file": "sfx/thud.ogg", "volume": 1.0 },
+    "jump": { "file": "sfx/jump.ogg", "volume": 1.0 },
+    "unlock": { "file": "sfx/unlock.ogg", "volume": 1.0 },
+    "steps": { "file": "sfx/steps.ogg", "volume": 1.0 },
+    "bonus": { "file": "sfx/bonus.ogg", "volume": 1.0 },
+    "coin": { "file": "sfx/coin.ogg", "volume": 1.0 },
+    "swoosh": { "file": "sfx/swoosh.ogg", "volume": 1.0 },
+    "bigswoosh": { "file": "sfx/bigswoosh.ogg", "volume": 1.0 }
+  }
+}
