@@ -3,7 +3,11 @@
 	"version": "1.0.0",
 	"description": "Phaser runtime with a Pixelbox API compatibility layer",
 	"scripts": {
-		"convert:maps": "node scripts/convert_maps_to_tiled.mjs"
+		"convert:maps": "node scripts/convert_maps_to_tiled.mjs",
+		"editor:dev": "npm --prefix tools/animation-editor run dev",
+		"editor:build": "npm --prefix tools/animation-editor run build",
+		"editor:test": "npm --prefix tools/animation-editor run test",
+		"editor:lint": "npm --prefix tools/animation-editor run lint"
 	},
 	"dependencies": {
 		"pixelbox": "2.0.5",

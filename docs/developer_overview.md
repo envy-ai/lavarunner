@@ -14,9 +14,11 @@ This project now runs on **Phaser** through a Pixelbox compatibility runtime:
 The runtime renders to a 128x128 offscreen canvas and displays it via Phaser as a scaled image.
 
 - Logical resolution: `128x128`
+- Output scaling is aspect-preserving and centered (no independent X/Y stretch). At `>= 1x`, scale snaps to an integer for crisp pixels; below `1x`, proportional scaling is used.
 - Tile size: `8x8`
 - Maps are loaded from generated Tiled JSON files in `assets/maps_tiled/`.
 - Runtime map manifest: `assets/maps_tiled/manifest.json`
+- Gameplay entities are authored in each `"<region>/main"` Tiled map file on an object layer named `entities` (not in separate `"<region>/entities"` maps).
 
 ## Map Conversion
 
@@ -28,13 +30,20 @@ node scripts/convert_maps_to_tiled.mjs
 ```
 
 This rewrites `assets/maps_tiled/manifest.json` and one Tiled JSON file per map.
+This now rewrites `assets/maps_tiled/manifest.json` and one combined Tiled JSON file per region
+(`main` + `bg.*` + optional `fg` + `entities` object layer).
 
 ## Asset Notes
 
 The Phaser runtime expects these native source sheets:
 
-- `assets/tiles/outdoor/background.png`
-- `assets/tiles/outdoor/tiles.png`
+- `assets/maps_tiled/tiles/outdoor/background.png`
+- `assets/maps_tiled/tiles/outdoor/tiles.png`
+- `assets/maps_tiled/tiles/cave/background.png`
+- `assets/maps_tiled/tiles/cave/foreground.png`
+- `assets/maps_tiled/tiles/cave/tiles.png`
+- `assets/maps_tiled/tiles/entities.png`
+- `assets/fonts/minitext.png`
 - `assets/sprites/player_default.png`
 - `assets/sprites/enemies.png`
 - `assets/sprites/goodies.png`

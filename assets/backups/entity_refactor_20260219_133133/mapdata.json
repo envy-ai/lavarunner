@@ -1,0 +1,217 @@
+{
+  "Home/main": {
+    "bgcolor": 38,
+    "entities": {
+      "15,13": {
+        "map": "Crash Site",
+        "x": 1,
+        "y": 9
+      }
+    }
+  },
+  "Home/bg.0": {
+    "atlas": [
+      {
+        "sprite": "forest5",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "Crash Site/main": {
+    "bgcolor": 38,
+    "entities": {
+      "0,9": {
+        "map": "Home",
+        "x": 14,
+        "y": 13
+      },
+      "31,14": {
+        "map": "Cliff"
+      }
+    },
+    "atlas": [
+      {
+        "sprite": "ship",
+        "x": 75,
+        "y": 34
+      }
+    ]
+  },
+  "Crash Site/bg.0": {
+    "atlas": [
+      {
+        "sprite": "forest4",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "Cliff/main": {
+    "bgcolor": 38,
+    "entities": {
+      "0,23": {
+        "map": "Crash Site",
+        "x": 30,
+        "y": 13
+      },
+      "56,7": {
+        "map": "Castle",
+        "x": 2,
+        "y": 58
+      },
+      "56,22": {
+        "map": "Level 1"
+      }
+    }
+  },
+  "Cliff/bg.0": {
+    "atlas": [
+      {
+        "sprite": "cliff",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "Test/main": {
+    "entities": {
+      "1,14": {
+        "map": "Castle",
+        "x": 20,
+        "y": 3
+      },
+      "13,12": {
+        "sprite": 16,
+        "item": "Dilithium Crystal"
+      }
+    }
+  },
+  "Level 1/main": {
+    "entities": {
+      "15,3": {
+        "map": "Cliff",
+        "x": 55,
+        "y": 22
+      },
+      "12,121": {
+        "map": "Level 2"
+      },
+      "2,4": {
+        "sprite": 6,
+        "weapon": "Sword"
+      }
+    }
+  },
+  "Level 1/bg.1": {
+    "atlas": [
+      {
+        "sprite": "lavacave1",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "Level 2/main": {    
+    "entities": {
+      "1,7": {
+        "contents": {
+          "key": 1
+        },
+        "sprite": 7      
+      },      
+      "2,23": {
+        "map": "Level 1",
+        "x": 12,
+        "y": 121
+      },
+      "32,9": {
+        "map": "Level 3"
+      },
+      "35,4": {
+        "sprite": 11,
+        "weapon": "Grenade Launcher"
+      }
+    }
+  },
+  "Level 2/bg.0": {
+    "atlas": [
+      {
+        "sprite": "lavacave3",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "Level 3/main": {    
+    "entities": {   
+      "6,13": {
+        "map": "Level 2",
+        "x": 32,
+        "y": 9
+      },
+      "41,15": {
+        "sprite": 12,
+        "item": "Double Jump Ring"
+      },
+      "50,1": {
+        "sprite": 14,
+        "item": "Big Bolt"
+      }
+    }
+  },
+  "Level 4/main": {
+    "entities": {
+      "45,33": {
+        "sprite": 15,
+        "item": "Titanium Ore"
+      },
+      "0,33": {
+        "map": "Castle",
+        "x": 38,
+        "y": 58
+      }
+    }
+  },
+  "Level 4/bg.0": {
+    "atlas": [
+      {
+        "sprite": "forest6",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "Castle/main": {
+    "entities": {
+      "1,58": {
+        "map": "Cliff",
+        "x": 55,
+        "y": 7
+      },
+      "7,23": {
+        "contents": {
+          "key": 1
+        },
+        "sprite": 7      
+      },
+      "38,58": {
+        "map": "Level 4",
+        "x": 1,
+        "y": 33
+      },
+      "20,3": {
+        "map": "Test"
+      }
+    }
+  },
+  "Ending/fg": {
+    "atlas": [
+      {
+        "sprite": "ending",
+        "x": 0,
+        "y": 0
+      }
+    ]
+  }
+}

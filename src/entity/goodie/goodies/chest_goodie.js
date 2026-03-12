@@ -49,13 +49,17 @@ export default class ChestGoodie extends Goodie {
     } 
 
     if(this.state == state.closed && this.collidingWith(player) && input.pressed.Y) {
+      if (!this.metadata.contents || typeof this.metadata.contents !== 'object' || Array.isArray(this.metadata.contents)) {
+        throw new Error(`Chest at ${this.tx},${this.ty} on "${map._name}" is missing object metadata.contents.`);
+      }
+
       this.setState(state.open);
       sfx('bonus');
       for(var item in this.metadata.contents) {
         player.addItem(item, this.metadata.contents[item]);
       }
 
-      if(this.metadata.sprite !== null) {
+      if(this.metadata.sprite !== null && this.metadata.sprite !== undefined) {
         player.setCustomState(this.metadata.sprite, 30);
       }
     }

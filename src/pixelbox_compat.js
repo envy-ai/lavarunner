@@ -1,3 +1,5 @@
+import { createMiniTextCharsetCanvas, miniTextFontMetrics } from './minitext_bitmap_font.js';
+
 const SCREEN_WIDTH = 128;
 const SCREEN_HEIGHT = 128;
 const TILE_SIZE = 8;
@@ -46,15 +48,23 @@ class CompatTileMap {
     this._name = '';
     this._tilesheetPath = '';
     this.tilesheet = null;
+    this._parallaxX = 1;
+    this._parallaxY = 1;
+    this._sourceWidth = 0;
+    this._sourceHeight = 0;
     this.width = 0;
     this.height = 0;
     this.items = [];
+    this.objectLayers = {};
   }
 
   _init(width, height) {
     this.width = width;
     this.height = height;
+    this._sourceWidth = width;
+    this._sourceHeight = height;
     this.items = [];
+    this.objectLayers = {};
 
     for (let x = 0; x < width; x += 1) {
       this.items.push(new Array(height).fill(null));
@@ -135,6 +145,169 @@ class CompatTileMap {
     this.runtime.drawMapToContext(this.runtime.screenCtx, this, x, y);
   }
 
+  getObjectLayer(name) {
+    if (typeof name !== 'string' || name.length === 0) {
+      throw new Error(`Map "${this._name}" requested object layer with an invalid name.`);
+    }
+
+    const layer = this.objectLayers[name];
+    if (!layer) {
+      return [];
+    }
+
+    return layer.slice();
+  }
+
+  parseObjectProperties(objectLayerName, objectId, properties) {
+    if (!Array.isArray(properties)) {
+      return {};
+    }
+
+    const parsed = {};
+    for (const property of properties) {
+      if (!property || typeof property !== 'object') {
+        throw new Error(`Map "${this._name}" layer "${objectLayerName}" object ${objectId} has an invalid property.`);
+      }
+
+      const key = property.name;
+      if (typeof key !== 'string' || key.length === 0) {
+        throw new Error(`Map "${this._name}" layer "${objectLayerName}" object ${objectId} has a property without a valid name.`);
+      }
+
+      parsed[key] = property.value;
+    }
+
+    return parsed;
+  }
+
+  findTilesetForTileId(tilesets, tileId, mapName, layerName, objectId) {
+    if (!Array.isArray(tilesets) || tilesets.length === 0) {
+      throw new Error(`Map "${mapName}" layer "${layerName}" object ${objectId} has gid data but no tilesets.`);
+    }
+
+    let matched = null;
+    for (const tileset of tilesets) {
+      if (!tileset || !Number.isInteger(tileset.firstgid)) {
+        continue;
+      }
+      if (tileId >= tileset.firstgid && (!matched || tileset.firstgid > matched.firstgid)) {
+        matched = tileset;
+      }
+    }
+
+    if (!matched) {
+      throw new Error(
+        `Map "${mapName}" layer "${layerName}" object ${objectId} references gid ${tileId} with no matching tileset.`,
+      );
+    }
+
+    return matched;
+  }
+
+  normalizeObject(layer, object, tilesets) {
+    if (!object || typeof object !== 'object') {
+      throw new Error(`Map "${this._name}" layer "${layer.name}" has an invalid object entry.`);
+    }
+
+    if (!Number.isFinite(object.x) || !Number.isFinite(object.y)) {
+      throw new Error(`Map "${this._name}" layer "${layer.name}" has an object with invalid coordinates.`);
+    }
+
+    if (!Number.isInteger(object.id) || object.id <= 0) {
+      throw new Error(`Map "${this._name}" layer "${layer.name}" has an object without a valid positive integer id.`);
+    }
+
+    let sprite = null;
+    let flipH = false;
+    let flipV = false;
+    let flipR = false;
+    if (object.gid !== undefined) {
+      if (!Number.isInteger(object.gid)) {
+        throw new Error(`Map "${this._name}" layer "${layer.name}" object ${object.id} has non-integer gid.`);
+      }
+
+      const gid = object.gid >>> 0;
+      const tileId = gid & ~TILED_FLIP_MASK;
+      if (tileId <= 0) {
+        throw new Error(`Map "${this._name}" layer "${layer.name}" object ${object.id} has invalid gid ${gid}.`);
+      }
+
+      const tileset = this.findTilesetForTileId(tilesets, tileId, this._name, layer.name || '<unnamed>', object.id);
+      sprite = tileId - tileset.firstgid;
+      if (Number.isInteger(tileset.tilecount) && sprite >= tileset.tilecount) {
+        throw new Error(
+          `Map "${this._name}" layer "${layer.name}" object ${object.id} gid ${gid} is out of tileset bounds.`,
+        );
+      }
+
+      flipH = (gid & TILED_FLIPPED_HORIZONTALLY_FLAG) !== 0;
+      flipV = (gid & TILED_FLIPPED_VERTICALLY_FLAG) !== 0;
+      flipR = (gid & TILED_FLIPPED_DIAGONALLY_FLAG) !== 0;
+    }
+
+    const entityY = object.gid !== undefined ? object.y - TILE_SIZE : object.y;
+    return {
+      id: object.id,
+      name: typeof object.name === 'string' ? object.name : '',
+      type: typeof object.type === 'string' ? object.type : '',
+      className: typeof object.class === 'string' ? object.class : '',
+      layer: layer.name,
+      x: object.x,
+      y: entityY,
+      tx: Math.floor(object.x / TILE_SIZE),
+      ty: Math.floor(entityY / TILE_SIZE),
+      width: Number.isFinite(object.width) ? object.width : TILE_SIZE,
+      height: Number.isFinite(object.height) ? object.height : TILE_SIZE,
+      rotation: Number.isFinite(object.rotation) ? object.rotation : 0,
+      visible: object.visible !== false,
+      sprite,
+      flipH,
+      flipV,
+      flipR,
+      properties: this.parseObjectProperties(layer.name, object.id, object.properties),
+    };
+  }
+
+  inferSheetPathFromTileset(tileset) {
+    if (!tileset || typeof tileset !== 'object') {
+      return null;
+    }
+
+    const imagePath = typeof tileset.image === 'string' ? tileset.image : '';
+    if (imagePath.endsWith('.png')) {
+      if (imagePath.startsWith('tiles/')) {
+        return imagePath.slice(0, -4);
+      }
+      if (imagePath.startsWith('../')) {
+        return imagePath.slice(3, -4);
+      }
+      return imagePath.slice(0, -4);
+    }
+
+    if (typeof tileset.name === 'string' && tileset.name.length > 0) {
+      return tileset.name;
+    }
+
+    return null;
+  }
+
+  findTilesetForSheet(tilesets, expectedSheetPath, mapName, layerName) {
+    if (!expectedSheetPath) {
+      return null;
+    }
+
+    for (const tileset of tilesets) {
+      const sheetPath = this.inferSheetPathFromTileset(tileset);
+      if (sheetPath === expectedSheetPath) {
+        return tileset;
+      }
+    }
+
+    throw new Error(
+      `Tiled map "${mapName}" layer "${layerName}" is missing tileset for sheet "${expectedSheetPath}".`,
+    );
+  }
+
   loadFromTiled(manifestEntry, tiledMap) {
     if (!manifestEntry || typeof manifestEntry !== 'object') {
       throw new Error('Tiled map manifest entry is missing or invalid.');
@@ -150,9 +323,15 @@ class CompatTileMap {
     }
 
     const layers = Array.isArray(tiledMap.layers) ? tiledMap.layers : [];
-    const tileLayer = layers.find((layer) => layer && layer.type === 'tilelayer');
+    const tileLayerName = typeof manifestEntry.tilelayer === 'string' && manifestEntry.tilelayer.length > 0
+      ? manifestEntry.tilelayer
+      : null;
+    const tileLayer = tileLayerName
+      ? layers.find((layer) => layer && layer.type === 'tilelayer' && layer.name === tileLayerName)
+      : layers.find((layer) => layer && layer.type === 'tilelayer');
     if (!tileLayer || !Array.isArray(tileLayer.data)) {
-      throw new Error(`Tiled map "${manifestEntry.name || '<unnamed>'}" is missing a tilelayer with data.`);
+      const layerMessage = tileLayerName ? ` named "${tileLayerName}"` : '';
+      throw new Error(`Tiled map "${manifestEntry.name || '<unnamed>'}" is missing a tilelayer${layerMessage} with data.`);
     }
 
     const expectedLength = width * height;
@@ -166,7 +345,29 @@ class CompatTileMap {
     this._init(width, height);
     this._name = manifestEntry.name || '';
     this._tilesheetPath = manifestEntry.sheet || '';
+    this._sourceWidth = Number.isInteger(manifestEntry.width) ? manifestEntry.width : width;
+    this._sourceHeight = Number.isInteger(manifestEntry.height) ? manifestEntry.height : height;
+    this._parallaxX = Number.isFinite(tileLayer.parallaxx)
+      ? tileLayer.parallaxx
+      : (Number.isFinite(manifestEntry.parallaxx) ? manifestEntry.parallaxx : 1);
+    this._parallaxY = Number.isFinite(tileLayer.parallaxy)
+      ? tileLayer.parallaxy
+      : (Number.isFinite(manifestEntry.parallaxy) ? manifestEntry.parallaxy : 1);
     this.tilesheet = this.runtime.resolveTilesheet(this._tilesheetPath);
+
+    const tilesets = Array.isArray(tiledMap.tilesets) ? tiledMap.tilesets : [];
+    const expectedTileset = this.findTilesetForSheet(
+      tilesets,
+      this._tilesheetPath,
+      this._name,
+      tileLayer.name || '<unnamed>',
+    );
+    const expectedFirstgid = expectedTileset && Number.isInteger(expectedTileset.firstgid)
+      ? expectedTileset.firstgid
+      : null;
+    const expectedTilecount = expectedTileset && Number.isInteger(expectedTileset.tilecount)
+      ? expectedTileset.tilecount
+      : null;
 
     for (let index = 0; index < tileLayer.data.length; index += 1) {
       const rawGid = tileLayer.data[index];
@@ -179,19 +380,48 @@ class CompatTileMap {
         continue;
       }
 
+      if (!Number.isInteger(expectedFirstgid) || expectedFirstgid <= 0) {
+        throw new Error(
+          `Tiled map "${this._name}" layer "${tileLayer.name || '<unnamed>'}" has tile data but no valid tileset binding.`,
+        );
+      }
+
       const flipH = (gid & TILED_FLIPPED_HORIZONTALLY_FLAG) !== 0;
       const flipV = (gid & TILED_FLIPPED_VERTICALLY_FLAG) !== 0;
       const flipR = (gid & TILED_FLIPPED_DIAGONALLY_FLAG) !== 0;
       const tileId = gid & ~TILED_FLIP_MASK;
-      const sprite = tileId - 1;
+      const sprite = tileId - expectedFirstgid;
 
       if (sprite < 0) {
         throw new Error(`Tiled map "${this._name}" has invalid gid ${gid} at index ${index}.`);
+      }
+      if (Number.isInteger(expectedTilecount) && sprite >= expectedTilecount) {
+        throw new Error(
+          `Tiled map "${this._name}" has gid ${gid} out of tileset bounds at index ${index}.`,
+        );
       }
 
       const x = index % width;
       const y = Math.floor(index / width);
       this.set(x, y, sprite, flipH, flipV, flipR, false, false);
+    }
+
+    for (const layer of layers) {
+      if (!layer || layer.type !== 'objectgroup') {
+        continue;
+      }
+
+      if (typeof layer.name !== 'string' || layer.name.length === 0) {
+        throw new Error(`Tiled map "${this._name}" has an object layer without a valid name.`);
+      }
+      if (this.objectLayers[layer.name]) {
+        throw new Error(`Tiled map "${this._name}" has duplicate object layer "${layer.name}".`);
+      }
+      if (!Array.isArray(layer.objects)) {
+        throw new Error(`Tiled map "${this._name}" object layer "${layer.name}" is missing its objects array.`);
+      }
+
+      this.objectLayers[layer.name] = layer.objects.map((object) => this.normalizeObject(layer, object, tilesets));
     }
 
     return this;
@@ -208,6 +438,15 @@ class PixelboxRuntime {
     this.paperColor = 0;
     this.currentTilesheet = null;
     this.textCursor = { x: 0, y: 0 };
+    const builtInCharset = createMiniTextCharsetCanvas();
+    this.defaultCharset = this.createCharsetDefinition(
+      builtInCharset,
+      0,
+      0,
+      builtInCharset.width,
+      builtInCharset.height,
+    );
+    this.charset = this.defaultCharset;
 
     this.assets = null;
     this.mapsByName = {};
@@ -235,14 +474,15 @@ class PixelboxRuntime {
       ['__palette', 'assets/palette.png'],
       ['ui', 'assets/ui.png'],
       ['boxes', 'assets/boxes.png'],
+      ['fonts/minitext', 'assets/fonts/minitext.png'],
       ['tilesheet', 'assets/tilesheet.png'],
-      ['tiles/entities', 'assets/tiles/entities.png'],
-      ['tiles/cave/background', 'assets/tiles/cave/background.png'],
-      ['tiles/cave/foreground', 'assets/tiles/cave/foreground.png'],
-      ['tiles/cave/tiles', 'assets/tiles/cave/tiles.png'],
-      ['tiles/outdoor/background', 'assets/tiles/outdoor/background.png'],
-      ['tiles/outdoor/foreground', 'assets/tiles/outdoor/foreground.png'],
-      ['tiles/outdoor/tiles', 'assets/tiles/outdoor/tiles.png'],
+      ['tiles/entities', 'assets/maps_tiled/tiles/entities.png'],
+      ['tiles/cave/background', 'assets/maps_tiled/tiles/cave/background.png'],
+      ['tiles/cave/foreground', 'assets/maps_tiled/tiles/cave/foreground.png'],
+      ['tiles/cave/tiles', 'assets/maps_tiled/tiles/cave/tiles.png'],
+      ['tiles/outdoor/background', 'assets/maps_tiled/tiles/outdoor/background.png'],
+      ['tiles/outdoor/foreground', 'assets/maps_tiled/tiles/outdoor/foreground.png'],
+      ['tiles/outdoor/tiles', 'assets/maps_tiled/tiles/outdoor/tiles.png'],
       ['sprites/enemies', 'assets/sprites/enemies.png'],
       ['sprites/goodies', 'assets/sprites/goodies.png'],
       ['sprites/player_default', 'assets/sprites/player_default.png'],
@@ -330,7 +570,19 @@ class PixelboxRuntime {
   resizeScreen(size) {
     const width = size.width || this.scene.scale.width;
     const height = size.height || this.scene.scale.height;
-    this.screenImage.setDisplaySize(width, height);
+
+    // Keep 1:1 aspect ratio to avoid horizontal/vertical stretch artifacts.
+    const scaleX = width / SCREEN_WIDTH;
+    const scaleY = height / SCREEN_HEIGHT;
+    const uniformScale = Math.min(scaleX, scaleY);
+    const scale = uniformScale >= 1 ? Math.floor(uniformScale) : uniformScale;
+    const displayWidth = SCREEN_WIDTH * scale;
+    const displayHeight = SCREEN_HEIGHT * scale;
+    const offsetX = Math.floor((width - displayWidth) / 2);
+    const offsetY = Math.floor((height - displayHeight) / 2);
+
+    this.screenImage.setPosition(offsetX, offsetY);
+    this.screenImage.setDisplaySize(displayWidth, displayHeight);
   }
 
   initializePalette() {
@@ -375,6 +627,7 @@ class PixelboxRuntime {
     const data = this.scene.cache.json;
     const entitiesSheet = this.makeImageRef('tiles/entities', 'tiles/entities');
     const tilesheetFallback = this.makeImageRef('tilesheet', 'tilesheet');
+    const miniTextFont = this.makeImageRef('fonts/minitext', 'fonts/minitext');
 
     const outdoorTiles = this.makeImageRef('tiles/outdoor/tiles', 'tiles/outdoor/tiles');
     const outdoorBackground = this.makeImageRef('tiles/outdoor/background', 'tiles/outdoor/background');
@@ -387,6 +640,9 @@ class PixelboxRuntime {
       boxes: this.makeImageRef('boxes', 'boxes'),
       ui: this.makeImageRef('ui', 'ui'),
       tilesheet: tilesheetFallback,
+      fonts: {
+        minitext: miniTextFont,
+      },
       data: {
         mapdata: data.get('data/mapdata'),
         npcs: data.get('data/npcs'),
@@ -445,6 +701,9 @@ class PixelboxRuntime {
       'tiles/outdoor/foreground': this.assets.tiles.outdoor.foreground,
       'tiles/outdoor/tiles': this.assets.tiles.outdoor.tiles,
     };
+
+    // Default to editable PNG charset; code atlas remains available via setCharset(null).
+    this.setCharset(this.assets.fonts.minitext);
   }
 
   async initializeMaps() {
@@ -468,6 +727,29 @@ class PixelboxRuntime {
     this.mapsByName = {};
     this.mapsList = [];
 
+    const fileCache = new Map();
+    const loadMapFile = async (entry) => {
+      if (fileCache.has(entry.file)) {
+        return fileCache.get(entry.file);
+      }
+
+      const mapUrl = new URL(`../assets/maps_tiled/${entry.file}`, import.meta.url);
+      const tiledMapPromise = (async () => {
+        try {
+          const response = await fetch(mapUrl);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          return await response.json();
+        } catch (error) {
+          throw new Error(`Failed to load tiled map file "${entry.file}" (${mapUrl.pathname}): ${error.message}`);
+        }
+      })();
+
+      fileCache.set(entry.file, tiledMapPromise);
+      return tiledMapPromise;
+    };
+
     const loadedMaps = await Promise.all(
       manifest.maps.map(async (entry) => {
         if (!entry || typeof entry !== 'object') {
@@ -480,18 +762,7 @@ class PixelboxRuntime {
           throw new Error(`Map entry "${entry.name}" is missing its JSON filename.`);
         }
 
-        const mapUrl = new URL(`../assets/maps_tiled/${entry.file}`, import.meta.url);
-        let tiledMap;
-        try {
-          const response = await fetch(mapUrl);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-          tiledMap = await response.json();
-        } catch (error) {
-          throw new Error(`Failed to load tiled map "${entry.name}" (${mapUrl.pathname}): ${error.message}`);
-        }
-
+        const tiledMap = await loadMapFile(entry);
         return new CompatTileMap(this).loadFromTiled(entry, tiledMap);
       }),
     );
@@ -559,7 +830,7 @@ class PixelboxRuntime {
     window.locate = (x, y) => this.locate(x, y);
     window.print = (text, x, y) => this.print(text, x, y);
     window.println = (text) => this.println(text);
-    window.setCharset = () => {};
+    window.setCharset = (charset) => this.setCharset(charset);
 
     window.sfx = (name, volume = 1) => {
       this.playSfx(name, volume);
@@ -956,6 +1227,261 @@ class PixelboxRuntime {
     return this.palette[index];
   }
 
+  createCharsetDefinition(image, sourceX, sourceY, sourceWidth, sourceHeight) {
+    if (!image || !Number.isFinite(image.width) || !Number.isFinite(image.height)) {
+      throw new Error('Charset source image is invalid or missing dimensions.');
+    }
+    if (!Number.isFinite(sourceX) || !Number.isFinite(sourceY)) {
+      throw new Error('Charset source offsets must be finite numbers.');
+    }
+    if (!Number.isFinite(sourceWidth) || !Number.isFinite(sourceHeight)) {
+      throw new Error('Charset source size must be finite numbers.');
+    }
+
+    const x = Math.floor(sourceX);
+    const y = Math.floor(sourceY);
+    const width = Math.floor(sourceWidth);
+    const height = Math.floor(sourceHeight);
+
+    if (width <= 0 || height <= 0) {
+      throw new Error(`Charset source has invalid dimensions (${width}x${height}).`);
+    }
+    if (x < 0 || y < 0 || x + width > image.width || y + height > image.height) {
+      throw new Error(
+        `Charset source rect (${x}, ${y}, ${width}, ${height}) is out of image bounds (${image.width}x${image.height}).`,
+      );
+    }
+    if (width < miniTextFontMetrics.columns || height < miniTextFontMetrics.rows) {
+      throw new Error(
+        `Charset source (${width}x${height}) is smaller than ${miniTextFontMetrics.columns}x${miniTextFontMetrics.rows}.`,
+      );
+    }
+
+    const charWidth = Math.floor(width / miniTextFontMetrics.columns);
+    const charHeight = Math.floor(height / miniTextFontMetrics.rows);
+    if (charWidth <= 0 || charHeight <= 0) {
+      throw new Error(`Computed charset glyph size is invalid (${charWidth}x${charHeight}).`);
+    }
+
+    return {
+      image,
+      sourceX: x,
+      sourceY: y,
+      width,
+      height,
+      charWidth,
+      charHeight,
+      columns: miniTextFontMetrics.columns,
+      rows: miniTextFontMetrics.rows,
+      glyphCount: miniTextFontMetrics.glyphCount,
+      tintCache: new Map(),
+    };
+  }
+
+  charsetSourceFromInput(charset) {
+    if (!charset || typeof charset !== 'object') {
+      throw new Error('setCharset() expects a sprite/image/texture-like object.');
+    }
+
+    if (charset._isSprite) {
+      if (!charset.img) {
+        throw new Error('setCharset() received a sprite without an image.');
+      }
+      return {
+        image: charset.img,
+        sourceX: Number.isFinite(charset.x) ? charset.x : 0,
+        sourceY: Number.isFinite(charset.y) ? charset.y : 0,
+        sourceWidth: Number.isFinite(charset.w) ? charset.w : charset.img.width,
+        sourceHeight: Number.isFinite(charset.h) ? charset.h : charset.img.height,
+      };
+    }
+
+    if (charset._isPixelboxTexture) {
+      if (!charset.canvas) {
+        throw new Error('setCharset() received a PixelboxTexture without a canvas.');
+      }
+      return {
+        image: charset.canvas,
+        sourceX: 0,
+        sourceY: 0,
+        sourceWidth: charset.canvas.width,
+        sourceHeight: charset.canvas.height,
+      };
+    }
+
+    if (charset.canvas && Number.isFinite(charset.canvas.width) && Number.isFinite(charset.canvas.height)) {
+      return {
+        image: charset.canvas,
+        sourceX: 0,
+        sourceY: 0,
+        sourceWidth: charset.canvas.width,
+        sourceHeight: charset.canvas.height,
+      };
+    }
+
+    if (Number.isFinite(charset.width) && Number.isFinite(charset.height)) {
+      return {
+        image: charset,
+        sourceX: 0,
+        sourceY: 0,
+        sourceWidth: charset.width,
+        sourceHeight: charset.height,
+      };
+    }
+
+    throw new Error('setCharset() could not resolve image data from the provided object.');
+  }
+
+  getTintedCharsetCanvas(charset, colorIndex) {
+    const cacheKey = String(colorIndex);
+    if (charset.tintCache.has(cacheKey)) {
+      return charset.tintCache.get(cacheKey);
+    }
+
+    const tintedCanvas = document.createElement('canvas');
+    tintedCanvas.width = charset.width;
+    tintedCanvas.height = charset.height;
+
+    const tintedCtx = tintedCanvas.getContext('2d', { alpha: true });
+    if (!tintedCtx) {
+      throw new Error('Failed to create tinted charset drawing context.');
+    }
+    tintedCtx.imageSmoothingEnabled = false;
+    tintedCtx.clearRect(0, 0, charset.width, charset.height);
+    tintedCtx.drawImage(
+      charset.image,
+      charset.sourceX,
+      charset.sourceY,
+      charset.width,
+      charset.height,
+      0,
+      0,
+      charset.width,
+      charset.height,
+    );
+    tintedCtx.globalCompositeOperation = 'source-in';
+    tintedCtx.fillStyle = this.resolveColor(colorIndex);
+    tintedCtx.fillRect(0, 0, charset.width, charset.height);
+    tintedCtx.globalCompositeOperation = 'source-over';
+
+    charset.tintCache.set(cacheKey, tintedCanvas);
+    return tintedCanvas;
+  }
+
+  normalizePrintText(value) {
+    if (value && typeof value === 'object') {
+      try {
+        return JSON.stringify(value);
+      } catch (error) {
+        return '[Object]';
+      }
+    }
+    return String(value);
+  }
+
+  getTextMetrics() {
+    const active = this.charset || this.defaultCharset;
+    return {
+      charWidth: active.charWidth,
+      charHeight: active.charHeight,
+    };
+  }
+
+  measureBitmapTextWidth(text) {
+    const active = this.charset || this.defaultCharset;
+    const normalized = this.normalizePrintText(text);
+
+    let width = 0;
+    let maxWidth = 0;
+    for (let index = 0; index < normalized.length; index += 1) {
+      const code = normalized.charCodeAt(index);
+      if (code === 13) {
+        continue;
+      }
+      if (code === 10) {
+        maxWidth = Math.max(maxWidth, width);
+        width = 0;
+        continue;
+      }
+
+      width += active.charWidth;
+      maxWidth = Math.max(maxWidth, width);
+    }
+
+    return maxWidth;
+  }
+
+  drawBitmapTextToContext(ctx, text, x, y, colorIndex = this.penColor) {
+    if (!ctx || typeof ctx.drawImage !== 'function') {
+      throw new Error('drawBitmapTextToContext() requires a valid 2D canvas context.');
+    }
+
+    const active = this.charset || this.defaultCharset;
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      throw new Error(`drawBitmapTextToContext() requires finite coordinates. Received (${x}, ${y}).`);
+    }
+    const glyphAtlas = this.getTintedCharsetCanvas(active, colorIndex);
+    const normalized = this.normalizePrintText(text);
+    const startX = Math.round(x);
+    const startY = Math.round(y);
+
+    let cursorX = startX;
+    let cursorY = startY;
+    for (let index = 0; index < normalized.length; index += 1) {
+      const code = normalized.charCodeAt(index);
+      if (code === 13) {
+        continue;
+      }
+      if (code === 10) {
+        cursorX = startX;
+        cursorY += active.charHeight;
+        continue;
+      }
+
+      const glyph = code - 32;
+      if (glyph >= 0 && glyph < active.glyphCount) {
+        const sourceX = (glyph % active.columns) * active.charWidth;
+        const sourceY = Math.floor(glyph / active.columns) * active.charHeight;
+        ctx.drawImage(
+          glyphAtlas,
+          sourceX,
+          sourceY,
+          active.charWidth,
+          active.charHeight,
+          cursorX,
+          cursorY,
+          active.charWidth,
+          active.charHeight,
+        );
+      }
+
+      cursorX += active.charWidth;
+    }
+  }
+
+  setCharset(charset = null) {
+    const previousMetrics = this.getTextMetrics();
+    const cursorColumn = Math.ceil(this.textCursor.x / previousMetrics.charWidth);
+    const cursorRow = Math.ceil(this.textCursor.y / previousMetrics.charHeight);
+
+    if (charset === null || charset === undefined) {
+      this.charset = this.defaultCharset;
+    } else {
+      const source = this.charsetSourceFromInput(charset);
+      this.charset = this.createCharsetDefinition(
+        source.image,
+        source.sourceX,
+        source.sourceY,
+        source.sourceWidth,
+        source.sourceHeight,
+      );
+    }
+
+    this.textCursor.x = cursorColumn * this.charset.charWidth;
+    this.textCursor.y = cursorRow * this.charset.charHeight;
+    return this.charset;
+  }
+
   pen(colorIndex) {
     this.penColor = colorIndex;
     return this;
@@ -991,16 +1517,13 @@ class PixelboxRuntime {
   }
 
   print(text, x = this.textCursor.x, y = this.textCursor.y) {
-    this.screenCtx.fillStyle = this.resolveColor(this.penColor);
-    this.screenCtx.font = '8px monospace';
-    this.screenCtx.textBaseline = 'top';
-    this.screenCtx.fillText(String(text), Math.round(x), Math.round(y));
+    this.drawBitmapTextToContext(this.screenCtx, text, x, y, this.penColor);
     return this;
   }
 
   println(text) {
     this.print(text, this.textCursor.x, this.textCursor.y);
-    this.textCursor.y += TILE_SIZE;
+    this.textCursor.y += this.charset.charHeight;
     return this;
   }
 
@@ -1193,6 +1716,7 @@ export function startPhaserGame() {
     backgroundColor: '#000000',
     pixelArt: true,
     antialias: false,
+    roundPixels: true,
     input: {
       gamepad: true,
     },

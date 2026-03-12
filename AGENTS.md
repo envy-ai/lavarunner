@@ -18,3 +18,5 @@
 - When updating documentation, also update docs/README.md to reflect any changes or new items.
 - If doc files are missing and you have something to put in them, create them as needed.
 - Test yourself if possible.
+- Run the server on 0.0.0.0, as this is a headless box
+- Put test artifacts (screenshots, etc) in ./tmp and don't delete them.

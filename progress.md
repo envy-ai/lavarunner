@@ -1,0 +1,189 @@
+Original prompt: You're a UI designer working on an intuitive design.  Test the UI in playwright and determine what needs to be done for a polish pass, what if anything about the UI could stand to be changed, etc.
+
+2026-02-10
+- Began micro-pass for collapsed tablet left rail polish.
+- Goal: improve readability and affordance in collapsed state without altering core flows.
+- Plan: add compact labels/abbreviations + tooltip affordances in navigators, adjust tablet rail CSS, validate in Playwright (entity + weapon routes).
+- Implemented compact tablet-rail label system:
+  - Entity navigator now has full + compact labels and compact create button state.
+  - Weapon navigator now has full + compact weapon/chain labels.
+  - Added tooltip/aria labels for collapsed rail discoverability.
+- Updated SCSS for collapsed tablet state to show compact labels and hide full text cleanly.
+- Validation:
+  - `npm --prefix tools/animation-editor run lint` passed.
+  - `npm --prefix tools/animation-editor run test` passed (12/12).
+  - Playwright tablet checks passed for `/entity/active` and `/weapon/active/0`; collapsed rail now shows compact `+` / initials (`NE`, `S`, `C1`) instead of clipped labels.
+- Refined compact rail typography to tokenized visuals:
+  - circular badges for entity/new compact labels (`+`, `NE`).
+  - capsule token for compact chain labels (`C1`).
+  - active token states now use accent ring + gradient fill for stronger focus indication.
+- Playwright screenshots captured for refined pass:
+  - `artifacts/ui-polish-fixes/entity-tablet-rail-polish-v2.png`
+  - `artifacts/ui-polish-fixes/weapon-tablet-rail-polish-v2.png`
+  - `artifacts/ui-polish-fixes/weapon-tablet-rail-polish-v2-nav-open.png`
+- Docs updated to note badge/capsule compact tablet rail tokens.
+
+2026-02-19
+- New task: move entity placement from `*/entities` tile layers to Tiled object placement inside each `*/main` map.
+- User choices applied: entities embedded in `main` map files; metadata moved into Tiled object properties.
+- Safety step: created backup at `assets/backups/entity_refactor_20260219_133133` before edits.
+- Converter refactor in progress:
+  - `scripts/convert_maps_to_tiled.mjs` now skips standalone `*/entities` output maps.
+  - For each `*/main` map, it builds an `entities` object layer from the legacy entities map and merges metadata from `assets/data/mapdata.json` + `assets/data/npcs.json` into object properties.
+  - Added strict validation for malformed metadata, orphan metadata coords, missing matching main/entities map pairs, and malformed tile payloads.
+  - Added automatic backup of existing `assets/maps_tiled` into `assets/maps_tiled_backups/` on each conversion run.
+- Runtime refactor completed:
+  - `src/pixelbox_compat.js`: `CompatTileMap` now parses object layers and exposes `getObjectLayer(name)` with normalized tile-object coordinates and property maps.
+  - `src/main.js`: map loading now reads `map.getObjectLayer('entities')` and spawns player/enemies/goodies/scripts from object placements.
+  - Removed runtime dependency on separate `getMap(mapname + '/entities')` layers.
+- Metadata refactor completed:
+  - Entity metadata now comes from Tiled object properties (parsed from each entity object), not `mapdata.entities` / `npcs` coordinate lookups.
+  - Updated entity classes to accept metadata through `init(x, y, metadata)`.
+  - Added strict validation for required metadata in NPC/item/weapon/chest/door/exit paths.
+- Converter/data updates:
+  - `npm run convert:maps` now outputs 27 maps (standalone `*/entities` maps removed).
+  - Converter merges legacy entities into `entities` object layers in each `*/main` map.
+  - Converter now auto-backs-up old generated output in `assets/maps_tiled_backups/`.
+  - Removed stale `Test/main` NPC entry from `assets/data/npcs.json` that did not match any entity placement (strict validation failure).
+- Validation:
+  - `node --check` passed for all modified JS files.
+  - Browser smoke test on `http://127.0.0.1:4173` confirmed successful loads/spawns for `Home`, `Crash Site`, and `Level 2` using object-layer entities and parsed metadata.
+  - Console errors observed are existing audio asset issues (`audio/bgm/main.ogg` missing), unrelated to entity placement changes.
+- Additional verification details:
+  - Attempted to run `node playwright_scripts/test_new_game_end_to_end.js`, but the script does not exist in this repository.
+  - Used a manual Playwright browser smoke loop against a local `python3 -m http.server 4173` server instead.
+  - Confirmed runtime loads and entity queues for `Home`, `Crash Site`, and `Level 2` with object-layer placements.
+  - Captured screenshots from smoke pass:
+    - `../../tmp/playwright-mcp-output/1771526745870/page-2026-02-19T18-45-57-474Z.png`
+    - `../../tmp/playwright-mcp-output/1771526745870/page-2026-02-19T18-46-32-758Z.png`
+- Docs updated:
+  - `docs/developer_overview.md`
+  - `docs/MapConverter.md`
+  - `docs/PixelboxRuntime.md`
+  - `docs/EntityPlacement.md` (new)
+  - `docs/README.md`
+- Follow-up refactor: combined region map files + parallax metadata + map tile path migration.
+- Converter changes (`scripts/convert_maps_to_tiled.mjs`):
+  - Emits one combined Tiled JSON file per region (`<region>.json`) containing `bg.*`, `main`, optional `fg`, and `entities` object layer.
+  - Preserves runtime map-name compatibility through manifest entries (`name`) that now include `tilelayer` selectors into shared files.
+  - Emits background layer `parallaxx` / `parallaxy` derived from prior camera scaling behavior.
+  - Supports multi-tileset combined maps (layer-specific firstgid encoding) and validates metadata + tileset presence.
+  - Stops deleting `assets/maps_tiled/tiles` during conversion; clears generated maps while preserving tile assets.
+- Runtime changes:
+  - `src/pixelbox_compat.js`
+    - Map preloads now read tile images from `assets/maps_tiled/tiles/...`.
+    - `initializeMaps()` now dedupes map-file fetches and creates virtual maps from manifest `tilelayer` entries.
+    - `CompatTileMap.loadFromTiled()` now loads a specific tilelayer, decodes tile sprites using the layer tileset firstgid, and stores layer parallax/source-dimension metadata.
+    - Object-layer tile-object GID decoding now resolves against matching tileset firstgid (fixes sprite IDs in combined maps).
+  - `src/main.js`
+    - Background drawing now uses map-layer parallax (`_parallaxX`, `_parallaxY`) with guarded fallback math.
+- Asset path migration:
+  - Moved tile images from `assets/tiles/` to `assets/maps_tiled/tiles/`.
+- Generated output now includes combined files:
+  - e.g. `assets/maps_tiled/Crash_Site.json`, `assets/maps_tiled/Level_1.json`, etc.
+  - manifest still has 27 logical map entries but only 12 unique map files.
+- Validation:
+  - `node --check` passed: converter/runtime/main.
+  - `npm run convert:maps` passed; backup created at `assets/maps_tiled_backups/maps_tiled_20260219_235051`.
+  - Browser smoke pass against running server confirmed:
+    - Home spawn/entities load correctly from combined file.
+    - Crash Site/Level/Cliff/Castle transitions load correctly.
+    - Background parallax metadata is present and consumed.
+  - Existing audio 404s remain unrelated.
+- Bugfix after first combined-load attempt:
+  - Object-layer tile object GID decoding was incorrectly `gid-1` for combined tilesets.
+  - Fixed in `CompatTileMap.normalizeObject(...)` by resolving object GIDs against the matching tileset firstgid.
+- Additional runtime validation:
+  - Per-level load sweep (`Home`, `Level 4`, `Level 1`, `Level 2`, `Level 3`, `Crash Site`, `Cliff`, `Castle`) succeeded.
+  - Combined map fetch pattern verified (`manifest` points many logical entries to shared files).
+- Re-ran conversion after all changes:
+  - Backup: `assets/maps_tiled_backups/maps_tiled_20260219_235413`
+  - Output remains 27 logical entries over 12 combined files.
+2026-02-20
+- Text rendering bugfix: removed horizontal smear on dialog/UI text while keeping square world pixels.
+- Runtime changes:
+  - `src/pixelbox_compat.js`: replaced canvas `fillText` output path with thresholded pixel-mask rasterization (`drawPixelText`) and shared line-mask cache.
+  - `src/pixelbox_texture.js`: `print()` now delegates to runtime `drawPixelText` for consistent text rendering in offscreen textures (dialog box) and main screen.
+- Validation:
+  - Syntax checks passed: `node --check src/pixelbox_compat.js`, `node --check src/pixelbox_texture.js`.
+  - Browser verification: forced dialog via `window.say(...)` and captured `tmp/text-render-after-fix.png`; glyphs are pixel-snapped without horizontal antialias ghosting.
+- Docs updated:
+  - `docs/PixelboxRuntime.md`
+  - `docs/README.md`
+2026-02-20
+- Dialog text smear/stretch investigation (post-fix follow-up):
+  - Verified final display scaling is uniform (`scaleX=3`, `scaleY=3`, delta `0`) and canvas CSS scaling is uniform (`cssScaleX=1`, `cssScaleY=1`).
+  - Conclusion: distortion is not from post-render X/Y stretching.
+  - Measured dialog text region: `96px` interior width (from textbox margins in the 16x16 Dialog map).
+  - Measured wrapped lines from Home NPC dialog (current wrap-by-24-char): several lines exceed interior width (e.g. `117px`, `107px`, `112px`), causing overflow beyond box edge.
+  - Measured `fell` line glyphs: repeated `l` glyphs occupy similar lit columns but have different advance cells (`4px` vs `5px`), consistent with pre-scale browser glyph metric/hinting behavior.
+- No code changes in this diagnostic pass; next fix should target text layout + glyph advance consistency, not viewport scaling.
+2026-02-20
+- Implemented dialog text overflow fix + restored antialias text drawing.
+- Code changes:
+  - `src/textbox.js`
+    - Replaced fixed char-count wrapping with measured pixel-width wrapping (`wrapToPixelWidth`) using `8px monospace` metrics.
+    - Added long-word splitting for over-width tokens.
+    - Added strict `getTextWidthLimit()` based on Dialog map interior width with 1px safety margin.
+  - `src/pixelbox_compat.js`
+    - Restored runtime `print()` to canvas `fillText` antialiased draw path.
+    - Removed previous thresholded mask-raster text path from active rendering.
+  - `src/pixelbox_texture.js`
+    - Restored texture `print()` to canvas `fillText` antialiased draw path.
+- Validation:
+  - Syntax checks passed:
+    - `node --check src/textbox.js`
+    - `node --check src/pixelbox_compat.js`
+    - `node --check src/pixelbox_texture.js`
+  - Browser verification screenshot with cache-disabled reload:
+    - `tmp/text-wrap-antialias-fix-cache-disabled.png`
+  - Wrapped sample lines now measure under dialog width cap (`maxWidth=95`, sample lines `82px`, overflow `0`).
+- Note:
+  - Browser module cache can keep old module instances; forced cache-disabled reload in Playwright was required to validate new `textbox.js` behavior.
+2026-02-21
+- Bitmap-font runtime migration for `print()` and dialog rendering.
+- Code changes:
+  - Added `src/minitext_bitmap_font.js` with the legacy packed mini font glyph data (3x5 glyphs in 4x6 cells).
+  - `src/pixelbox_compat.js`
+    - Replaced canvas `fillText` drawing path with bitmap atlas rendering (`drawBitmapTextToContext`).
+    - Added runtime bitmap width measurement (`measureBitmapTextWidth`) for layout parity.
+    - Restored functional `setCharset(...)` support (sprite/image/texture input) with fail-loud validation.
+    - Fixed `setCharset(...)` source-rectangle handling so sprite-subrect charsets use `x/y/w/h` bounds (not whole-image dimensions).
+  - `src/pixelbox_texture.js`
+    - `print()` now delegates to runtime bitmap text renderer (shared with main screen path).
+  - `src/textbox.js`
+    - Text wrapping now measures via runtime bitmap metrics instead of browser `measureText`.
+- Validation:
+  - Syntax checks passed:
+    - `node --check src/minitext_bitmap_font.js`
+    - `node --check src/pixelbox_compat.js`
+    - `node --check src/pixelbox_texture.js`
+    - `node --check src/textbox.js`
+  - Live browser verification with local server on `0.0.0.0:4173`:
+    - Triggered dialog via `window.say(...)`.
+    - Captured screenshot: `tmp/bitmap-font-check.png` (fixed-width bitmap text, no horizontal smear/stretch).
+    - Re-verified after charset-rect fix: `tmp/bitmap-font-check-2.png`.
+- Docs updated:
+  - `docs/PixelboxRuntime.md`
+  - `docs/README.md`
+2026-02-21
+- Editable font-data refactor in `src/minitext_bitmap_font.js`.
+- Replaced packed `GLYPH_BITS` integers with an editable `FONT_ATLAS_ROWS` grid (`#` = lit pixel, `.` = transparent).
+- Kept glyph metrics and rendering output path unchanged (`16x6` glyph grid, `4x6` cells).
+- Validation:
+  - `node --check src/minitext_bitmap_font.js`
+  - Atlas shape check script confirms `36` rows at `64` columns.
+- Docs updated:
+  - `docs/PixelboxRuntime.md` notes default charset edit location/format.
+2026-02-21
+- Added PNG charset support while retaining code atlas fallback.
+- Added generated editable font asset:
+  - `assets/fonts/minitext.png` (`64x36`, `16x6` glyph grid, `4x6` cells)
+- Runtime updates (`src/pixelbox_compat.js`):
+  - Preloads `fonts/minitext`.
+  - Exposes `assets.fonts.minitext`.
+  - Sets default charset from PNG via `setCharset(this.assets.fonts.minitext)`.
+  - Keeps `setCharset(null)` behavior to restore built-in code atlas fallback.
+- Docs updated:
+  - `docs/PixelboxRuntime.md`
+  - `docs/developer_overview.md`

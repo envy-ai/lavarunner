@@ -40,14 +40,18 @@ export default class WeaponGoodie extends Goodie {
     this.states[state.stand]['anim'][0] = s;
   }
 
-  init(x, y) {
-    super.init(x, y);
-    try {
-      this.setSprite(this.metadata.sprite);
-      this.weapon = this.metadata.weapon;
-    } catch(e) {
-      console.log(`No metadata for weapon at ${this.tx},${this.ty}`);
+  init(x, y, metadata = null) {
+    super.init(x, y, metadata);
+
+    if (!Number.isInteger(this.metadata.sprite)) {
+      throw new Error(`Weapon at ${this.tx},${this.ty} on "${map._name}" is missing integer metadata.sprite.`);
     }
+    if (typeof this.metadata.weapon !== 'string' || this.metadata.weapon.length === 0) {
+      throw new Error(`Weapon at ${this.tx},${this.ty} on "${map._name}" is missing metadata.weapon.`);
+    }
+
+    this.setSprite(this.metadata.sprite);
+    this.weapon = this.metadata.weapon;
     this.y--;
   }
 

@@ -58,19 +58,6 @@
       ]
     }
   },
-  "Test/main": {
-    "11,14": {
-      "sprite": 129,
-      "dialog": [ 
-        {
-          "condition": "true",
-          "pre_eval": "console.log('pre_eval');",
-          "text": "Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...",
-          "post_eval": "console.log('Hello, world!');"
-        }
-      ]
-    }
-  },
   "Cliff/main": {
     "51,22": {
       "sprite": 134,

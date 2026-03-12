@@ -33,7 +33,7 @@ export default class Entity {
     this.ignoreEdges = false;
   }
 
-  init(x, y) {
+  init(x, y, metadata = null) {
     //console.log(['init ' + this.constructor.name, x, y]);
     this.startX = x;
     this.startY = y;
@@ -45,13 +45,19 @@ export default class Entity {
     var tx = Math.floor(this.startX / tileSize);
     var ty = Math.floor(this.startY / tileSize);
 
-    // Load metadata for this entity, if it exists.
-    try {
-      this.metadata = assets.data.mapdata[map._name]['entities'][tx.toString()+','+ty.toString()];
-      console.log(['loaded metadata', this.metadata]);
-    } catch(error) {
+    if (metadata === null || metadata === undefined) {
       this.metadata = {};
+      return;
     }
+
+    if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+      throw new Error(
+        `${this.entityName} at (${tx}, ${ty}) on "${map._name}" received invalid metadata. ` +
+        'Expected an object.',
+      );
+    }
+
+    this.metadata = metadata;
   }
 
   get tx() {
@@ -504,4 +510,3 @@ export default class Entity {
   }
 
 }
-

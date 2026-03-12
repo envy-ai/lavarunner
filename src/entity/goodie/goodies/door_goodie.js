@@ -64,9 +64,15 @@ export default class DoorGoodie extends Goodie {
       sfx('unlock');
     } else if(this.state == state.open && this.collidingWith(player) 
         && input.pressed.up && player.onGround() && !player.freeze) {
+      if (typeof this.metadata.map !== 'string' || this.metadata.map.length === 0) {
+        throw new Error(`Door at ${this.tx},${this.ty} on "${map._name}" is missing metadata.map.`);
+      }
       sfx('steps');
 
       if(this.metadata.x !== undefined) {
+        if (!Number.isInteger(this.metadata.x) || !Number.isInteger(this.metadata.y)) {
+          throw new Error(`Door at ${this.tx},${this.ty} on "${map._name}" has invalid metadata.x/y.`);
+        }
         loadMap(this.metadata.map, this.metadata.x, this.metadata.y);
       } else {
         loadMap(this.metadata.map);

@@ -58,8 +58,8 @@ export default class BeeEnemy extends Enemy {
     this.knockbackTimer = this.knockbackDuration;
   }
 
-  init(x, y) {
-    super.init(x, y);    
+  init(x, y, metadata = null) {
+    super.init(x, y, metadata);    
     this.ym = -1;
     this.xm = -0.6;
   }

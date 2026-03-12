@@ -152,6 +152,65 @@ window.scriptTypes = {
   34: ExitScript,
 }
 
+const ENTITY_JSON_PROPERTIES = new Set([
+  'contents',
+  'dialog',
+]);
+
+function parseEntityObjectMetadata(mapName, entityObject) {
+  const source = entityObject.properties || {};
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+    throw new Error(
+      `Entity object ${entityObject.id} on "${mapName}" has invalid metadata. ` +
+      'Expected an object.',
+    );
+  }
+
+  const metadata = {};
+  for (const [key, value] of Object.entries(source)) {
+    if (!ENTITY_JSON_PROPERTIES.has(key)) {
+      metadata[key] = value;
+      continue;
+    }
+
+    if (typeof value === 'string') {
+      try {
+        metadata[key] = JSON.parse(value);
+      } catch (error) {
+        throw new Error(
+          `Entity object ${entityObject.id} on "${mapName}" has invalid JSON in "${key}": ${error.message}`,
+        );
+      }
+      continue;
+    }
+
+    if (Array.isArray(value) || (value && typeof value === 'object')) {
+      metadata[key] = value;
+      continue;
+    }
+
+    throw new Error(
+      `Entity object ${entityObject.id} on "${mapName}" has invalid "${key}" metadata. ` +
+      'Expected a JSON string or object/array.',
+    );
+  }
+
+  return metadata;
+}
+
+function getEntityObjectsForMap(currentMap) {
+  if (!currentMap || typeof currentMap.getObjectLayer !== 'function') {
+    throw new Error(`Map "${currentMap?._name || '<unknown>'}" does not support object layers.`);
+  }
+
+  const objects = currentMap.getObjectLayer('entities');
+  if (!Array.isArray(objects)) {
+    throw new Error(`Map "${currentMap._name}" returned an invalid entities object layer.`);
+  }
+
+  return objects.filter((entityObject) => entityObject.visible !== false);
+}
+
 window.facing = {
   left: 0,
   right: 1,
@@ -186,7 +245,7 @@ window.player = new Player();
 window.background = [];
 window.map = null;
 window.foreground = null;
-window.entityMap = null;
+window.entityObjects = [];
 
 window.loadMap = function(mapname, px = null, py = null) {
   Wipe.run(() => _loadMap(mapname, px, py));
@@ -214,7 +273,7 @@ function _loadMap(mapname, px = null, py = null) {
 
   map = getMap(mapname + "/main");
   foreground = getMap(mapname + "/fg");
-  entityMap = getMap(mapname + "/entities");
+  entityObjects = getEntityObjectsForMap(map);
 
   tiles = assets.data.tiletypes[map._tilesheetPath];
 
@@ -245,59 +304,60 @@ function _loadMap(mapname, px = null, py = null) {
   }
 
   if(bgcolor === null || bgcolor === undefined) bgcolor = 1;
-  
-  var player_tile = entityMap.find(0).pop();
+  var player_tile = null;
+  var playerMetadata = {};
 
-  for(var e in enemyTypes) {
-    var enemyType = enemyTypes[e];
-    //console.log("Adding enemies to map: " + enemyType.name);
-    var enemy_tiles = entityMap.find(parseInt(e));
-    //console.log(['find', e]);
-    //console.log(['tiles', enemy_tiles]);
-    for(var t of enemy_tiles) {
-      console.log([enemyType.name, t.x, t.y]);
-      //entityMap.remove(t.x, t.y)
-      var enemy = new enemyType(parseInt(e));
-      enemy.init(t.x * tileSize, t.y * tileSize);
+  for(var entityObject of entityObjects) {
+    if(!Number.isInteger(entityObject.sprite) || entityObject.sprite < 0) {
+      throw new Error(
+        `Entity object ${entityObject.id} on "${map._name}" is missing a valid tile sprite placement.`,
+      );
+    }
+
+    var metadata = parseEntityObjectMetadata(map._name, entityObject);
+    var spriteId = entityObject.sprite;
+
+    if(spriteId === 0) {
+      if(player_tile !== null) {
+        throw new Error(`Map "${map._name}" has multiple player spawn entities (sprite 0).`);
+      }
+      player_tile = entityObject;
+      playerMetadata = metadata;
+      continue;
+    }
+
+    if(enemyTypes[spriteId] !== undefined) {
+      var EnemyType = enemyTypes[spriteId];
+      var enemy = new EnemyType(spriteId);
+      enemy.init(entityObject.x, entityObject.y, metadata);
       enemyQueue.push(enemy);
+      continue;
     }
-  }
 
-  for(var e in goodieTypes) {
-    var goodieType = goodieTypes[e];
-    //console.log("Adding enemies to map: " + goodieType.name);
-    var goodie_tiles = entityMap.find(parseInt(e));
-    //console.log(['find', e]);
-    //console.log(['tiles', goodie_tiles]);
-    for(var t of goodie_tiles) {
-      console.log([goodieType.name, t.x, t.y]);
-      //entityMap.remove(t.x, t.y)
-      var goodie = new goodieType(parseInt(e));
-      goodie.init(t.x * tileSize, t.y * tileSize);
+    if(goodieTypes[spriteId] !== undefined) {
+      var GoodieType = goodieTypes[spriteId];
+      var goodie = new GoodieType(spriteId);
+      goodie.init(entityObject.x, entityObject.y, metadata);
       goodieQueue.push(goodie);
+      continue;
     }
-  }
 
-  for(var e in scriptTypes) {
-    var scriptType = scriptTypes[e];
-    //console.log("Adding scripts to map: " + scriptType.name);
-    var script_tiles = entityMap.find(parseInt(e));
-    //console.log(['find', e]);
-    //console.log(['tiles', script_tiles]);
-    for(var t of script_tiles) {
-      console.log([scriptType.name, t.x, t.y]);
-      //entityMap.remove(t.x, t.y)
-      var script = new scriptType(parseInt(e));
-      script.init(t.x * tileSize, t.y * tileSize);
+    if(scriptTypes[spriteId] !== undefined) {
+      var ScriptType = scriptTypes[spriteId];
+      var script = new ScriptType(spriteId);
+      script.init(entityObject.x, entityObject.y, metadata);
       scriptQueue.push(script);
     }
   }
 
-  //entityMap.remove(player_tile.x, player_tile.y)
+  if(player_tile === null) {
+    throw new Error(`Map "${map._name}" is missing a player spawn entity (sprite 0) in layer "entities".`);
+  }
+
   if(px !== null && py !== null) {
     player.init(px * tileSize, py * tileSize);
   } else {
-    player.init(player_tile.x * tileSize, player_tile.y * tileSize);
+    player.init(player_tile.x, player_tile.y, playerMetadata);
   }
   //player.showBbox = true;
   
@@ -467,18 +527,24 @@ export function update() {
 
   for(let b of background) {
     if(b) {
-      b.draw(
-        -camera.x * (b.width - htiles) / (map.width - htiles), 
-        -camera.y * (b.height - vtiles) / (map.height - vtiles)
-      );
-    }
+      const parallaxX = Number.isFinite(b._parallaxX)
+        ? b._parallaxX
+        : ((map.width - htiles) > 0 ? (b.width - htiles) / (map.width - htiles) : 1);
+      const parallaxY = Number.isFinite(b._parallaxY)
+        ? b._parallaxY
+        : ((map.height - vtiles) > 0 ? (b.height - vtiles) / (map.height - vtiles) : 1);
+      const bgOffsetX = -camera.x * parallaxX;
+      const bgOffsetY = -camera.y * parallaxY;
 
-    if(atlasQueue[b._name] !== undefined) {
-      for(var e of atlasQueue[b._name]) {
-        e.draw(
-          -camera.x * (b.width - htiles) / (map.width - htiles), 
-          -camera.y * (b.height - vtiles) / (map.height - vtiles)
-        );
+      b.draw(
+        bgOffsetX,
+        bgOffsetY,
+      );
+
+      if(atlasQueue[b._name] !== undefined) {
+        for(var e of atlasQueue[b._name]) {
+          e.draw(bgOffsetX, bgOffsetY);
+        }
       }
     }
   }

@@ -131,8 +131,8 @@ export default class Player extends Entity {
     }
   }
 
-  init(x, y) {
-    super.init(x, y);
+  init(x, y, metadata = null) {
+    super.init(x, y, metadata);
     //this.addItem("Double Jump Ring", 1);
   }
 

@@ -1,0 +1,196 @@
+{
+  "_type": "tiled-map-manifest",
+  "tilewidth": 8,
+  "tileheight": 8,
+  "maps": [
+    {
+      "name": "Level 1/main",
+      "file": "Level_1__main.json",
+      "sheet": "tiles/cave/tiles",
+      "width": 16,
+      "height": 128
+    },
+    {
+      "name": "Level 2/main",
+      "file": "Level_2__main.json",
+      "sheet": "tiles/cave/tiles",
+      "width": 64,
+      "height": 30
+    },
+    {
+      "name": "Level 3/main",
+      "file": "Level_3__main.json",
+      "sheet": "tiles/cave/tiles",
+      "width": 64,
+      "height": 24
+    },
+    {
+      "name": "Level 4/main",
+      "file": "Level_4__main.json",
+      "sheet": "tiles/outdoor/tiles",
+      "width": 48,
+      "height": 36
+    },
+    {
+      "name": "Level 1/fg",
+      "file": "Level_1__fg.json",
+      "sheet": "tiles/cave/foreground",
+      "width": 16,
+      "height": 128
+    },
+    {
+      "name": "Level 1/bg.0",
+      "file": "Level_1__bg.0.json",
+      "sheet": "tiles/cave/background",
+      "width": 16,
+      "height": 32
+    },
+    {
+      "name": "Test/main",
+      "file": "Test__main.json",
+      "sheet": "tiles/cave/tiles",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Test 2/main",
+      "file": "Test_2__main.json",
+      "sheet": "tiles/cave/tiles",
+      "width": 64,
+      "height": 16
+    },
+    {
+      "name": "Test 2/fg",
+      "file": "Test_2__fg.json",
+      "sheet": "tiles/cave/foreground",
+      "width": 64,
+      "height": 16
+    },
+    {
+      "name": "Level 4/bg.1",
+      "file": "Level_4__bg.1.json",
+      "sheet": "tiles/outdoor/background",
+      "width": 48,
+      "height": 36
+    },
+    {
+      "name": "Dialog",
+      "file": "Dialog.json",
+      "sheet": "boxes",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Home/main",
+      "file": "Home__main.json",
+      "sheet": "tiles/outdoor/tiles",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Home/bg.2",
+      "file": "Home__bg.2.json",
+      "sheet": "tiles/outdoor/background",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Crash Site/main",
+      "file": "Crash_Site__main.json",
+      "sheet": "tiles/outdoor/tiles",
+      "width": 32,
+      "height": 16
+    },
+    {
+      "name": "Crash Site/bg.0",
+      "file": "Crash_Site__bg.0.json",
+      "sheet": "tiles/outdoor/background",
+      "width": 28,
+      "height": 16
+    },
+    {
+      "name": "Home/bg.0",
+      "file": "Home__bg.0.json",
+      "sheet": "",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Home/bg.1",
+      "file": "Home__bg.1.json",
+      "sheet": "",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Crash Site/bg.1",
+      "file": "Crash_Site__bg.1.json",
+      "sheet": "",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Level 1/bg.1",
+      "file": "Level_1__bg.1.json",
+      "sheet": "",
+      "width": 16,
+      "height": 32
+    },
+    {
+      "name": "Level 2/bg.0",
+      "file": "Level_2__bg.0.json",
+      "sheet": "",
+      "width": 30,
+      "height": 20
+    },
+    {
+      "name": "Cliff/main",
+      "file": "Cliff__main.json",
+      "sheet": "tiles/cave/tiles",
+      "width": 60,
+      "height": 30
+    },
+    {
+      "name": "Cliff/bg.0",
+      "file": "Cliff__bg.0.json",
+      "sheet": "",
+      "width": 30,
+      "height": 20
+    },
+    {
+      "name": "Castle/main",
+      "file": "Castle__main.json",
+      "sheet": "tiles/outdoor/tiles",
+      "width": 40,
+      "height": 60
+    },
+    {
+      "name": "Castle/bg.0",
+      "file": "Castle__bg.0.json",
+      "sheet": "tiles/outdoor/tiles",
+      "width": 40,
+      "height": 60
+    },
+    {
+      "name": "Level 4/bg.0",
+      "file": "Level_4__bg.0.json",
+      "sheet": "",
+      "width": 30,
+      "height": 20
+    },
+    {
+      "name": "Ending/main",
+      "file": "Ending__main.json",
+      "sheet": "tiles/outdoor/tiles",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Ending/fg",
+      "file": "Ending__fg.json",
+      "sheet": "",
+      "width": 16,
+      "height": 16
+    }
+  ]
+}

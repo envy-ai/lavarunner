@@ -36,22 +36,30 @@ export default class NpcGoodie extends Goodie {
     };
   }
 
-  init(x, y) {
-    super.init(x, y);
-    var tx = Math.floor(this.startX / tileSize);
-    var ty = Math.floor(this.startY / tileSize);
+  init(x, y, metadata = null) {
+    super.init(x, y, metadata);
 
-    try {
-      this.data = assets.data.npcs[map._name][tx.toString()+','+ty.toString()];
-      this.setSprite(this.data.sprite);
-
-      console.log(['loaded npc data', this.data]);
-    } catch(error) {
-      console.log(error);
-      console.log(assets.data.npcs);
-      console.log(`No data for NPC at (${tx}, ${ty}) on ${map._name}`);
+    if (!Number.isInteger(this.metadata.sprite)) {
+      throw new Error(`Npc at ${this.tx},${this.ty} on "${map._name}" is missing integer metadata.sprite.`);
+    }
+    if (!Array.isArray(this.metadata.dialog)) {
+      throw new Error(`Npc at ${this.tx},${this.ty} on "${map._name}" is missing array metadata.dialog.`);
     }
 
+    this.data = {
+      sprite: this.metadata.sprite,
+      dialog: this.metadata.dialog,
+    };
+    this.setSprite(this.data.sprite);
+
+    for (let i = 0; i < this.data.dialog.length; i += 1) {
+      const entry = this.data.dialog[i];
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+        throw new Error(
+          `Npc at ${this.tx},${this.ty} on "${map._name}" has invalid dialog entry at index ${i}.`,
+        );
+      }
+    }
   }
 
   setSprite(s) {

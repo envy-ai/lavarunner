@@ -59,10 +59,7 @@ export default class PixelboxTexture {
 
   print(text, x, y) {
     const runtime = getRuntime();
-    this.ctx.fillStyle = runtime.resolveColor(this.penColor);
-    this.ctx.font = '8px monospace';
-    this.ctx.textBaseline = 'top';
-    this.ctx.fillText(String(text), Math.round(x), Math.round(y));
+    runtime.drawBitmapTextToContext(this.ctx, text, x, y, this.penColor);
     return this;
   }
 
