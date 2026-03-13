@@ -276,23 +276,14 @@ function _loadMap(mapname, px = null, py = null) {
   entityObjects = getEntityObjectsForMap(map);
 
   tiles = assets.data.tiletypes[map._tilesheetPath];
-
-  try {
-    bgcolor = assets.data.mapdata[map._name]['bgcolor'];
-  } catch(error) {
-    bgcolor = 1;
-  }
+  bgcolor = Number.isInteger(map._bgcolor) ? map._bgcolor : 1;
 
   var atlas;
 
   for(let m of background.concat([map, foreground])) {
     if(m !== undefined && m._name !== undefined) {
       atlasQueue[m._name] = [];
-      try {
-        atlas = assets.data.mapdata[m._name]['atlas'];
-      } catch(error) {
-        atlas = [];
-      }
+      atlas = Array.isArray(m._atlas) ? m._atlas : [];
     
       if(atlas !== undefined) {
         for(let a of atlas) {

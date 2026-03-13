@@ -1,11 +1,11 @@
 # Entity Placement
 
-Gameplay entities are authored in Tiled inside each `"<region>/main"` map file on an object layer named `entities`.
+Gameplay entities are authored in LDtk on an entity layer named `entities`.
 
 ## Placement Rules
 
-- Use **tile objects** on the `entities` object layer.
-- The placed tile's sprite index determines which runtime class is spawned.
+- Each LDtk entity instance must provide `CompatSpriteId`.
+- `CompatSpriteId` determines which runtime class is spawned.
 - `sprite 0` is the player spawn and must appear exactly once per playable map.
 
 ## Sprite-to-Entity Mapping
@@ -29,9 +29,9 @@ Gameplay entities are authored in Tiled inside each `"<region>/main"` map file o
 - Scripts:
   - `34` -> `ExitScript`
 
-## Object Properties (Metadata)
+## Entity Fields (Metadata)
 
-Properties are read from each placed object and provided as `entity.metadata`.
+LDtk field instances are normalized back into `entity.metadata`.
 
 - `DoorGoodie` and `ExitScript`:
   - `map` (`string`, required)
@@ -57,9 +57,9 @@ Properties are read from each placed object and provided as `entity.metadata`.
 
 ## Converter Migration
 
-`scripts/convert_maps_to_tiled.mjs` migrates legacy metadata from:
+`scripts/convert_maps_to_ldtk.mjs` migrates legacy metadata from:
 
 - `assets/data/mapdata.json` (`entities` blocks)
 - `assets/data/npcs.json`
 
-into Tiled object properties on each generated `entities` layer.
+into LDtk field instances on each generated `entities` layer.

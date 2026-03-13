@@ -47,6 +47,8 @@ class CompatTileMap {
     this._isTileMap = true;
     this._name = '';
     this._tilesheetPath = '';
+    this._bgcolor = null;
+    this._atlas = [];
     this.tilesheet = null;
     this._parallaxX = 1;
     this._parallaxY = 1;
@@ -63,6 +65,8 @@ class CompatTileMap {
     this.height = height;
     this._sourceWidth = width;
     this._sourceHeight = height;
+    this._bgcolor = null;
+    this._atlas = [];
     this.items = [];
     this.objectLayers = {};
 
@@ -426,6 +430,207 @@ class CompatTileMap {
 
     return this;
   }
+
+  parseFieldInstances(context, fieldInstances) {
+    if (!Array.isArray(fieldInstances)) {
+      return {};
+    }
+
+    const parsed = {};
+    for (const field of fieldInstances) {
+      if (!field || typeof field !== 'object') {
+        throw new Error(`${context} has an invalid LDtk field instance.`);
+      }
+
+      const key = typeof field.__identifier === 'string' && field.__identifier.length > 0
+        ? field.__identifier
+        : field.identifier;
+      if (typeof key !== 'string' || key.length === 0) {
+        throw new Error(`${context} has an LDtk field instance without a valid identifier.`);
+      }
+
+      const value = Object.prototype.hasOwnProperty.call(field, '__value')
+        ? field.__value
+        : field.value;
+      parsed[key] = value;
+    }
+
+    return parsed;
+  }
+
+  cloneSharedObjectLayers(sharedObjectLayers) {
+    if (!sharedObjectLayers || typeof sharedObjectLayers !== 'object') {
+      return {};
+    }
+
+    const cloned = {};
+    for (const [layerName, objects] of Object.entries(sharedObjectLayers)) {
+      if (!Array.isArray(objects)) {
+        throw new Error(`Map "${this._name || '<unnamed>'}" has an invalid shared object layer "${layerName}".`);
+      }
+
+      cloned[layerName] = objects.map((object) => ({
+        ...object,
+        properties: object && object.properties && typeof object.properties === 'object'
+          ? { ...object.properties }
+          : {},
+      }));
+    }
+    return cloned;
+  }
+
+  normalizeAtlasMetadata(mapName, atlas) {
+    if (atlas === undefined) {
+      return [];
+    }
+    if (!Array.isArray(atlas)) {
+      throw new Error(`LDtk map "${mapName}" atlas metadata must be an array.`);
+    }
+
+    return atlas.map((entry, index) => {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+        throw new Error(`LDtk map "${mapName}" atlas entry ${index} must be an object.`);
+      }
+
+      const sprite = entry.sprite;
+      const x = entry.x;
+      const y = entry.y;
+      if (typeof sprite !== 'string' || sprite.length === 0) {
+        throw new Error(`LDtk map "${mapName}" atlas entry ${index} is missing a valid sprite.`);
+      }
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        throw new Error(`LDtk map "${mapName}" atlas entry ${index} must provide finite x/y coordinates.`);
+      }
+
+      return { sprite, x, y };
+    });
+  }
+
+  normalizeLdtkEntity(layer, entity, entityCompatMeta = null) {
+    if (!entity || typeof entity !== 'object') {
+      throw new Error(`LDtk layer "${layer.__identifier || '<unnamed>'}" has an invalid entity instance.`);
+    }
+
+    const entityId = typeof entity.iid === 'string' ? entity.iid : '<unknown>';
+    const fieldContext = `LDtk layer "${layer.__identifier || '<unnamed>'}" entity ${entityId}`;
+    const fields = this.parseFieldInstances(fieldContext, entity.fieldInstances);
+    if ((!Number.isInteger(fields.CompatSpriteId) || fields.CompatSpriteId < 0) && entityCompatMeta) {
+      if (Number.isInteger(entityCompatMeta.sprite) && entityCompatMeta.sprite >= 0) {
+        fields.CompatSpriteId = entityCompatMeta.sprite;
+      }
+
+      if (entityCompatMeta.properties && typeof entityCompatMeta.properties === 'object') {
+        for (const [key, value] of Object.entries(entityCompatMeta.properties)) {
+          if ((fields[key] === null || fields[key] === undefined) && value !== undefined) {
+            fields[key] = value;
+          }
+        }
+      }
+    }
+
+    const spriteField = fields.CompatSpriteId;
+    if (!Number.isInteger(spriteField) || spriteField < 0) {
+      throw new Error(`${fieldContext} is missing a valid CompatSpriteId field.`);
+    }
+
+    const px = Array.isArray(entity.px) ? entity.px : null;
+    const x = px ? px[0] : entity.x;
+    const y = px ? px[1] : entity.y;
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      throw new Error(`${fieldContext} has invalid x/y coordinates.`);
+    }
+
+    const tx = Array.isArray(entity.__grid) && Number.isInteger(entity.__grid[0])
+      ? entity.__grid[0]
+      : Math.floor(x / TILE_SIZE);
+    const ty = Array.isArray(entity.__grid) && Number.isInteger(entity.__grid[1])
+      ? entity.__grid[1]
+      : Math.floor(y / TILE_SIZE);
+
+    const properties = {};
+    for (const [key, value] of Object.entries(fields)) {
+      if (key === 'CompatSpriteId' || value === null || value === undefined) {
+        continue;
+      }
+      properties[key] = value;
+    }
+
+    return {
+      id: entityId,
+      name: typeof entity.__identifier === 'string' ? entity.__identifier : '',
+      type: typeof entity.__identifier === 'string' ? entity.__identifier : '',
+      className: typeof entity.__identifier === 'string' ? entity.__identifier : '',
+      layer: layer.__identifier,
+      x,
+      y,
+      tx,
+      ty,
+      width: Number.isFinite(entity.width) ? entity.width : TILE_SIZE,
+      height: Number.isFinite(entity.height) ? entity.height : TILE_SIZE,
+      rotation: 0,
+      visible: entity.visible !== false,
+      sprite: spriteField,
+      flipH: false,
+      flipV: false,
+      flipR: false,
+      properties,
+    };
+  }
+
+  loadFromLdtk(mapMeta, layerInstance, sharedObjectLayers) {
+    if (!mapMeta || typeof mapMeta !== 'object') {
+      throw new Error('LDtk compat map metadata is missing or invalid.');
+    }
+    if (!layerInstance || typeof layerInstance !== 'object') {
+      throw new Error(`LDtk compat map "${mapMeta.name || '<unnamed>'}" is missing its layer instance.`);
+    }
+
+    const width = layerInstance.__cWid;
+    const height = layerInstance.__cHei;
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) {
+      throw new Error(`LDtk compat map "${mapMeta.name || '<unnamed>'}" has invalid dimensions.`);
+    }
+
+    this._init(width, height);
+    this._name = mapMeta.name || '';
+    this._tilesheetPath = mapMeta.sheet || '';
+    this._sourceWidth = Number.isInteger(mapMeta.sourceWidth) ? mapMeta.sourceWidth : width;
+    this._sourceHeight = Number.isInteger(mapMeta.sourceHeight) ? mapMeta.sourceHeight : height;
+    this._parallaxX = Number.isFinite(mapMeta.parallaxx) ? mapMeta.parallaxx : 1;
+    this._parallaxY = Number.isFinite(mapMeta.parallaxy) ? mapMeta.parallaxy : 1;
+    this._bgcolor = Number.isInteger(mapMeta.bgcolor) ? mapMeta.bgcolor : null;
+    this._atlas = this.normalizeAtlasMetadata(this._name, mapMeta.atlas);
+    this.tilesheet = this.runtime.resolveTilesheet(this._tilesheetPath);
+
+    const gridTiles = Array.isArray(layerInstance.gridTiles) ? layerInstance.gridTiles : [];
+    for (const tile of gridTiles) {
+      if (!tile || typeof tile !== 'object') {
+        throw new Error(`LDtk compat map "${this._name}" has an invalid tile entry.`);
+      }
+      if (!Number.isInteger(tile.t) || tile.t < 0) {
+        throw new Error(`LDtk compat map "${this._name}" has an invalid sprite index in gridTiles.`);
+      }
+      if (!Array.isArray(tile.px) || tile.px.length !== 2 || !Number.isFinite(tile.px[0]) || !Number.isFinite(tile.px[1])) {
+        throw new Error(`LDtk compat map "${this._name}" has a tile without valid px coordinates.`);
+      }
+
+      const x = tile.px[0] / TILE_SIZE;
+      const y = tile.px[1] / TILE_SIZE;
+      if (!Number.isInteger(x) || !Number.isInteger(y)) {
+        throw new Error(`LDtk compat map "${this._name}" has tile coordinates not aligned to the ${TILE_SIZE}px grid.`);
+      }
+
+      const flipFlags = Number.isInteger(tile.f) ? tile.f : 0;
+      if ((flipFlags & ~3) !== 0) {
+        throw new Error(`LDtk compat map "${this._name}" uses unsupported tile flip flags (${flipFlags}).`);
+      }
+
+      this.set(x, y, tile.t, (flipFlags & 1) !== 0, (flipFlags & 2) !== 0, false, false, false);
+    }
+
+    this.objectLayers = this.cloneSharedObjectLayers(sharedObjectLayers);
+    return this;
+  }
 }
 
 class PixelboxRuntime {
@@ -452,6 +657,7 @@ class PixelboxRuntime {
     this.mapsByName = {};
     this.mapsList = [];
     this.tilesheets = {};
+    this.ldtkCompatMeta = null;
     this.mainModule = null;
     this.fatalError = null;
     this.audioManifest = { bgm: {}, sfx: {} };
@@ -508,8 +714,6 @@ class PixelboxRuntime {
       load.image(key, path);
     }
 
-    load.json('data/mapdata', 'assets/data/mapdata.json');
-    load.json('data/npcs', 'assets/data/npcs.json');
     load.json('data/particles', 'assets/data/particles.json');
     load.json('data/tiletypes', 'assets/data/tiletypes.json');
     load.json('data/weapons', 'assets/data/weapons.json');
@@ -644,8 +848,6 @@ class PixelboxRuntime {
         minitext: miniTextFont,
       },
       data: {
-        mapdata: data.get('data/mapdata'),
-        npcs: data.get('data/npcs'),
         particles: data.get('data/particles'),
         tiletypes: data.get('data/tiletypes'),
         weapons: data.get('data/weapons'),
@@ -706,75 +908,227 @@ class PixelboxRuntime {
     this.setCharset(this.assets.fonts.minitext);
   }
 
-  async initializeMaps() {
-    const manifestUrl = new URL('../assets/maps_tiled/manifest.json', import.meta.url);
+  parseLdtkFieldInstances(context, fieldInstances) {
+    if (!Array.isArray(fieldInstances)) {
+      return {};
+    }
 
-    let manifest;
+    const parsed = {};
+    for (const field of fieldInstances) {
+      if (!field || typeof field !== 'object') {
+        throw new Error(`${context} has an invalid LDtk field instance.`);
+      }
+
+      const key = typeof field.__identifier === 'string' && field.__identifier.length > 0
+        ? field.__identifier
+        : field.identifier;
+      if (typeof key !== 'string' || key.length === 0) {
+        throw new Error(`${context} has an LDtk field instance without a valid identifier.`);
+      }
+
+      const value = Object.prototype.hasOwnProperty.call(field, '__value')
+        ? field.__value
+        : field.value;
+      parsed[key] = value;
+    }
+
+    return parsed;
+  }
+
+  parseCompatMapsField(level, levelCompatMeta = null) {
+    const context = `LDtk level "${level?.identifier || '<unnamed>'}"`;
+    if (levelCompatMeta && Array.isArray(levelCompatMeta.compatMaps)) {
+      return levelCompatMeta.compatMaps;
+    }
+
+    const fields = this.parseLdtkFieldInstances(context, level?.fieldInstances);
+    const raw = fields.CompatMapsJson;
+    if (typeof raw !== 'string' || raw.length === 0) {
+      throw new Error(`${context} is missing the CompatMapsJson level field.`);
+    }
+
+    let parsed;
     try {
-      const response = await fetch(manifestUrl);
+      parsed = JSON.parse(raw);
+    } catch (error) {
+      throw new Error(`${context} has invalid CompatMapsJson: ${error.message}`);
+    }
+
+    if (!Array.isArray(parsed)) {
+      throw new Error(`${context} CompatMapsJson must decode to an array.`);
+    }
+
+    const seenLayerIds = new Set();
+    for (const mapMeta of parsed) {
+      if (!mapMeta || typeof mapMeta !== 'object') {
+        throw new Error(`${context} CompatMapsJson contains an invalid map entry.`);
+      }
+      if (typeof mapMeta.layerId !== 'string' || mapMeta.layerId.length === 0) {
+        throw new Error(`${context} CompatMapsJson has an entry without a valid layerId.`);
+      }
+      if (seenLayerIds.has(mapMeta.layerId)) {
+        throw new Error(`${context} CompatMapsJson has duplicate layerId "${mapMeta.layerId}".`);
+      }
+      seenLayerIds.add(mapMeta.layerId);
+
+      if (typeof mapMeta.name !== 'string' || mapMeta.name.length === 0) {
+        throw new Error(`${context} CompatMapsJson has an entry without a valid map name.`);
+      }
+      if (typeof mapMeta.sheet !== 'string') {
+        throw new Error(`${context} CompatMapsJson entry "${mapMeta.name}" is missing its sheet path.`);
+      }
+    }
+
+    return parsed;
+  }
+
+  buildSharedObjectLayers(level, levelCompatMeta = null) {
+    const levelName = level?.identifier || '<unnamed>';
+    const layers = Array.isArray(level?.layerInstances) ? level.layerInstances : [];
+    const parser = new CompatTileMap(this);
+    parser._name = levelName;
+    const objectLayers = {};
+    const entitiesByIid = levelCompatMeta && levelCompatMeta.entitiesByIid && typeof levelCompatMeta.entitiesByIid === 'object'
+      ? levelCompatMeta.entitiesByIid
+      : {};
+    const entitiesByCoord = levelCompatMeta && levelCompatMeta.entitiesByCoord && typeof levelCompatMeta.entitiesByCoord === 'object'
+      ? levelCompatMeta.entitiesByCoord
+      : {};
+
+    for (const layer of layers) {
+      if (!layer || layer.__type !== 'Entities') {
+        continue;
+      }
+
+      const layerName = layer.__identifier;
+      if (typeof layerName !== 'string' || layerName.length === 0) {
+        throw new Error(`LDtk level "${levelName}" has an Entities layer without a valid identifier.`);
+      }
+      if (objectLayers[layerName]) {
+        throw new Error(`LDtk level "${levelName}" has duplicate Entities layer "${layerName}".`);
+      }
+
+      const entityInstances = Array.isArray(layer.entityInstances) ? layer.entityInstances : [];
+      objectLayers[layerName] = entityInstances.map((entity) => {
+        const entityId = entity && typeof entity.iid === 'string' ? entity.iid : null;
+        let entityCompatMeta = entityId ? entitiesByIid[entityId] || null : null;
+        if (!entityCompatMeta && entity && Array.isArray(entity.__grid)
+            && Number.isInteger(entity.__grid[0]) && Number.isInteger(entity.__grid[1])) {
+          entityCompatMeta = entitiesByCoord[`${entity.__grid[0]},${entity.__grid[1]}`] || null;
+        }
+        return parser.normalizeLdtkEntity(layer, entity, entityCompatMeta);
+      });
+    }
+
+    return objectLayers;
+  }
+
+  createMapsFromLdtkLevel(level) {
+    if (!level || typeof level !== 'object') {
+      throw new Error('Encountered invalid level entry in assets/maps.ldtk.');
+    }
+
+    const levelName = typeof level.identifier === 'string' && level.identifier.length > 0
+      ? level.identifier
+      : '<unnamed>';
+    const layerInstances = Array.isArray(level.layerInstances) ? level.layerInstances : [];
+    const layerByIdentifier = new Map();
+    for (const layer of layerInstances) {
+      if (!layer || typeof layer !== 'object') {
+        throw new Error(`LDtk level "${levelName}" has an invalid layer instance.`);
+      }
+      const layerId = layer.__identifier;
+      if (typeof layerId !== 'string' || layerId.length === 0) {
+        throw new Error(`LDtk level "${levelName}" has a layer instance without a valid identifier.`);
+      }
+      if (layerByIdentifier.has(layerId)) {
+        throw new Error(`LDtk level "${levelName}" has duplicate layer identifier "${layerId}".`);
+      }
+      layerByIdentifier.set(layerId, layer);
+    }
+
+    const levelCompatMeta = this.ldtkCompatMeta
+      && this.ldtkCompatMeta.levels
+      && typeof level.iid === 'string'
+      ? this.ldtkCompatMeta.levels[level.iid] || null
+      : null;
+    const sharedObjectLayers = this.buildSharedObjectLayers(level, levelCompatMeta);
+    const compatMaps = this.parseCompatMapsField(level, levelCompatMeta);
+    return compatMaps.map((mapMeta) => {
+      const layerInstance = layerByIdentifier.get(mapMeta.layerId);
+      if (!layerInstance) {
+        throw new Error(
+          `LDtk level "${levelName}" is missing layer "${mapMeta.layerId}" required for compat map "${mapMeta.name}".`,
+        );
+      }
+
+      return new CompatTileMap(this).loadFromLdtk(mapMeta, layerInstance, sharedObjectLayers);
+    });
+  }
+
+  async loadOptionalJson(url, description) {
+    try {
+      const response = await fetch(url);
+      if (response.status === 404) {
+        return null;
+      }
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
-      manifest = await response.json();
+      return await response.json();
     } catch (error) {
-      throw new Error(`Failed to load tiled map manifest (${manifestUrl.pathname}): ${error.message}`);
+      throw new Error(`Failed to load ${description} (${url.pathname}): ${error.message}`);
+    }
+  }
+
+  async initializeMaps() {
+    const ldtkUrl = new URL('../assets/maps.ldtk', import.meta.url);
+    const compatMetaUrl = new URL('../assets/maps.ldtk.meta.json', import.meta.url);
+
+    let ldtkProject;
+    try {
+      const response = await fetch(ldtkUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      ldtkProject = await response.json();
+    } catch (error) {
+      throw new Error(`Failed to load LDtk project (${ldtkUrl.pathname}): ${error.message}`);
     }
 
-    if (!manifest || manifest._type !== 'tiled-map-manifest' || !Array.isArray(manifest.maps)) {
-      throw new Error('assets/maps_tiled/manifest.json is missing or invalid.');
+    if (!ldtkProject || typeof ldtkProject !== 'object' || !Array.isArray(ldtkProject.levels)) {
+      throw new Error('assets/maps.ldtk is missing or invalid.');
     }
 
+    const compatMeta = await this.loadOptionalJson(compatMetaUrl, 'LDtk compat metadata');
+    if (compatMeta !== null) {
+      if (!compatMeta || typeof compatMeta !== 'object' || Array.isArray(compatMeta)) {
+        throw new Error('assets/maps.ldtk.meta.json is invalid.');
+      }
+      if (!compatMeta.levels || typeof compatMeta.levels !== 'object' || Array.isArray(compatMeta.levels)) {
+        throw new Error('assets/maps.ldtk.meta.json is missing its levels map.');
+      }
+    }
+
+    this.ldtkCompatMeta = compatMeta;
     this.mapsByName = {};
     this.mapsList = [];
-
-    const fileCache = new Map();
-    const loadMapFile = async (entry) => {
-      if (fileCache.has(entry.file)) {
-        return fileCache.get(entry.file);
-      }
-
-      const mapUrl = new URL(`../assets/maps_tiled/${entry.file}`, import.meta.url);
-      const tiledMapPromise = (async () => {
-        try {
-          const response = await fetch(mapUrl);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-          return await response.json();
-        } catch (error) {
-          throw new Error(`Failed to load tiled map file "${entry.file}" (${mapUrl.pathname}): ${error.message}`);
-        }
-      })();
-
-      fileCache.set(entry.file, tiledMapPromise);
-      return tiledMapPromise;
-    };
-
-    const loadedMaps = await Promise.all(
-      manifest.maps.map(async (entry) => {
-        if (!entry || typeof entry !== 'object') {
-          throw new Error('Encountered invalid map entry in tiled map manifest.');
-        }
-        if (typeof entry.name !== 'string' || entry.name.length === 0) {
-          throw new Error('Encountered map entry without a valid name in tiled map manifest.');
-        }
-        if (typeof entry.file !== 'string' || entry.file.length === 0) {
-          throw new Error(`Map entry "${entry.name}" is missing its JSON filename.`);
+    for (const level of ldtkProject.levels) {
+      const levelMaps = this.createMapsFromLdtkLevel(level);
+      for (const map of levelMaps) {
+        if (map._name && this.mapsByName[map._name]) {
+          throw new Error(`Duplicate compat map name "${map._name}" in assets/maps.ldtk.`);
         }
 
-        const tiledMap = await loadMapFile(entry);
-        return new CompatTileMap(this).loadFromTiled(entry, tiledMap);
-      }),
-    );
-
-    for (const map of loadedMaps) {
-      this.mapsList.push(map);
-      if (map._name) {
-        this.mapsByName[map._name] = map;
+        this.mapsList.push(map);
+        if (map._name) {
+          this.mapsByName[map._name] = map;
+        }
       }
     }
 
-    this.assets.maps = manifest;
+    this.assets.maps = ldtkProject;
+    this.assets.mapsCompat = compatMeta;
   }
 
   resolveTilesheet(path) {
@@ -814,6 +1168,49 @@ class PixelboxRuntime {
         return Math.floor(Math.random() * min);
       }
       return Math.floor(min + Math.random() * (max - min));
+    };
+    window.advanceTime = (ms = 1000 / 60) => {
+      const frameMs = 1000 / 60;
+      const steps = Math.max(1, Math.round(ms / frameMs));
+      for (let i = 0; i < steps; i += 1) {
+        this.step();
+      }
+    };
+    window.render_game_to_text = () => {
+      let litPixels = null;
+      if (this.screenCtx && this.screenCanvas) {
+        const image = this.screenCtx.getImageData(0, 0, this.screenCanvas.width, this.screenCanvas.height).data;
+        let count = 0;
+        for (let i = 0; i < image.length; i += 4) {
+          if (image[i] !== 0 || image[i + 1] !== 0 || image[i + 2] !== 0) {
+            count += 1;
+          }
+        }
+        litPixels = count;
+      }
+
+      return JSON.stringify({
+        note: 'origin=(0,0) top-left; x right; y down',
+        currentMap: window.map?._name || null,
+        background: Array.isArray(window.background) ? window.background.map((map) => map?._name || null) : [],
+        entityObjects: Array.isArray(window.entityObjects) ? window.entityObjects.length : null,
+        mapsLoaded: this.mapsList.length,
+        fatalError: this.fatalError ? String(this.fatalError) : null,
+        bgcolor: Number.isInteger(window.bgcolor) ? window.bgcolor : null,
+        player: window.player
+          ? {
+            x: window.player.x,
+            y: window.player.y,
+            dx: window.player.dx,
+            dy: window.player.dy,
+          }
+          : null,
+        screen: {
+          width: this.screenCanvas?.width || null,
+          height: this.screenCanvas?.height || null,
+          litPixels,
+        },
+      });
     };
 
     window.getMap = (mapRef) => this.getMap(mapRef);

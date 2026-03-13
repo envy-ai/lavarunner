@@ -6,14 +6,15 @@
 
 - Loads project images and JSON data through Phaser.
 - Builds the legacy `window.assets` structure expected by gameplay code.
-- Loads converted Tiled map data from `assets/maps_tiled/manifest.json` and combined-region JSON files.
-- Resolves manifest `tilelayer` entries into virtual per-layer `CompatTileMap` instances.
+- Loads the LDtk project from `assets/maps.ldtk`.
+- Loads optional runtime compat metadata from `assets/maps.ldtk.meta.json`.
+- Resolves LDtk level/layer metadata into virtual per-layer `CompatTileMap` instances.
 - Exposes Pixelbox-like globals:
   - drawing: `tilesheet`, `sprite`, `draw`, `cls`, `rect`, `rectf`, `pen`, `paper`, `print`
   - map access: `getMap`
   - input: `gamepad`
   - audio: `sfx`, `music`, `patatracker.playSong`, `patatracker.stop`
-  - helpers: `clamp`, `random`
+  - helpers: `clamp`, `random`, `advanceTime`, `render_game_to_text`
 - Updates input each Phaser frame and calls `update()` from `src/main.js`.
 - Loads `audio/manifest.json` and routes audio calls without aborting gameplay if files are missing.
 - Scales the 128x128 render surface with preserved aspect ratio and centered letterboxing; uses integer scale factors when viewport size is at least `1x`.
@@ -30,25 +31,46 @@
 - `get(x, y)`
 - `find(sprite, flagA, flagB)`
 - `draw(x, y)`
-- `getObjectLayer(name)` for Tiled object layers (returns normalized object entries)
+- `getObjectLayer(name)` for normalized LDtk entity layers
 - runtime lookup compatibility: `getMap(nameOrIndex)` returns `undefined` for missing maps (matching Pixelbox behavior)
 
-and preserves tile flip/flag bits from encoded map data.
+and preserves horizontal/vertical tile flip flags from encoded map data.
 
 ### Layer + Parallax Metadata
 
 Each loaded `CompatTileMap` also carries:
 
-- `_parallaxX`, `_parallaxY`: taken from Tiled layer `parallaxx` / `parallaxy`
-- `_sourceWidth`, `_sourceHeight`: original layer dimensions before converter padding
+- `_parallaxX`, `_parallaxY`: taken from preserved compat metadata (`CompatMapsJson` in the LDtk file when present,
+  otherwise `assets/maps.ldtk.meta.json`)
+- `_sourceWidth`, `_sourceHeight`: original layer dimensions before LDtk padding
+- `_bgcolor`: map background color index for `main` layers
+- `_atlas`: decorative atlas items authored for that logical layer
 
 ### Object Layer Shape
 
 `getObjectLayer(name)` returns objects with:
 
-- placement: `x`, `y`, `tx`, `ty` (`y` is normalized to top-left for tile objects)
+- placement: `x`, `y`, `tx`, `ty`
 - tile placement info: `sprite`, `flipH`, `flipV`, `flipR`
-- metadata: `properties` (name/value pairs from Tiled custom properties)
+- metadata: `properties` (name/value pairs from LDtk field instances)
+
+The runtime currently copies the LDtk `entities` layer onto every virtual map created from the same level,
+matching the old combined-map behavior where the entity object layer was visible from `main`, `bg.*`, and `fg`.
+
+### LDtk Round-Trip Metadata
+
+- LDtk saves can currently null out the hidden compatibility field payloads (`CompatMapsJson`, `CompatSpriteId`, etc.).
+- To keep gameplay loading stable after editor-only level layout changes, the runtime merges preserved metadata from
+  `assets/maps.ldtk.meta.json`.
+- Sidecar entity metadata is matched by LDtk entity `iid` first, then by entity grid coordinate as a fallback for
+  editor saves that rewrite some entity `iid` values to `0`.
+
+## Testing Hooks
+
+- `window.advanceTime(ms)` steps the runtime in fixed 60 FPS increments for automation.
+- `window.render_game_to_text()` exposes a compact JSON snapshot of map/player/render status.
+- In headless Playwright runs, the visible Phaser canvas can capture as black while the offscreen
+  `128x128` surface is populated; use `render_game_to_text()` to verify the actual game state.
 
 ## Texture Support
 

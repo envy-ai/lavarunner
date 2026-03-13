@@ -2,9 +2,10 @@
 	"name": "LavaRunner",
 	"version": "1.0.0",
 	"description": "Phaser runtime with a Pixelbox API compatibility layer",
-	"scripts": {
-		"convert:maps": "node scripts/convert_maps_to_tiled.mjs",
-		"editor:dev": "npm --prefix tools/animation-editor run dev",
+  "scripts": {
+    "convert:maps": "node scripts/convert_maps_to_ldtk.mjs",
+    "extract:ldtk-meta": "node scripts/extract_ldtk_compat_meta.mjs",
+    "editor:dev": "npm --prefix tools/animation-editor run dev",
 		"editor:build": "npm --prefix tools/animation-editor run build",
 		"editor:test": "npm --prefix tools/animation-editor run test",
 		"editor:lint": "npm --prefix tools/animation-editor run lint"

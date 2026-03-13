@@ -1,0 +1,1569 @@
+{
+  "version": 1,
+  "projectIid": "00000000-0000-4000-8000-0000000000ac",
+  "levels": {
+    "00000000-0000-4000-8000-000000000031": {
+      "identifier": "Level_1",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Level 1/bg.0",
+          "sheet": "tiles/cave/background",
+          "sourceWidth": 16,
+          "sourceHeight": 32,
+          "parallaxx": 1,
+          "parallaxy": 0.14285714285714285,
+          "atlas": []
+        },
+        {
+          "layerId": "bg_1",
+          "name": "Level 1/bg.1",
+          "sheet": "",
+          "sourceWidth": 16,
+          "sourceHeight": 32,
+          "parallaxx": 1,
+          "parallaxy": 0.14285714285714285,
+          "atlas": [
+            {
+              "sprite": "lavacave1",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "layerId": "main",
+          "name": "Level 1/main",
+          "sheet": "tiles/cave/tiles",
+          "sourceWidth": 16,
+          "sourceHeight": 128,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "fg",
+          "name": "Level 1/fg",
+          "sheet": "tiles/cave/foreground",
+          "sourceWidth": 16,
+          "sourceHeight": 128,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-000000000006": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000007": {
+          "sprite": 17,
+          "properties": {
+            "map": "Cliff",
+            "x": 55,
+            "y": 22
+          }
+        },
+        "00000000-0000-4000-8000-000000000008": {
+          "sprite": 20,
+          "properties": {
+            "sprite": 6,
+            "weapon": "Sword"
+          }
+        },
+        "00000000-0000-4000-8000-000000000009": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000000a": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000000b": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000000c": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000000d": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000000e": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000000f": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000010": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000011": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000012": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000013": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000014": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000015": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000016": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000017": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000018": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000019": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000001a": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000001b": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000001c": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000001d": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000001e": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000001f": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000020": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000021": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000022": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000023": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000024": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000025": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000026": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000027": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000028": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000029": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000002a": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000002b": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000002c": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000002d": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000002e": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000002f": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 2"
+          }
+        }
+      },
+      "entitiesByCoord": {
+        "13,3": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "15,3": {
+          "sprite": 17,
+          "properties": {
+            "map": "Cliff",
+            "x": 55,
+            "y": 22
+          }
+        },
+        "2,4": {
+          "sprite": 20,
+          "properties": {
+            "sprite": 6,
+            "weapon": "Sword"
+          }
+        },
+        "2,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "2,6": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "7,12": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "8,12": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "9,12": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "5,17": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "10,17": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "10,22": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "11,29": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "11,32": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "9,35": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "7,37": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "5,39": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "9,44": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "7,50": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "8,50": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "8,54": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "4,58": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "10,64": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "1,76": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "10,79": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "10,80": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "11,82": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "6,84": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "10,89": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "15,92": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "8,95": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "10,95": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "3,98": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "6,103": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "7,103": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "8,103": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "10,107": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "3,109": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "10,111": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "11,111": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "9,114": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "4,119": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "12,121": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 2"
+          }
+        }
+      }
+    },
+    "00000000-0000-4000-8000-000000000052": {
+      "identifier": "Level_2",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Level 2/bg.0",
+          "sheet": "",
+          "sourceWidth": 30,
+          "sourceHeight": 20,
+          "parallaxx": 0.2916666666666667,
+          "parallaxy": 0.2857142857142857,
+          "atlas": [
+            {
+              "sprite": "lavacave3",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "layerId": "main",
+          "name": "Level 2/main",
+          "sheet": "tiles/cave/tiles",
+          "sourceWidth": 64,
+          "sourceHeight": 30,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-000000000034": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000035": {
+          "sprite": 20,
+          "properties": {
+            "sprite": 11,
+            "weapon": "Grenade Launcher"
+          }
+        },
+        "00000000-0000-4000-8000-000000000036": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000037": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000038": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000039": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000003a": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000003b": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000003c": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000003d": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000003e": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000003f": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000040": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000041": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000042": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000043": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000044": {
+          "sprite": 19,
+          "properties": {
+            "contents": "{\"key\":1}",
+            "sprite": 7
+          }
+        },
+        "00000000-0000-4000-8000-000000000045": {
+          "sprite": 18,
+          "properties": {
+            "map": "Level 3"
+          }
+        },
+        "00000000-0000-4000-8000-000000000046": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000047": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000048": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000049": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000004a": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000004b": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000004c": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000004d": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000004e": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000004f": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 1",
+            "x": 12,
+            "y": 121
+          }
+        },
+        "00000000-0000-4000-8000-000000000050": {
+          "sprite": 0,
+          "properties": {}
+        }
+      },
+      "entitiesByCoord": {
+        "7,4": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "35,4": {
+          "sprite": 20,
+          "properties": {
+            "sprite": 11,
+            "weapon": "Grenade Launcher"
+          }
+        },
+        "16,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "17,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "18,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "19,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "20,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "21,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "22,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "23,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "24,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "25,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "26,5": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "17,6": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "19,6": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "23,6": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "1,7": {
+          "sprite": 19,
+          "properties": {
+            "contents": "{\"key\":1}",
+            "sprite": 7
+          }
+        },
+        "32,9": {
+          "sprite": 18,
+          "properties": {
+            "map": "Level 3"
+          }
+        },
+        "24,11": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "20,15": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "17,16": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "18,16": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "10,17": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "11,17": {
+          "sprite": 16,
+          "properties": {}
+        },
+        "8,20": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "9,20": {
+          "sprite": 114,
+          "properties": {}
+        },
+        "30,22": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "2,23": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 1",
+            "x": 12,
+            "y": 121
+          }
+        },
+        "3,23": {
+          "sprite": 0,
+          "properties": {}
+        }
+      }
+    },
+    "00000000-0000-4000-8000-000000000059": {
+      "identifier": "Level_3",
+      "compatMaps": [
+        {
+          "layerId": "main",
+          "name": "Level 3/main",
+          "sheet": "tiles/cave/tiles",
+          "sourceWidth": 64,
+          "sourceHeight": 24,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-000000000054": {
+          "sprite": 35,
+          "properties": {
+            "item": "Big Bolt",
+            "sprite": 14
+          }
+        },
+        "00000000-0000-4000-8000-000000000055": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 2",
+            "x": 32,
+            "y": 9
+          }
+        },
+        "00000000-0000-4000-8000-000000000056": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000057": {
+          "sprite": 35,
+          "properties": {
+            "item": "Double Jump Ring",
+            "sprite": 12
+          }
+        }
+      },
+      "entitiesByCoord": {
+        "50,1": {
+          "sprite": 35,
+          "properties": {
+            "item": "Big Bolt",
+            "sprite": 14
+          }
+        },
+        "6,13": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 2",
+            "x": 32,
+            "y": 9
+          }
+        },
+        "7,13": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "41,15": {
+          "sprite": 35,
+          "properties": {
+            "item": "Double Jump Ring",
+            "sprite": 12
+          }
+        }
+      }
+    },
+    "00000000-0000-4000-8000-00000000006b": {
+      "identifier": "Level_4",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Level 4/bg.0",
+          "sheet": "",
+          "sourceWidth": 30,
+          "sourceHeight": 20,
+          "parallaxx": 0.4375,
+          "parallaxy": 0.2,
+          "atlas": [
+            {
+              "sprite": "forest6",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "layerId": "bg_1",
+          "name": "Level 4/bg.1",
+          "sheet": "tiles/outdoor/background",
+          "sourceWidth": 48,
+          "sourceHeight": 36,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "main",
+          "name": "Level 4/main",
+          "sheet": "tiles/outdoor/tiles",
+          "sourceWidth": 48,
+          "sourceHeight": 36,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-00000000005d": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000005e": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000005f": {
+          "sprite": 116,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000060": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000061": {
+          "sprite": 116,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000062": {
+          "sprite": 115,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000063": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000064": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000065": {
+          "sprite": 116,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000066": {
+          "sprite": 34,
+          "properties": {
+            "map": "Castle",
+            "x": 38,
+            "y": 58
+          }
+        },
+        "00000000-0000-4000-8000-000000000067": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000068": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000069": {
+          "sprite": 35,
+          "properties": {
+            "item": "Titanium Ore",
+            "sprite": 15
+          }
+        }
+      },
+      "entitiesByCoord": {
+        "16,16": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "10,25": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "10,26": {
+          "sprite": 116,
+          "properties": {}
+        },
+        "30,26": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "31,26": {
+          "sprite": 116,
+          "properties": {}
+        },
+        "36,29": {
+          "sprite": 115,
+          "properties": {}
+        },
+        "6,30": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "23,31": {
+          "sprite": 48,
+          "properties": {}
+        },
+        "24,31": {
+          "sprite": 116,
+          "properties": {}
+        },
+        "0,33": {
+          "sprite": 34,
+          "properties": {
+            "map": "Castle",
+            "x": 38,
+            "y": 58
+          }
+        },
+        "1,33": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "23,33": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "45,33": {
+          "sprite": 35,
+          "properties": {
+            "item": "Titanium Ore",
+            "sprite": 15
+          }
+        }
+      }
+    },
+    "00000000-0000-4000-8000-000000000071": {
+      "identifier": "Test",
+      "compatMaps": [
+        {
+          "layerId": "main",
+          "name": "Test/main",
+          "sheet": "tiles/cave/tiles",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-00000000006d": {
+          "sprite": 35,
+          "properties": {
+            "item": "Dilithium Crystal",
+            "sprite": 16
+          }
+        },
+        "00000000-0000-4000-8000-00000000006e": {
+          "sprite": 17,
+          "properties": {
+            "map": "Castle",
+            "x": 20,
+            "y": 3
+          }
+        },
+        "00000000-0000-4000-8000-00000000006f": {
+          "sprite": 0,
+          "properties": {}
+        }
+      },
+      "entitiesByCoord": {
+        "13,12": {
+          "sprite": 35,
+          "properties": {
+            "item": "Dilithium Crystal",
+            "sprite": 16
+          }
+        },
+        "1,14": {
+          "sprite": 17,
+          "properties": {
+            "map": "Castle",
+            "x": 20,
+            "y": 3
+          }
+        },
+        "2,14": {
+          "sprite": 0,
+          "properties": {}
+        }
+      }
+    },
+    "00000000-0000-4000-8000-000000000075": {
+      "identifier": "Test_2",
+      "compatMaps": [
+        {
+          "layerId": "main",
+          "name": "Test 2/main",
+          "sheet": "tiles/cave/tiles",
+          "sourceWidth": 64,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "fg",
+          "name": "Test 2/fg",
+          "sheet": "tiles/cave/foreground",
+          "sourceWidth": 64,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {},
+      "entitiesByCoord": {}
+    },
+    "00000000-0000-4000-8000-00000000007e": {
+      "identifier": "Home",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Home/bg.0",
+          "sheet": "",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": [
+            {
+              "sprite": "forest5",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "layerId": "bg_1",
+          "name": "Home/bg.1",
+          "sheet": "",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "bg_2",
+          "name": "Home/bg.2",
+          "sheet": "tiles/outdoor/background",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "main",
+          "name": "Home/main",
+          "sheet": "tiles/outdoor/tiles",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": [],
+          "bgcolor": 38
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-00000000007a": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000007b": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]",
+            "sprite": 133
+          }
+        },
+        "00000000-0000-4000-8000-00000000007c": {
+          "sprite": 34,
+          "properties": {
+            "map": "Crash Site",
+            "x": 1,
+            "y": 9
+          }
+        }
+      },
+      "entitiesByCoord": {
+        "5,11": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "13,13": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]",
+            "sprite": 133
+          }
+        },
+        "15,13": {
+          "sprite": 34,
+          "properties": {
+            "map": "Crash Site",
+            "x": 1,
+            "y": 9
+          }
+        }
+      }
+    },
+    "00000000-0000-4000-8000-00000000008a": {
+      "identifier": "Crash_Site",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Crash Site/bg.0",
+          "sheet": "tiles/outdoor/background",
+          "sourceWidth": 28,
+          "sourceHeight": 16,
+          "parallaxx": 0.75,
+          "parallaxy": 1,
+          "atlas": [
+            {
+              "sprite": "forest4",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "layerId": "bg_1",
+          "name": "Crash Site/bg.1",
+          "sheet": "",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 0,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "main",
+          "name": "Crash Site/main",
+          "sheet": "tiles/outdoor/tiles",
+          "sourceWidth": 32,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": [
+            {
+              "sprite": "ship",
+              "x": 75,
+              "y": 34
+            }
+          ],
+          "bgcolor": 38
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-000000000082": {
+          "sprite": 34,
+          "properties": {
+            "map": "Home",
+            "x": 14,
+            "y": 13
+          }
+        },
+        "00000000-0000-4000-8000-000000000083": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000084": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]",
+            "sprite": 129
+          }
+        },
+        "00000000-0000-4000-8000-000000000085": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]",
+            "sprite": 130
+          }
+        },
+        "00000000-0000-4000-8000-000000000086": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]",
+            "sprite": 131
+          }
+        },
+        "00000000-0000-4000-8000-000000000087": {
+          "sprite": 117,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000088": {
+          "sprite": 34,
+          "properties": {
+            "map": "Cliff"
+          }
+        }
+      },
+      "entitiesByCoord": {
+        "0,9": {
+          "sprite": 34,
+          "properties": {
+            "map": "Home",
+            "x": 14,
+            "y": 13
+          }
+        },
+        "2,9": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "11,13": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]",
+            "sprite": 129
+          }
+        },
+        "15,13": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]",
+            "sprite": 130
+          }
+        },
+        "17,13": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]",
+            "sprite": 131
+          }
+        },
+        "24,13": {
+          "sprite": 117,
+          "properties": {}
+        },
+        "31,14": {
+          "sprite": 34,
+          "properties": {
+            "map": "Cliff"
+          }
+        }
+      }
+    },
+    "00000000-0000-4000-8000-000000000095": {
+      "identifier": "Cliff",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Cliff/bg.0",
+          "sheet": "",
+          "sourceWidth": 30,
+          "sourceHeight": 20,
+          "parallaxx": 0.3181818181818182,
+          "parallaxy": 0.2857142857142857,
+          "atlas": [
+            {
+              "sprite": "cliff",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "layerId": "main",
+          "name": "Cliff/main",
+          "sheet": "tiles/cave/tiles",
+          "sourceWidth": 60,
+          "sourceHeight": 30,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": [],
+          "bgcolor": 38
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-00000000008d": {
+          "sprite": 34,
+          "properties": {
+            "map": "Castle",
+            "x": 2,
+            "y": 58
+          }
+        },
+        "00000000-0000-4000-8000-00000000008e": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]",
+            "sprite": 134
+          }
+        },
+        "00000000-0000-4000-8000-00000000008f": {
+          "sprite": 34,
+          "properties": {
+            "map": "Level 1"
+          }
+        },
+        "00000000-0000-4000-8000-000000000090": {
+          "sprite": 34,
+          "properties": {
+            "map": "Crash Site",
+            "x": 30,
+            "y": 13
+          }
+        },
+        "00000000-0000-4000-8000-000000000091": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000092": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-000000000093": {
+          "sprite": 116,
+          "properties": {}
+        }
+      },
+      "entitiesByCoord": {
+        "56,7": {
+          "sprite": 34,
+          "properties": {
+            "map": "Castle",
+            "x": 2,
+            "y": 58
+          }
+        },
+        "51,22": {
+          "sprite": 32,
+          "properties": {
+            "dialog": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]",
+            "sprite": 134
+          }
+        },
+        "56,22": {
+          "sprite": 34,
+          "properties": {
+            "map": "Level 1"
+          }
+        },
+        "0,23": {
+          "sprite": 34,
+          "properties": {
+            "map": "Crash Site",
+            "x": 30,
+            "y": 13
+          }
+        },
+        "2,23": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "20,23": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "33,23": {
+          "sprite": 116,
+          "properties": {}
+        }
+      }
+    },
+    "00000000-0000-4000-8000-0000000000a3": {
+      "identifier": "Castle",
+      "compatMaps": [
+        {
+          "layerId": "bg_0",
+          "name": "Castle/bg.0",
+          "sheet": "tiles/outdoor/tiles",
+          "sourceWidth": 40,
+          "sourceHeight": 60,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "main",
+          "name": "Castle/main",
+          "sheet": "tiles/outdoor/tiles",
+          "sourceWidth": 40,
+          "sourceHeight": 60,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-000000000098": {
+          "sprite": 18,
+          "properties": {
+            "map": "Test"
+          }
+        },
+        "00000000-0000-4000-8000-000000000099": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000009a": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000009b": {
+          "sprite": 19,
+          "properties": {
+            "contents": "{\"key\":1}",
+            "sprite": 7
+          }
+        },
+        "00000000-0000-4000-8000-00000000009c": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000009d": {
+          "sprite": 117,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000009e": {
+          "sprite": 117,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-00000000009f": {
+          "sprite": 17,
+          "properties": {
+            "map": "Cliff",
+            "x": 55,
+            "y": 7
+          }
+        },
+        "00000000-0000-4000-8000-0000000000a0": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "00000000-0000-4000-8000-0000000000a1": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 4",
+            "x": 1,
+            "y": 33
+          }
+        }
+      },
+      "entitiesByCoord": {
+        "20,3": {
+          "sprite": 18,
+          "properties": {
+            "map": "Test"
+          }
+        },
+        "10,8": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "18,17": {
+          "sprite": 113,
+          "properties": {}
+        },
+        "7,23": {
+          "sprite": 19,
+          "properties": {
+            "contents": "{\"key\":1}",
+            "sprite": 7
+          }
+        },
+        "4,26": {
+          "sprite": 112,
+          "properties": {}
+        },
+        "9,38": {
+          "sprite": 117,
+          "properties": {}
+        },
+        "22,44": {
+          "sprite": 117,
+          "properties": {}
+        },
+        "1,58": {
+          "sprite": 17,
+          "properties": {
+            "map": "Cliff",
+            "x": 55,
+            "y": 7
+          }
+        },
+        "2,58": {
+          "sprite": 0,
+          "properties": {}
+        },
+        "38,58": {
+          "sprite": 17,
+          "properties": {
+            "map": "Level 4",
+            "x": 1,
+            "y": 33
+          }
+        }
+      }
+    },
+    "00000000-0000-4000-8000-0000000000a8": {
+      "identifier": "Ending",
+      "compatMaps": [
+        {
+          "layerId": "main",
+          "name": "Ending/main",
+          "sheet": "tiles/outdoor/tiles",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        },
+        {
+          "layerId": "fg",
+          "name": "Ending/fg",
+          "sheet": "",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": [
+            {
+              "sprite": "ending",
+              "x": 0,
+              "y": 0
+            }
+          ]
+        }
+      ],
+      "entitiesByIid": {
+        "00000000-0000-4000-8000-0000000000a6": {
+          "sprite": 0,
+          "properties": {}
+        }
+      },
+      "entitiesByCoord": {
+        "7,9": {
+          "sprite": 0,
+          "properties": {}
+        }
+      }
+    },
+    "00000000-0000-4000-8000-0000000000ab": {
+      "identifier": "Dialog",
+      "compatMaps": [
+        {
+          "layerId": "main",
+          "name": "Dialog",
+          "sheet": "boxes",
+          "sourceWidth": 16,
+          "sourceHeight": 16,
+          "parallaxx": 1,
+          "parallaxy": 1,
+          "atlas": []
+        }
+      ],
+      "entitiesByIid": {},
+      "entitiesByCoord": {}
+    }
+  }
+}

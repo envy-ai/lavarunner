@@ -187,3 +187,96 @@ Original prompt: You're a UI designer working on an intuitive design.  Test the 
 - Docs updated:
   - `docs/PixelboxRuntime.md`
   - `docs/developer_overview.md`
+2026-03-12
+- New task: convert project maps/loaders to LDtk.
+- User defaults applied:
+  - LDtk becomes the new authored/runtime map source.
+  - Runtime preserves the existing `getMap("<region>/<layer>")` compatibility surface.
+  - Remaining map metadata (`bgcolor`, `atlas`) moves into map-authored LDtk data instead of staying in `assets/data/mapdata.json`.
+- Current migration plan:
+  - Replace the Tiled converter with an LDtk project generator under `assets/maps.ldtk`.
+  - Refactor the Phaser Pixelbox compatibility runtime to load/virtualize LDtk levels/layers.
+  - Keep entity object spawning behavior intact via normalized `entities` object-layer compatibility.
+  - Validate with syntax checks and a browser smoke pass; keep artifacts in `tmp/`.
+- Implemented LDtk migration:
+  - Added `scripts/convert_maps_to_ldtk.mjs`.
+  - `npm run convert:maps` now regenerates `assets/maps.ldtk` instead of Tiled manifest/files.
+  - Runtime (`src/pixelbox_compat.js`) now loads `assets/maps.ldtk`, parses per-level `CompatMapsJson`, normalizes LDtk `entities` into `getObjectLayer('entities')`, and exposes `advanceTime` / `render_game_to_text` hooks for automation.
+  - Gameplay (`src/main.js`) now reads per-map `_bgcolor` and `_atlas` metadata from runtime maps instead of `assets.data.mapdata` / `assets.data.npcs`.
+- Validation:
+  - `node --check src/pixelbox_compat.js`
+  - `node --check src/main.js`
+  - `node --check scripts/convert_maps_to_ldtk.mjs`
+  - `npm run convert:maps` passed and produced `assets/maps.ldtk`.
+  - Playwright smoke pass against `python3 -m http.server 4173` produced:
+    - `tmp/ldtk-smoke/shot-0.png`
+    - `tmp/ldtk-smoke/errors-0.json`
+    - `tmp/ldtk-smoke-2/shot-0.png`
+    - `tmp/ldtk-smoke-2/state-0.json`
+    - `tmp/ldtk-smoke-2/errors-0.json`
+- Smoke-pass result:
+  - LDtk loader reported `mapsLoaded=27`, `currentMap="Home/main"`, `background=["Home/bg.0","Home/bg.1","Home/bg.2"]`, `entityObjects=3`, and `fatalError=null`.
+  - Headless Playwright canvas capture is still visually black even though `render_game_to_text()` reports the offscreen surface is fully populated (`litPixels=16384`); treat this as a capture-path issue, not an LDtk loading failure.
+- Docs updated:
+  - `docs/developer_overview.md`
+  - `docs/PixelboxRuntime.md`
+  - `docs/MapConverter.md`
+  - `docs/EntityPlacement.md`
+  - `docs/README.md`
+- LDtk editor follow-up:
+  - User reported LDtk open failure: `cannot read properties of null (reading 'externalLevels')`.
+  - Likely cause: generated project included an empty top-level `worlds` array plus extra null root/level fields, which appears to push the editor down a multi-world path with no active world.
+  - Adjusted `scripts/convert_maps_to_ldtk.mjs` to emit the simpler single-world root/level shape (`__header__`, `bgColor`, `defs`, `externalLevels`, `iid`, `jsonVersion`, `levels`, `worldLayout`).
+  - Re-ran `npm run convert:maps`; fresh backup at `assets/maps_ldtk_backups/maps_20260312_210855.ldtk`.
+2026-03-12
+- LDtk editor tileset-binding follow-up:
+  - User reported the project opened, but tile layers were not visibly associated with their respective tilesets in the editor.
+  - Root cause: generated tile layer instances had `__tilesetDefUid` / `__tilesetRelPath`, but not `overrideTilesetUid`.
+  - Patched `scripts/convert_maps_to_ldtk.mjs` so every tile layer instance writes `overrideTilesetUid` equal to its active tileset UID.
+  - Re-ran `npm run convert:maps`; fresh backup at `assets/maps_ldtk_backups/maps_20260313_010006.ldtk`.
+  - Verification:
+    - `node --check scripts/convert_maps_to_ldtk.mjs`
+    - recursive schema check against `tmp/ldtk-schema-1.5.3.json` passed
+    - runtime smoke pass on `http://127.0.0.1:4174` still reported `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+  - Docs updated:
+    - `docs/MapConverter.md`
+2026-03-12
+- Post-editor-save runtime test:
+  - User rearranged levels in LDtk and asked for a fresh server/smoke test.
+  - Existing local server was already live on `http://127.0.0.1:4174`.
+  - Geometric overlap check on current `assets/maps.ldtk` reports `levelCount=12` and `overlaps=[]`.
+  - Runtime smoke pass failed before state capture. `tmp/ldtk-smoke-5/errors-0.json` contains:
+    - `Error: LDtk layer "entities" entity 00000000-0000-4000-8000-000000000006 is missing a valid CompatSpriteId field.`
+  - Compared current `assets/maps.ldtk` to backup `assets/maps_ldtk_backups/maps_20260313_010006.ldtk`:
+    - `CompatMapsJson` level field values are now `null`.
+    - Entity `CompatSpriteId` field values are now `null`.
+    - Entity `__tile` values are now `null`.
+  - Conclusion:
+    - The current LDtk file opens in the editor and no longer overlaps, but saving from LDtk is still nulling compatibility field payloads that the runtime depends on.
+2026-03-13
+- LDtk round-trip recovery fix:
+  - Implemented a compat sidecar flow instead of trusting LDtk to preserve hidden field payloads.
+  - Added shared extractor: `scripts/lib/ldtk_compat_meta.mjs`
+  - Added sidecar command: `scripts/extract_ldtk_compat_meta.mjs`
+  - Added npm script: `npm run extract:ldtk-meta`
+  - Runtime (`src/pixelbox_compat.js`) now loads optional `assets/maps.ldtk.meta.json` and merges compat data when the embedded LDtk fields are null.
+  - Level metadata fallback:
+    - `CompatMapsJson` now comes from the sidecar when the LDtk file no longer preserves it.
+  - Entity metadata fallback:
+    - entity compat data is matched by entity `iid` first
+    - falls back to `tx,ty` grid coordinates because LDtk rewrote some edited entities to `iid: 0`
+    - null/undefined compat fields are filtered out before gameplay metadata parsing
+  - Bootstrapped `assets/maps.ldtk.meta.json` from intact backup `assets/maps_ldtk_backups/maps_20260313_010006.ldtk` so the current edited `assets/maps.ldtk` keeps the user’s layout changes.
+  - Validation:
+    - `node --check src/pixelbox_compat.js`
+    - `node --check scripts/convert_maps_to_ldtk.mjs`
+    - `node --check scripts/extract_ldtk_compat_meta.mjs`
+    - `node --check scripts/lib/ldtk_compat_meta.mjs`
+    - `node scripts/extract_ldtk_compat_meta.mjs assets/maps_ldtk_backups/maps_20260313_010006.ldtk assets/maps.ldtk.meta.json`
+    - Playwright smoke pass on edited map succeeded:
+      - `tmp/ldtk-smoke-8/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+      - only remaining errors are the pre-existing audio 404/autoplay failures
+  - Docs updated:
+    - `docs/MapConverter.md`
+    - `docs/PixelboxRuntime.md`
+    - `docs/README.md`
