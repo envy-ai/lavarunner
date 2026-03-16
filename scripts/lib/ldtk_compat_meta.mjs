@@ -1,3 +1,5 @@
+import { getLegacySpriteIdForLdtkEntity } from './ldtk_entity_specs.mjs';
+
 function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
@@ -89,7 +91,11 @@ export function extractLdtkCompatMeta(ldtkProject) {
 
         const context = `LDtk entity "${entityIid}" in level "${level.identifier || '<unnamed>'}"`;
         const fields = parseFieldInstances(context, entity.fieldInstances);
-        const sprite = fields.CompatSpriteId;
+        const identifier = typeof entity.__identifier === 'string' ? entity.__identifier : null;
+        const inferredSprite = identifier ? getLegacySpriteIdForLdtkEntity(identifier) : null;
+        const sprite = Number.isInteger(fields.CompatSpriteId) && fields.CompatSpriteId >= 0
+          ? fields.CompatSpriteId
+          : inferredSprite;
         if (!Number.isInteger(sprite) || sprite < 0) {
           throw new Error(`${context} is missing a valid CompatSpriteId field.`);
         }

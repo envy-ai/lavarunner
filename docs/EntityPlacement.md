@@ -2,58 +2,58 @@
 
 Gameplay entities are authored in LDtk on an entity layer named `entities`.
 
-## Placement Rules
+## Authoring Model
 
-- Each LDtk entity instance must provide `CompatSpriteId`.
-- `CompatSpriteId` determines which runtime class is spawned.
-- `sprite 0` is the player spawn and must appear exactly once per playable map.
+- Each placement now uses a typed LDtk entity identifier instead of a hidden `CompatSpriteId` field.
+- The runtime compatibility layer maps each LDtk identifier back to the legacy sprite id that `src/main.js` still uses for spawning.
+- `PlayerSpawn` must appear exactly once per playable map.
+- Two legacy placements with no current gameplay behavior are still preserved as explicit LDtk types: `LegacySprite48` and `LegacySprite115`.
 
-## Sprite-to-Entity Mapping
+## LDtk Entity Types
 
-- Player:
-  - `0` -> `Player`
-- Enemies:
-  - `112` -> `MogusEnemy`
-  - `113` -> `FireballEnemy`
-  - `116` -> `BeeEnemy`
-  - `117` -> `InkyEnemy`
-- Goodies:
-  - `16` -> `CoinGoodie`
-  - `17` -> `DoorGoodie` (open)
-  - `18` -> `DoorGoodie` (closed)
-  - `19` -> `ChestGoodie`
-  - `20` -> `WeaponGoodie`
-  - `32` -> `NpcGoodie`
-  - `35` -> `ItemGoodie`
-  - `114` -> `VolcanoGoodie`
-- Scripts:
-  - `34` -> `ExitScript`
+- `PlayerSpawn` -> legacy sprite `0` -> `Player`
+- `Coin` -> legacy sprite `16` -> `CoinGoodie`
+- `DoorOpen` -> legacy sprite `17` -> `DoorGoodie`
+- `DoorClosed` -> legacy sprite `18` -> `DoorGoodie`
+- `Chest` -> legacy sprite `19` -> `ChestGoodie`
+- `WeaponPickup` -> legacy sprite `20` -> `WeaponGoodie`
+- `Npc` -> legacy sprite `32` -> `NpcGoodie`
+- `Exit` -> legacy sprite `34` -> `ExitScript`
+- `ItemPickup` -> legacy sprite `35` -> `ItemGoodie`
+- `LegacySprite48` -> legacy sprite `48` -> currently ignored by gameplay
+- `MogusEnemy` -> legacy sprite `112` -> `MogusEnemy`
+- `FireballEnemy` -> legacy sprite `113` -> `FireballEnemy`
+- `Volcano` -> legacy sprite `114` -> `VolcanoGoodie`
+- `LegacySprite115` -> legacy sprite `115` -> currently ignored by gameplay
+- `BeeEnemy` -> legacy sprite `116` -> `BeeEnemy`
+- `InkyEnemy` -> legacy sprite `117` -> `InkyEnemy`
 
-## Entity Fields (Metadata)
+## Metadata Fields
 
-LDtk field instances are normalized back into `entity.metadata`.
+LDtk field instances are normalized back into `entity.metadata`. Required fields are now typed directly on the relevant LDtk entity definitions, so the editor can validate them without relying on hidden compat fields.
 
-- `DoorGoodie` and `ExitScript`:
+- `DoorOpen`, `DoorClosed`, and `Exit`:
   - `map` (`string`, required)
-  - `x` (`int`, optional; requires `y`)
-  - `y` (`int`, optional; requires `x`)
-- `ChestGoodie`:
-  - `contents` (`string`, required JSON object; e.g. `{"key":1}`)
+  - `x` (`int`, optional; requires `y` at runtime)
+  - `y` (`int`, optional; requires `x` at runtime)
+- `Chest`:
+  - `contents` (`Multilines`, required JSON object; example `{"key":1}`)
   - `sprite` (`int`, optional custom pickup sprite shown to player)
-- `WeaponGoodie`:
+- `WeaponPickup`:
   - `sprite` (`int`, required)
   - `weapon` (`string`, required)
-- `ItemGoodie`:
+- `ItemPickup`:
   - `sprite` (`int`, required)
   - `item` (`string`, required)
-- `NpcGoodie`:
+- `Npc`:
   - `sprite` (`int`, required)
-  - `dialog` (`string`, required JSON array of dialog entries)
+  - `dialog` (`Multilines`, required JSON array of dialog entries)
 
 ## Strict Parsing
 
 - `dialog` and `contents` are parsed as JSON at load time.
 - Invalid/missing required metadata throws an error instead of silently falling back.
+- The runtime still accepts older `CompatEntity` / `CompatSpriteId` projects for compatibility, but new generated LDtk projects no longer depend on hidden entity fields.
 
 ## Converter Migration
 
@@ -62,4 +62,4 @@ LDtk field instances are normalized back into `entity.metadata`.
 - `assets/data/mapdata.json` (`entities` blocks)
 - `assets/data/npcs.json`
 
-into LDtk field instances on each generated `entities` layer.
+into typed LDtk entity instances on each generated `entities` layer.

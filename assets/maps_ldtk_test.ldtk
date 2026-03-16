@@ -11,7 +11,7 @@
 	"iid": "00000000-0000-4000-8000-0000000000ac",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 61,
+	"nextUid": 60,
 	"identifierStyle": "Free",
 	"toc": [],
 	"worldLayout": "Free",
@@ -1662,12 +1662,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Level 1/bg.0\",\n    \"sheet\": \"tiles/cave/background\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 32,\n    \"parallaxx\": 1,\n    \"parallaxy\": 0.14285714285714285,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"bg_1\",\n    \"name\": \"Level 1/bg.1\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 32,\n    \"parallaxx\": 1,\n    \"parallaxy\": 0.14285714285714285,\n    \"atlas\": [\n      {\n        \"sprite\": \"lavacave1\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Level 1/main\",\n    \"sheet\": \"tiles/cave/tiles\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 128,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"fg\",\n    \"name\": \"Level 1/fg\",\n    \"sheet\": \"tiles/cave/foreground\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 128,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Level 1/bg.0\",\\n    \"sheet\": \"tiles/cave/background\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 32,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 0.14285714285714285,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"bg_1\",\\n    \"name\": \"Level 1/bg.1\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 32,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 0.14285714285714285,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"lavacave1\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Level 1/main\",\\n    \"sheet\": \"tiles/cave/tiles\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 128,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"fg\",\\n    \"name\": \"Level 1/fg\",\\n    \"sheet\": \"tiles/cave/foreground\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 128,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -1900,7 +1895,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08980-fa90-11f0-bf8d-e5ab5649ea13",
+					"iid": "e7d37d00-fa90-11f0-bf8d-3325f79c53d2",
 					"levelId": 48,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -1909,7 +1904,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 7440603,
+					"seed": 3310372,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -1967,12 +1962,9 @@
 							"defUid": 20,
 							"px": [120,24],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Cliff", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Cliff"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 55, "__tile": null, "defUid": 18, "realEditorValues": [{ "id": "V_Int", "params": [55] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 22, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [22] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
 							"__worldX": 616,
 							"__worldY": 328
@@ -1990,11 +1982,8 @@
 							"defUid": 30,
 							"px": [16,32],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 6, "__tile": null, "defUid": 28, "realEditorValues": [{ "id": "V_Int", "params": [6] }] },
-								{ "__identifier": "weapon", "__type": "String", "__value": "Sword", "__tile": null, "defUid": 29, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Sword"]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 28, "realEditorValues": [] },
+								{ "__identifier": "weapon", "__type": "String", "__value": "", "__tile": null, "defUid": 29, "realEditorValues": [] }
 							],
 							"__worldX": 512,
 							"__worldY": 336
@@ -2620,10 +2609,7 @@
 							"defUid": 20,
 							"px": [96,968],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Level 2", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Level 2"]
-								}] },
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
 								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
 								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
@@ -3028,12 +3014,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Level 2/bg.0\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 30,\n    \"sourceHeight\": 20,\n    \"parallaxx\": 0.2916666666666667,\n    \"parallaxy\": 0.2857142857142857,\n    \"atlas\": [\n      {\n        \"sprite\": \"lavacave3\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Level 2/main\",\n    \"sheet\": \"tiles/cave/tiles\",\n    \"sourceWidth\": 64,\n    \"sourceHeight\": 30,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Level 2/bg.0\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 30,\\n    \"sourceHeight\": 20,\\n    \"parallaxx\": 0.2916666666666667,\\n    \"parallaxy\": 0.2857142857142857,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"lavacave3\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Level 2/main\",\\n    \"sheet\": \"tiles/cave/tiles\",\\n    \"sourceWidth\": 64,\\n    \"sourceHeight\": 30,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -3071,7 +3052,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08981-fa90-11f0-bf8d-cba4fcbafbd5",
+					"iid": "e7d37d01-fa90-11f0-bf8d-5ffaf391565f",
 					"levelId": 49,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -3080,7 +3061,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 9893475,
+					"seed": 597183,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -3096,7 +3077,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08982-fa90-11f0-bf8d-53f57efbc5ee",
+					"iid": "e7d37d02-fa90-11f0-bf8d-ffdd9e1c9560",
 					"levelId": 49,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -3105,7 +3086,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 431158,
+					"seed": 7827628,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -3163,11 +3144,8 @@
 							"defUid": 30,
 							"px": [280,32],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 11, "__tile": null, "defUid": 28, "realEditorValues": [{ "id": "V_Int", "params": [11] }] },
-								{ "__identifier": "weapon", "__type": "String", "__value": "Grenade Launcher", "__tile": null, "defUid": 29, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Grenade Launcher"]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 28, "realEditorValues": [] },
+								{ "__identifier": "weapon", "__type": "String", "__value": "", "__tile": null, "defUid": 29, "realEditorValues": [] }
 							],
 							"__worldX": 264,
 							"__worldY": 64
@@ -3409,11 +3387,8 @@
 							"defUid": 27,
 							"px": [8,56],
 							"fieldInstances": [
-								{ "__identifier": "contents", "__type": "Multilines", "__value": "{\"key\":1}", "__tile": null, "defUid": 25, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["{\"key\":1}"]
-								}] },
-								{ "__identifier": "sprite", "__type": "Int", "__value": 7, "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [7] }] }
+								{ "__identifier": "contents", "__type": "Multilines", "__value": "", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "Int", "__value": null, "__tile": null, "defUid": 26, "realEditorValues": [] }
 							],
 							"__worldX": -8,
 							"__worldY": 88
@@ -3431,10 +3406,7 @@
 							"defUid": 24,
 							"px": [256,72],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Level 3", "__tile": null, "defUid": 21, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Level 3"]
-								}] },
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 21, "realEditorValues": [] },
 								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 22, "realEditorValues": [] },
 								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 23, "realEditorValues": [] }
 							],
@@ -3598,12 +3570,9 @@
 							"defUid": 20,
 							"px": [16,184],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Level 1", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Level 1"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 12, "__tile": null, "defUid": 18, "realEditorValues": [{ "id": "V_Int", "params": [12] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 121, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [121] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
 							"__worldX": 0,
 							"__worldY": 216
@@ -3637,7 +3606,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08983-fa90-11f0-bf8d-611154986683",
+					"iid": "e7d37d03-fa90-11f0-bf8d-030cde2424a4",
 					"levelId": 49,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -3646,7 +3615,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 3343322,
+					"seed": 1408228,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -3807,12 +3776,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Level 3/main\",\n    \"sheet\": \"tiles/cave/tiles\",\n    \"sourceWidth\": 64,\n    \"sourceHeight\": 24,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Level 3/main\",\\n    \"sheet\": \"tiles/cave/tiles\",\\n    \"sourceWidth\": 64,\\n    \"sourceHeight\": 24,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -3825,7 +3789,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08984-fa90-11f0-bf8d-e91c3d6b57d9",
+					"iid": "e7d37d04-fa90-11f0-bf8d-35ac1e1a6411",
 					"levelId": 50,
 					"layerDefUid": 8,
 					"pxOffsetX": 0,
@@ -3834,7 +3798,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 6843617,
+					"seed": 3936183,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -3850,7 +3814,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08985-fa90-11f0-bf8d-a9b6d70df497",
+					"iid": "e7d37d05-fa90-11f0-bf8d-51c182ce6456",
 					"levelId": 50,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -3859,7 +3823,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 7806049,
+					"seed": 3325174,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -3875,7 +3839,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08986-fa90-11f0-bf8d-c52ee95956ac",
+					"iid": "e7d3a410-fa90-11f0-bf8d-67bbd6c6d753",
 					"levelId": 50,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -3884,7 +3848,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 4609768,
+					"seed": 8618287,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -3926,11 +3890,8 @@
 							"defUid": 40,
 							"px": [400,8],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 14, "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [14] }] },
-								{ "__identifier": "item", "__type": "String", "__value": "Big Bolt", "__tile": null, "defUid": 39, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Big Bolt"]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 38, "realEditorValues": [] },
+								{ "__identifier": "item", "__type": "String", "__value": "", "__tile": null, "defUid": 39, "realEditorValues": [] }
 							],
 							"__worldX": 936,
 							"__worldY": 56
@@ -3948,12 +3909,9 @@
 							"defUid": 20,
 							"px": [48,104],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Level 2", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Level 2"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 32, "__tile": null, "defUid": 18, "realEditorValues": [{ "id": "V_Int", "params": [32] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 9, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [9] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
 							"__worldX": 584,
 							"__worldY": 152
@@ -3987,11 +3945,8 @@
 							"defUid": 40,
 							"px": [328,120],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 12, "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [12] }] },
-								{ "__identifier": "item", "__type": "String", "__value": "Double Jump Ring", "__tile": null, "defUid": 39, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Double Jump Ring"]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 38, "realEditorValues": [] },
+								{ "__identifier": "item", "__type": "String", "__value": "", "__tile": null, "defUid": 39, "realEditorValues": [] }
 							],
 							"__worldX": 864,
 							"__worldY": 168
@@ -4009,7 +3964,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a08987-fa90-11f0-bf8d-b7f0dc088189",
+					"iid": "e7d3a411-fa90-11f0-bf8d-031e0e7ba78f",
 					"levelId": 50,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -4018,7 +3973,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 7673961,
+					"seed": 5587239,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -4395,12 +4350,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Level 4/bg.0\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 30,\n    \"sourceHeight\": 20,\n    \"parallaxx\": 0.4375,\n    \"parallaxy\": 0.2,\n    \"atlas\": [\n      {\n        \"sprite\": \"forest6\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  },\n  {\n    \"layerId\": \"bg_1\",\n    \"name\": \"Level 4/bg.1\",\n    \"sheet\": \"tiles/outdoor/background\",\n    \"sourceWidth\": 48,\n    \"sourceHeight\": 36,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Level 4/main\",\n    \"sheet\": \"tiles/outdoor/tiles\",\n    \"sourceWidth\": 48,\n    \"sourceHeight\": 36,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Level 4/bg.0\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 30,\\n    \"sourceHeight\": 20,\\n    \"parallaxx\": 0.4375,\\n    \"parallaxy\": 0.2,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"forest6\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  },\\n  {\\n    \"layerId\": \"bg_1\",\\n    \"name\": \"Level 4/bg.1\",\\n    \"sheet\": \"tiles/outdoor/background\",\\n    \"sourceWidth\": 48,\\n    \"sourceHeight\": 36,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Level 4/main\",\\n    \"sheet\": \"tiles/outdoor/tiles\",\\n    \"sourceWidth\": 48,\\n    \"sourceHeight\": 36,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -5014,7 +4964,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b090-fa90-11f0-bf8d-1b1a8e39ceab",
+					"iid": "e7d3a412-fa90-11f0-bf8d-f7ade8c85b01",
 					"levelId": 51,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -5023,7 +4973,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 3010258,
+					"seed": 4099854,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -5209,12 +5159,9 @@
 							"defUid": 37,
 							"px": [0,264],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Castle", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Castle"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 38, "__tile": null, "defUid": 35, "realEditorValues": [{ "id": "V_Int", "params": [38] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 58, "__tile": null, "defUid": 36, "realEditorValues": [{ "id": "V_Int", "params": [58] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
 							"__worldX": -432,
 							"__worldY": 272
@@ -5264,11 +5211,8 @@
 							"defUid": 40,
 							"px": [360,264],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 15, "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [15] }] },
-								{ "__identifier": "item", "__type": "String", "__value": "Titanium Ore", "__tile": null, "defUid": 39, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Titanium Ore"]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 38, "realEditorValues": [] },
+								{ "__identifier": "item", "__type": "String", "__value": "", "__tile": null, "defUid": 39, "realEditorValues": [] }
 							],
 							"__worldX": -72,
 							"__worldY": 272
@@ -5286,7 +5230,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b091-fa90-11f0-bf8d-f15c2b6108f2",
+					"iid": "e7d3a413-fa90-11f0-bf8d-49e7bff00ca6",
 					"levelId": 51,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -5295,7 +5239,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 1111485,
+					"seed": 5639603,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -5702,12 +5646,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Test/main\",\n    \"sheet\": \"tiles/cave/tiles\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Test/main\",\\n    \"sheet\": \"tiles/cave/tiles\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -5720,7 +5659,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b092-fa90-11f0-bf8d-8b4e5f03a858",
+					"iid": "e7d3a414-fa90-11f0-bf8d-b7b1abf1b67e",
 					"levelId": 52,
 					"layerDefUid": 8,
 					"pxOffsetX": 0,
@@ -5729,7 +5668,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 1480517,
+					"seed": 3593851,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -5745,7 +5684,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b093-fa90-11f0-bf8d-9d072437bfbb",
+					"iid": "e7d3a415-fa90-11f0-bf8d-557ff7849ec3",
 					"levelId": 52,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -5754,7 +5693,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 3401074,
+					"seed": 422080,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -5770,7 +5709,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b094-fa90-11f0-bf8d-35a1b949db13",
+					"iid": "e7d3a416-fa90-11f0-bf8d-4334d6a29a4d",
 					"levelId": 52,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -5779,7 +5718,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 7383125,
+					"seed": 2074046,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -5821,11 +5760,8 @@
 							"defUid": 40,
 							"px": [104,96],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 16, "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [16] }] },
-								{ "__identifier": "item", "__type": "String", "__value": "Dilithium Crystal", "__tile": null, "defUid": 39, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Dilithium Crystal"]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 38, "realEditorValues": [] },
+								{ "__identifier": "item", "__type": "String", "__value": "", "__tile": null, "defUid": 39, "realEditorValues": [] }
 							],
 							"__worldX": -256,
 							"__worldY": 680
@@ -5843,12 +5779,9 @@
 							"defUid": 20,
 							"px": [8,112],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Castle", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Castle"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 20, "__tile": null, "defUid": 18, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 3, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
 							"__worldX": -352,
 							"__worldY": 696
@@ -5882,7 +5815,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b095-fa90-11f0-bf8d-ff56a561ddac",
+					"iid": "e7d3a417-fa90-11f0-bf8d-1fa370ee80db",
 					"levelId": 52,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -5891,7 +5824,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 411984,
+					"seed": 7579712,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -6006,12 +5939,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Test 2/main\",\n    \"sheet\": \"tiles/cave/tiles\",\n    \"sourceWidth\": 64,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"fg\",\n    \"name\": \"Test 2/fg\",\n    \"sheet\": \"tiles/cave/foreground\",\n    \"sourceWidth\": 64,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Test 2/main\",\\n    \"sheet\": \"tiles/cave/tiles\",\\n    \"sourceWidth\": 64,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"fg\",\\n    \"name\": \"Test 2/fg\",\\n    \"sheet\": \"tiles/cave/foreground\",\\n    \"sourceWidth\": 64,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -6024,7 +5952,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b096-fa90-11f0-bf8d-7b09a6dc43e5",
+					"iid": "e7d3a418-fa90-11f0-bf8d-17d642172c03",
 					"levelId": 53,
 					"layerDefUid": 8,
 					"pxOffsetX": 0,
@@ -6033,7 +5961,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 3844982,
+					"seed": 4000654,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -6049,7 +5977,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b097-fa90-11f0-bf8d-db6c76f77892",
+					"iid": "e7d3a419-fa90-11f0-bf8d-b97f9ac7d924",
 					"levelId": 53,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -6058,7 +5986,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 576233,
+					"seed": 6411722,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -6074,7 +6002,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b098-fa90-11f0-bf8d-1964835b9819",
+					"iid": "e7d3a41a-fa90-11f0-bf8d-cddbd938f656",
 					"levelId": 53,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -6083,7 +6011,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 5078381,
+					"seed": 3789587,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -6372,12 +6300,7 @@
 			"__smartColor": "#737388",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Home/bg.0\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": [\n      {\n        \"sprite\": \"forest5\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  },\n  {\n    \"layerId\": \"bg_1\",\n    \"name\": \"Home/bg.1\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"bg_2\",\n    \"name\": \"Home/bg.2\",\n    \"sheet\": \"tiles/outdoor/background\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Home/main\",\n    \"sheet\": \"tiles/outdoor/tiles\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": [],\n    \"bgcolor\": 38\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Home/bg.0\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"forest5\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  },\\n  {\\n    \"layerId\": \"bg_1\",\\n    \"name\": \"Home/bg.1\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"bg_2\",\\n    \"name\": \"Home/bg.2\",\\n    \"sheet\": \"tiles/outdoor/background\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Home/main\",\\n    \"sheet\": \"tiles/outdoor/tiles\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": [],\\n    \"bgcolor\": 38\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -6507,13 +6430,8 @@
 							"defUid": 33,
 							"px": [104,104],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 133, "__tile": null, "defUid": 31, "realEditorValues": [{ "id": "V_Int", "params": [133] }] },
-								{ "__identifier": "dialog", "__type": "Multilines", "__value": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]", "__tile": null, "defUid": 32, "realEditorValues": [{
-									"id": "V_String",
-									"params": [
-										"[\\n  {\\n    \"pre_eval\": \"console.log('1');\",\\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\\n    \"post_eval\": \"window.Flags.start = 1;\"\\n  },\\n  {\\n    \"condition\": \"window.Flag('start') == 1\",\\n    \"pre_eval\": \"console.log('2');\",\\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\\n    \"post_eval\": \"window.Flags.start = 2\"\\n  },\\n  {\\n    \"condition\": \"window.Flag('start') == 2\",\\n    \"pre_eval\": \"console.log('3');\",\\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\\n  }\\n]"
-									]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 31, "realEditorValues": [] },
+								{ "__identifier": "dialog", "__type": "Multilines", "__value": "", "__tile": null, "defUid": 32, "realEditorValues": [] }
 							],
 							"__worldX": -304,
 							"__worldY": 480
@@ -6531,12 +6449,9 @@
 							"defUid": 37,
 							"px": [120,104],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Crash Site", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Crash Site"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 1, "__tile": null, "defUid": 35, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 9, "__tile": null, "defUid": 36, "realEditorValues": [{ "id": "V_Int", "params": [9] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
 							"__worldX": -288,
 							"__worldY": 480
@@ -6554,7 +6469,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b099-fa90-11f0-bf8d-01e2c4301ca3",
+					"iid": "e7d3a41b-fa90-11f0-bf8d-c3edcae765f5",
 					"levelId": 54,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -6563,7 +6478,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 8850931,
+					"seed": 2358468,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -6722,12 +6637,7 @@
 			"__smartColor": "#737388",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Crash Site/bg.0\",\n    \"sheet\": \"tiles/outdoor/background\",\n    \"sourceWidth\": 28,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 0.75,\n    \"parallaxy\": 1,\n    \"atlas\": [\n      {\n        \"sprite\": \"forest4\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  },\n  {\n    \"layerId\": \"bg_1\",\n    \"name\": \"Crash Site/bg.1\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 0,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Crash Site/main\",\n    \"sheet\": \"tiles/outdoor/tiles\",\n    \"sourceWidth\": 32,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": [\n      {\n        \"sprite\": \"ship\",\n        \"x\": 75,\n        \"y\": 34\n      }\n    ],\n    \"bgcolor\": 38\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Crash Site/bg.0\",\\n    \"sheet\": \"tiles/outdoor/background\",\\n    \"sourceWidth\": 28,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 0.75,\\n    \"parallaxy\": 1,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"forest4\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  },\\n  {\\n    \"layerId\": \"bg_1\",\\n    \"name\": \"Crash Site/bg.1\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 0,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Crash Site/main\",\\n    \"sheet\": \"tiles/outdoor/tiles\",\\n    \"sourceWidth\": 32,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"ship\",\\n        \"x\": 75,\\n        \"y\": 34\\n      }\\n    ],\\n    \"bgcolor\": 38\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -6790,7 +6700,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b09a-fa90-11f0-bf8d-ad7fa018b05b",
+					"iid": "e7d3a41c-fa90-11f0-bf8d-87773f1617fd",
 					"levelId": 55,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -6799,7 +6709,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 5040954,
+					"seed": 9959888,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -6841,12 +6751,9 @@
 							"defUid": 37,
 							"px": [0,72],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Home", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Home"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 14, "__tile": null, "defUid": 35, "realEditorValues": [{ "id": "V_Int", "params": [14] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 13, "__tile": null, "defUid": 36, "realEditorValues": [{ "id": "V_Int", "params": [13] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
 							"__worldX": -280,
 							"__worldY": 448
@@ -6880,13 +6787,8 @@
 							"defUid": 33,
 							"px": [88,104],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 129, "__tile": null, "defUid": 31, "realEditorValues": [{ "id": "V_Int", "params": [129] }] },
-								{ "__identifier": "dialog", "__type": "Multilines", "__value": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet..  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]", "__tile": null, "defUid": 32, "realEditorValues": [{
-									"id": "V_String",
-									"params": [
-										"[\\n  {\\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet..  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\\n  }\\n]"
-									]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 31, "realEditorValues": [] },
+								{ "__identifier": "dialog", "__type": "Multilines", "__value": "", "__tile": null, "defUid": 32, "realEditorValues": [] }
 							],
 							"__worldX": -192,
 							"__worldY": 480
@@ -6904,12 +6806,10 @@
 							"defUid": 33,
 							"px": [120,104],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 130, "__tile": null, "defUid": 31, "realEditorValues": [{ "id": "V_Int", "params": [130] }] },
-								{ "__identifier": "dialog", "__type": "Multilines", "__value": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]", "__tile": null, "defUid": 32, "realEditorValues": [{
+								{ "__identifier": "sprite", "__type": "Int", "__value": 1, "__tile": null, "defUid": 31, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "dialog", "__type": "Multilines", "__value": "Hello, world!", "__tile": null, "defUid": 32, "realEditorValues": [{
 									"id": "V_String",
-									"params": [
-										"[\\n  {\\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\\n  }\\n]"
-									]
+									"params": ["Hello, world!"]
 								}] }
 							],
 							"__worldX": -160,
@@ -6928,13 +6828,8 @@
 							"defUid": 33,
 							"px": [136,104],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 131, "__tile": null, "defUid": 31, "realEditorValues": [{ "id": "V_Int", "params": [131] }] },
-								{ "__identifier": "dialog", "__type": "Multilines", "__value": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]", "__tile": null, "defUid": 32, "realEditorValues": [{
-									"id": "V_String",
-									"params": [
-										"[\\n  {\\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\\n  },\\n  {\\n    \"condition\": \"window.Flag('maguffins') == 1\",\\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\\n  },\\n  {\\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\\n    \"post_eval\": \"Scripts.Ending();\"\\n  }\\n]"
-									]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 31, "realEditorValues": [] },
+								{ "__identifier": "dialog", "__type": "Multilines", "__value": "", "__tile": null, "defUid": 32, "realEditorValues": [] }
 							],
 							"__worldX": -144,
 							"__worldY": 480
@@ -6968,10 +6863,7 @@
 							"defUid": 37,
 							"px": [248,112],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Cliff", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Cliff"]
-								}] },
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
 								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
 								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
@@ -6991,7 +6883,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b09b-fa90-11f0-bf8d-53821c9a008e",
+					"iid": "e7d3a41d-fa90-11f0-bf8d-37a4ffc740c5",
 					"levelId": 55,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -7000,7 +6892,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 5679994,
+					"seed": 3714572,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -7156,12 +7048,7 @@
 			"__smartColor": "#737388",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Cliff/bg.0\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 30,\n    \"sourceHeight\": 20,\n    \"parallaxx\": 0.3181818181818182,\n    \"parallaxy\": 0.2857142857142857,\n    \"atlas\": [\n      {\n        \"sprite\": \"cliff\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Cliff/main\",\n    \"sheet\": \"tiles/cave/tiles\",\n    \"sourceWidth\": 60,\n    \"sourceHeight\": 30,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": [],\n    \"bgcolor\": 38\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Cliff/bg.0\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 30,\\n    \"sourceHeight\": 20,\\n    \"parallaxx\": 0.3181818181818182,\\n    \"parallaxy\": 0.2857142857142857,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"cliff\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Cliff/main\",\\n    \"sheet\": \"tiles/cave/tiles\",\\n    \"sourceWidth\": 60,\\n    \"sourceHeight\": 30,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": [],\\n    \"bgcolor\": 38\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -7199,7 +7086,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b09c-fa90-11f0-bf8d-95b095762087",
+					"iid": "e7d3a41e-fa90-11f0-bf8d-df45fae59013",
 					"levelId": 56,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -7208,7 +7095,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 3298530,
+					"seed": 5771113,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -7224,7 +7111,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b09d-fa90-11f0-bf8d-2f1c6b8f87d7",
+					"iid": "e7d3a41f-fa90-11f0-bf8d-f399735cd50b",
 					"levelId": 56,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -7233,7 +7120,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 4319018,
+					"seed": 7183155,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -7275,12 +7162,9 @@
 							"defUid": 37,
 							"px": [448,56],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Castle", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Castle"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 2, "__tile": null, "defUid": 35, "realEditorValues": [{ "id": "V_Int", "params": [2] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 58, "__tile": null, "defUid": 36, "realEditorValues": [{ "id": "V_Int", "params": [58] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
 							"__worldX": 432,
 							"__worldY": 360
@@ -7298,13 +7182,8 @@
 							"defUid": 33,
 							"px": [408,176],
 							"fieldInstances": [
-								{ "__identifier": "sprite", "__type": "Int", "__value": 134, "__tile": null, "defUid": 31, "realEditorValues": [{ "id": "V_Int", "params": [134] }] },
-								{ "__identifier": "dialog", "__type": "Multilines", "__value": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]", "__tile": null, "defUid": 32, "realEditorValues": [{
-									"id": "V_String",
-									"params": [
-										"[\\n  {\\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\\n  },\\n  {\\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\\n  }\\n]"
-									]
-								}] }
+								{ "__identifier": "sprite", "__type": "Int", "__value": 0, "__tile": null, "defUid": 31, "realEditorValues": [] },
+								{ "__identifier": "dialog", "__type": "Multilines", "__value": "", "__tile": null, "defUid": 32, "realEditorValues": [] }
 							],
 							"__worldX": 392,
 							"__worldY": 480
@@ -7322,10 +7201,7 @@
 							"defUid": 37,
 							"px": [448,176],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Level 1", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Level 1"]
-								}] },
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
 								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
 								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
@@ -7345,12 +7221,9 @@
 							"defUid": 37,
 							"px": [0,184],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Crash Site", "__tile": null, "defUid": 34, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Crash Site"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 30, "__tile": null, "defUid": 35, "realEditorValues": [{ "id": "V_Int", "params": [30] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 13, "__tile": null, "defUid": 36, "realEditorValues": [{ "id": "V_Int", "params": [13] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 34, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 35, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 36, "realEditorValues": [] }
 							],
 							"__worldX": -16,
 							"__worldY": 488
@@ -7416,7 +7289,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b09e-fa90-11f0-bf8d-99dde1a783e7",
+					"iid": "e7d3a420-fa90-11f0-bf8d-f90ec21a856a",
 					"levelId": 56,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -7425,7 +7298,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 616663,
+					"seed": 4141656,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -7677,12 +7550,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"bg_0\",\n    \"name\": \"Castle/bg.0\",\n    \"sheet\": \"tiles/outdoor/tiles\",\n    \"sourceWidth\": 40,\n    \"sourceHeight\": 60,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Castle/main\",\n    \"sheet\": \"tiles/outdoor/tiles\",\n    \"sourceWidth\": 40,\n    \"sourceHeight\": 60,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"bg_0\",\\n    \"name\": \"Castle/bg.0\",\\n    \"sheet\": \"tiles/outdoor/tiles\",\\n    \"sourceWidth\": 40,\\n    \"sourceHeight\": 60,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Castle/main\",\\n    \"sheet\": \"tiles/outdoor/tiles\",\\n    \"sourceWidth\": 40,\\n    \"sourceHeight\": 60,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -10121,7 +9989,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b09f-fa90-11f0-bf8d-e55c6b9e7756",
+					"iid": "e7d3a421-fa90-11f0-bf8d-5db2e2cf4438",
 					"levelId": 57,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -10130,7 +9998,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 1308397,
+					"seed": 987544,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -10146,7 +10014,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a0-fa90-11f0-bf8d-794b5d9ebba5",
+					"iid": "e7d3a422-fa90-11f0-bf8d-f1f42bcae536",
 					"levelId": 57,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -10155,7 +10023,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 2949273,
+					"seed": 3332561,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -10197,10 +10065,7 @@
 							"defUid": 24,
 							"px": [160,24],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Test", "__tile": null, "defUid": 21, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Test"]
-								}] },
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 21, "realEditorValues": [] },
 								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 22, "realEditorValues": [] },
 								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 23, "realEditorValues": [] }
 							],
@@ -10252,11 +10117,8 @@
 							"defUid": 27,
 							"px": [56,184],
 							"fieldInstances": [
-								{ "__identifier": "contents", "__type": "Multilines", "__value": "{\"key\":1}", "__tile": null, "defUid": 25, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["{\"key\":1}"]
-								}] },
-								{ "__identifier": "sprite", "__type": "Int", "__value": 7, "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [7] }] }
+								{ "__identifier": "contents", "__type": "Multilines", "__value": "", "__tile": null, "defUid": 25, "realEditorValues": [] },
+								{ "__identifier": "sprite", "__type": "Int", "__value": null, "__tile": null, "defUid": 26, "realEditorValues": [] }
 							],
 							"__worldX": 720,
 							"__worldY": 664
@@ -10322,12 +10184,9 @@
 							"defUid": 20,
 							"px": [8,464],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Cliff", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Cliff"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 55, "__tile": null, "defUid": 18, "realEditorValues": [{ "id": "V_Int", "params": [55] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 7, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [7] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
 							"__worldX": 672,
 							"__worldY": 944
@@ -10361,12 +10220,9 @@
 							"defUid": 20,
 							"px": [304,464],
 							"fieldInstances": [
-								{ "__identifier": "map", "__type": "String", "__value": "Level 4", "__tile": null, "defUid": 17, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Level 4"]
-								}] },
-								{ "__identifier": "x", "__type": "Int", "__value": 1, "__tile": null, "defUid": 18, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "y", "__type": "Int", "__value": 33, "__tile": null, "defUid": 19, "realEditorValues": [{ "id": "V_Int", "params": [33] }] }
+								{ "__identifier": "map", "__type": "String", "__value": "", "__tile": null, "defUid": 17, "realEditorValues": [] },
+								{ "__identifier": "x", "__type": "Int", "__value": null, "__tile": null, "defUid": 18, "realEditorValues": [] },
+								{ "__identifier": "y", "__type": "Int", "__value": null, "__tile": null, "defUid": 19, "realEditorValues": [] }
 							],
 							"__worldX": 968,
 							"__worldY": 944
@@ -10384,7 +10240,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a1-fa90-11f0-bf8d-5511fb2b7c68",
+					"iid": "e7d3a423-fa90-11f0-bf8d-095ae863c0d3",
 					"levelId": 57,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -10393,7 +10249,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 9401507,
+					"seed": 2535856,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -10752,12 +10608,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Ending/main\",\n    \"sheet\": \"tiles/outdoor/tiles\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  },\n  {\n    \"layerId\": \"fg\",\n    \"name\": \"Ending/fg\",\n    \"sheet\": \"\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": [\n      {\n        \"sprite\": \"ending\",\n        \"x\": 0,\n        \"y\": 0\n      }\n    ]\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Ending/main\",\\n    \"sheet\": \"tiles/outdoor/tiles\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  },\\n  {\\n    \"layerId\": \"fg\",\\n    \"name\": \"Ending/fg\",\\n    \"sheet\": \"\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": [\\n      {\\n        \"sprite\": \"ending\",\\n        \"x\": 0,\\n        \"y\": 0\\n      }\\n    ]\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -10770,7 +10621,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a2-fa90-11f0-bf8d-23e987e6d69b",
+					"iid": "e7d3cb20-fa90-11f0-bf8d-1db4e241b565",
 					"levelId": 58,
 					"layerDefUid": 8,
 					"pxOffsetX": 0,
@@ -10779,7 +10630,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 2101573,
+					"seed": 1936020,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -10795,7 +10646,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a3-fa90-11f0-bf8d-4573887396cb",
+					"iid": "e7d3cb21-fa90-11f0-bf8d-e33a580d6afd",
 					"levelId": 58,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -10804,7 +10655,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 2544514,
+					"seed": 9048626,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -10820,7 +10671,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a4-fa90-11f0-bf8d-3f744eac62a5",
+					"iid": "e7d3cb22-fa90-11f0-bf8d-23124f0159f0",
 					"levelId": 58,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -10829,7 +10680,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 7648608,
+					"seed": 13470,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -10957,12 +10808,7 @@
 			"__smartColor": "#737373",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": "[\n  {\n    \"layerId\": \"main\",\n    \"name\": \"Dialog\",\n    \"sheet\": \"boxes\",\n    \"sourceWidth\": 16,\n    \"sourceHeight\": 16,\n    \"parallaxx\": 1,\n    \"parallaxy\": 1,\n    \"atlas\": []\n  }\n]", "__tile": null, "defUid": 14, "realEditorValues": [{
-				"id": "V_String",
-				"params": [
-					"[\\n  {\\n    \"layerId\": \"main\",\\n    \"name\": \"Dialog\",\\n    \"sheet\": \"boxes\",\\n    \"sourceWidth\": 16,\\n    \"sourceHeight\": 16,\\n    \"parallaxx\": 1,\\n    \"parallaxy\": 1,\\n    \"atlas\": []\\n  }\\n]"
-				]
-			}] }],
+			"fieldInstances": [{ "__identifier": "CompatMapsJson", "__type": "Multilines", "__value": null, "__tile": null, "defUid": 14, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "bg_0",
@@ -10975,7 +10821,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a5-fa90-11f0-bf8d-a19d93340e0e",
+					"iid": "e7d3cb23-fa90-11f0-bf8d-3731f3b3087d",
 					"levelId": 59,
 					"layerDefUid": 8,
 					"pxOffsetX": 0,
@@ -10984,7 +10830,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 6404255,
+					"seed": 8009240,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -11000,7 +10846,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a6-fa90-11f0-bf8d-33a85a4659ba",
+					"iid": "e7d3cb24-fa90-11f0-bf8d-bdfd00562e26",
 					"levelId": 59,
 					"layerDefUid": 9,
 					"pxOffsetX": 0,
@@ -11009,7 +10855,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 3333455,
+					"seed": 5022526,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -11025,7 +10871,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a7-fa90-11f0-bf8d-9b9b1e13af32",
+					"iid": "e7d3cb25-fa90-11f0-bf8d-edd2b5d47384",
 					"levelId": 59,
 					"layerDefUid": 10,
 					"pxOffsetX": 0,
@@ -11034,7 +10880,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 5708579,
+					"seed": 4715579,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
@@ -11075,7 +10921,7 @@
 					"__pxTotalOffsetY": 0,
 					"__tilesetDefUid": null,
 					"__tilesetRelPath": null,
-					"iid": "d7a0b0a8-fa90-11f0-bf8d-1322f4db8495",
+					"iid": "e7d3cb26-fa90-11f0-bf8d-1deb7bd29a6d",
 					"levelId": 59,
 					"layerDefUid": 12,
 					"pxOffsetX": 0,
@@ -11084,7 +10930,7 @@
 					"optionalRules": [],
 					"intGridCsv": [],
 					"autoLayerTiles": [],
-					"seed": 5475320,
+					"seed": 4835723,
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []

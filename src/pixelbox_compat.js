@@ -27,6 +27,25 @@ const KEY_BINDINGS = {
   Y: 'A',
 };
 
+const LDTK_ENTITY_IDENTIFIER_TO_SPRITE_ID = Object.freeze({
+  PlayerSpawn: 0,
+  Coin: 16,
+  DoorOpen: 17,
+  DoorClosed: 18,
+  Chest: 19,
+  WeaponPickup: 20,
+  Npc: 32,
+  Exit: 34,
+  ItemPickup: 35,
+  LegacySprite48: 48,
+  MogusEnemy: 112,
+  FireballEnemy: 113,
+  Volcano: 114,
+  LegacySprite115: 115,
+  BeeEnemy: 116,
+  InkyEnemy: 117,
+});
+
 class ImageRef {
   constructor(img, path, x = 0, y = 0, w = img.width, h = img.height) {
     this.img = img;
@@ -514,8 +533,28 @@ class CompatTileMap {
     const entityId = typeof entity.iid === 'string' ? entity.iid : '<unknown>';
     const fieldContext = `LDtk layer "${layer.__identifier || '<unnamed>'}" entity ${entityId}`;
     const fields = this.parseFieldInstances(fieldContext, entity.fieldInstances);
+    const inferredSpriteId = typeof entity.__identifier === 'string'
+      ? LDTK_ENTITY_IDENTIFIER_TO_SPRITE_ID[entity.__identifier]
+      : undefined;
+
+    if (Number.isInteger(inferredSpriteId)) {
+      if (Number.isInteger(fields.CompatSpriteId) && fields.CompatSpriteId !== inferredSpriteId) {
+        throw new Error(
+          `${fieldContext} has CompatSpriteId ${fields.CompatSpriteId}, but typed entity ` +
+          `"${entity.__identifier}" maps to ${inferredSpriteId}.`,
+        );
+      }
+      fields.CompatSpriteId = inferredSpriteId;
+    }
+
     if ((!Number.isInteger(fields.CompatSpriteId) || fields.CompatSpriteId < 0) && entityCompatMeta) {
       if (Number.isInteger(entityCompatMeta.sprite) && entityCompatMeta.sprite >= 0) {
+        if (Number.isInteger(inferredSpriteId) && entityCompatMeta.sprite !== inferredSpriteId) {
+          throw new Error(
+            `${fieldContext} sidecar sprite ${entityCompatMeta.sprite} does not match typed entity ` +
+            `"${entity.__identifier}" (${inferredSpriteId}).`,
+          );
+        }
         fields.CompatSpriteId = entityCompatMeta.sprite;
       }
 

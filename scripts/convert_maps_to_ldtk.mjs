@@ -5,6 +5,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { extractLdtkCompatMeta } from './lib/ldtk_compat_meta.mjs';
+import {
+  buildEntityTilesetRect,
+  getLdtkEntitySpecByLegacySpriteId,
+  LDTK_ENTITY_SPECS,
+} from './lib/ldtk_entity_specs.mjs';
 
 const TILEMAP_CHARSET = "#$%&'()*+,-~/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}. !";
 const TILEMAP_CHAR_LOOKUP = (() => {
@@ -259,6 +264,63 @@ async function backupExistingProject() {
   return backupPath;
 }
 
+async function readExistingLevelLayout() {
+  let raw;
+  try {
+    raw = await fs.readFile(TARGET_LDTK_PATH, 'utf8');
+  } catch (error) {
+    if (error && error.code === 'ENOENT') {
+      return new Map();
+    }
+    throw new Error(`Failed to read existing LDtk project (${TARGET_LDTK_PATH}): ${error.message}`);
+  }
+
+  let project;
+  try {
+    project = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`Failed to parse existing LDtk project (${TARGET_LDTK_PATH}): ${error.message}`);
+  }
+
+  if (!isPlainObject(project)) {
+    throw new Error(`Existing LDtk project (${TARGET_LDTK_PATH}) must be a JSON object.`);
+  }
+  if (!Array.isArray(project.levels)) {
+    throw new Error(`Existing LDtk project (${TARGET_LDTK_PATH}) is missing its levels array.`);
+  }
+
+  const layoutByIdentifier = new Map();
+  for (const level of project.levels) {
+    if (!isPlainObject(level)) {
+      throw new Error(`Existing LDtk project (${TARGET_LDTK_PATH}) contains an invalid level entry.`);
+    }
+
+    const identifier = typeof level.identifier === 'string' && level.identifier.length > 0
+      ? level.identifier
+      : null;
+    if (!identifier) {
+      throw new Error(`Existing LDtk project (${TARGET_LDTK_PATH}) has a level without a valid identifier.`);
+    }
+    if (layoutByIdentifier.has(identifier)) {
+      throw new Error(`Existing LDtk project (${TARGET_LDTK_PATH}) has duplicate level identifier "${identifier}".`);
+    }
+    if (!Number.isInteger(level.worldX) || !Number.isInteger(level.worldY)) {
+      throw new Error(`Existing LDtk level "${identifier}" is missing integer worldX/worldY coordinates.`);
+    }
+    if (!Number.isInteger(level.worldDepth)) {
+      throw new Error(`Existing LDtk level "${identifier}" is missing integer worldDepth.`);
+    }
+
+    layoutByIdentifier.set(identifier, {
+      worldDepth: level.worldDepth,
+      worldX: level.worldX,
+      worldY: level.worldY,
+    });
+  }
+
+  return layoutByIdentifier;
+}
+
 async function readJson(filePath, description) {
   let raw;
   try {
@@ -447,27 +509,29 @@ function collectLayerIdentifiers(grouped, standalone) {
   return Array.from(identifiers);
 }
 
-function createFieldDef(uid, identifier, type) {
+function createFieldDef(uid, identifier, type, options = {}) {
   const details = fieldTypeDetails(type);
   return {
     __type: details.displayType,
     uid,
     identifier,
     type: details.internalType,
-    canBeNull: true,
+    canBeNull: options.canBeNull ?? true,
     isArray: false,
     allowOutOfLevelRef: false,
     allowedRefTags: [],
     allowedRefs: 'OnlySame',
+    allowedRefsEntityUid: null,
     autoChainRef: false,
+    acceptFileTypes: null,
     arrayMaxLength: null,
     arrayMinLength: null,
     defaultOverride: null,
-    doc: null,
-    editorAlwaysShow: false,
+    doc: options.doc ?? null,
+    editorAlwaysShow: options.editorAlwaysShow ?? false,
     editorCutLongValues: true,
     editorDisplayColor: null,
-    editorDisplayMode: 'Hidden',
+    editorDisplayMode: options.editorDisplayMode ?? 'Hidden',
     editorDisplayPos: 'Above',
     editorDisplayScale: 1,
     editorLinkStyle: 'StraightArrow',
@@ -475,21 +539,62 @@ function createFieldDef(uid, identifier, type) {
     editorTextPrefix: '',
     editorTextSuffix: '',
     exportToToc: false,
+    max: null,
+    min: null,
+    regex: null,
     searchable: false,
     symmetricalRef: false,
     textLanguageMode: null,
+    tilesetUid: null,
     useForSmartColor: false,
   };
 }
 
 function createFieldInstance(def, value) {
+  const realEditorValues = createRealEditorValues(def, value);
   return {
     __identifier: def.identifier,
+    __tile: null,
     __type: def.__type,
     __value: value,
     defUid: def.uid,
-    realEditorValues: [],
+    realEditorValues,
   };
+}
+
+function createRealEditorValues(def, value) {
+  if (value === null || value === undefined) {
+    return [];
+  }
+
+  switch (def.__type) {
+    case 'Int':
+      if (!Number.isInteger(value)) {
+        throw new Error(`Field "${def.identifier}" expected an integer editor value, got ${typeof value}.`);
+      }
+      return [
+        {
+          id: 'V_Int',
+          params: [value],
+        },
+      ];
+    case 'String':
+    case 'Multilines':
+      if (typeof value !== 'string') {
+        throw new Error(`Field "${def.identifier}" expected a string editor value, got ${typeof value}.`);
+      }
+      return [
+        {
+          id: 'V_String',
+          params: [value],
+        },
+      ];
+    default:
+      throw new Error(
+        `Field "${def.identifier}" uses unsupported LDtk editor value type "${def.__type}". ` +
+        'Add a serializer before emitting this field type.',
+      );
+  }
 }
 
 function createTilesetDef(uid, sheetPath, imageInfo) {
@@ -551,21 +656,27 @@ function createLayerDef(uid, identifier, type) {
   };
 }
 
-function createCompatEntityDef(uid, fieldDefs) {
+function createTypedEntityDef(uid, spec, fieldDefs, entitiesTilesetUid) {
+  const tileRect = buildEntityTilesetRect(entitiesTilesetUid, spec.legacySpriteId);
   return {
     allowOutOfBounds: false,
-    color: '#ffffff',
+    color: spec.color,
+    doc: spec.doc,
     exportToToc: false,
     fieldDefs,
     fillOpacity: 0,
     height: TILE_SIZE,
     hollow: false,
-    identifier: 'CompatEntity',
+    identifier: spec.identifier,
     keepAspectRatio: false,
     limitBehavior: 'DiscardOldOnes',
     limitScope: 'PerLayer',
     lineOpacity: 0,
-    maxCount: 0,
+    maxCount: spec.maxCount,
+    maxHeight: null,
+    maxWidth: null,
+    minHeight: null,
+    minWidth: null,
     nineSliceBorders: [],
     pivotX: 0,
     pivotY: 0,
@@ -575,8 +686,10 @@ function createCompatEntityDef(uid, fieldDefs) {
     showName: false,
     tags: [],
     tileOpacity: 1,
-    tileRect: null,
+    tileRect,
     tileRenderMode: 'Stretch',
+    tilesetId: entitiesTilesetUid,
+    uiTileRect: null,
     uid,
     width: TILE_SIZE,
   };
@@ -687,40 +800,58 @@ function buildGridTiles(sourceMap, targetWidth, targetHeight) {
   return tiles;
 }
 
-function stringifyMetadataValue(key, value, mapName, coord) {
-  const context = `${mapName}${coord ? ` @ ${coord}` : ''}.${key}`;
+function serializeEntityMetadataValue(fieldSpec, value, mapName, coord) {
+  const context = `${mapName}${coord ? ` @ ${coord}` : ''}.${fieldSpec.identifier}`;
 
-  if (value === null) {
-    throw new Error(`Metadata value for ${context} cannot be null.`);
-  }
-
-  if (Number.isInteger(value)) {
-    return { type: 'Int', value };
-  }
-
-  if (typeof value === 'number') {
-    if (!Number.isFinite(value)) {
-      throw new Error(`Metadata value for ${context} must be a finite number.`);
+  if (value === null || value === undefined) {
+    if (fieldSpec.canBeNull) {
+      return null;
     }
-    return { type: 'Float', value };
+    throw new Error(`Metadata value for ${context} is required.`);
   }
 
-  if (typeof value === 'boolean') {
-    return { type: 'Bool', value };
+  switch (fieldSpec.type) {
+    case 'Int':
+      if (!Number.isInteger(value)) {
+        throw new Error(`Metadata value for ${context} must be an integer.`);
+      }
+      return value;
+    case 'Float':
+      if (typeof value !== 'number' || !Number.isFinite(value)) {
+        throw new Error(`Metadata value for ${context} must be a finite number.`);
+      }
+      return value;
+    case 'Bool':
+      if (typeof value !== 'boolean') {
+        throw new Error(`Metadata value for ${context} must be a boolean.`);
+      }
+      return value;
+    case 'String':
+      if (typeof value !== 'string') {
+        throw new Error(`Metadata value for ${context} must be a string.`);
+      }
+      if (!fieldSpec.canBeNull && value.length === 0) {
+        throw new Error(`Metadata value for ${context} cannot be empty.`);
+      }
+      return value;
+    case 'Multilines':
+      if (typeof value === 'string') {
+        if (!fieldSpec.canBeNull && value.length === 0) {
+          throw new Error(`Metadata value for ${context} cannot be empty.`);
+        }
+        return value;
+      }
+      if (Array.isArray(value) || isPlainObject(value)) {
+        return fieldSpec.identifier === 'dialog'
+          ? JSON.stringify(value, null, 2)
+          : JSON.stringify(value);
+      }
+      throw new Error(
+        `Metadata value for ${context} must be a string, object, or array for LDtk Multilines fields.`,
+      );
+    default:
+      throw new Error(`Unsupported LDtk field type "${fieldSpec.type}" for ${context}.`);
   }
-
-  if (typeof value === 'string') {
-    return { type: 'String', value };
-  }
-
-  if (Array.isArray(value) || isPlainObject(value)) {
-    return {
-      type: 'Multilines',
-      value: key === 'dialog' ? JSON.stringify(value, null, 2) : JSON.stringify(value),
-    };
-  }
-
-  throw new Error(`Metadata value for ${context} has unsupported type "${typeof value}".`);
 }
 
 function buildEntityInstances({
@@ -728,8 +859,7 @@ function buildEntityInstances({
   mainMap,
   mapData,
   npcData,
-  compatEntityDef,
-  entityFieldDefs,
+  entityDefsByLegacySpriteId,
   entitiesTilesetUid,
   iidFactory,
   worldX,
@@ -773,38 +903,57 @@ function buildEntityInstances({
     const metadata = metadataByCoord.get(coord) || {};
     usedCoords.add(coord);
 
-    const fields = [
-      createFieldInstance(entityFieldDefs.sprite, tile.sprite),
-    ];
+    const entitySpec = getLdtkEntitySpecByLegacySpriteId(tile.sprite);
+    if (!entitySpec) {
+      throw new Error(`Entity map "${entitiesMap.name}" uses unsupported sprite ${tile.sprite} at "${coord}".`);
+    }
 
-    const metadataEntries = Object.entries(metadata).sort(([a], [b]) => a.localeCompare(b));
-    for (const [key, value] of metadataEntries) {
-      const fieldDef = entityFieldDefs.extraByIdentifier.get(key);
-      if (!fieldDef) {
-        throw new Error(`Entity metadata "${key}" on "${mapName}" at "${coord}" has no LDtk field definition.`);
+    const entityDefData = entityDefsByLegacySpriteId.get(tile.sprite) || null;
+    if (!entityDefData) {
+      throw new Error(`Missing typed LDtk entity definition for legacy sprite ${tile.sprite}.`);
+    }
+
+    for (const fieldSpec of entitySpec.fieldSpecs) {
+      if (!fieldSpec.canBeNull && !Object.prototype.hasOwnProperty.call(metadata, fieldSpec.identifier)) {
+        throw new Error(
+          `Entity metadata "${fieldSpec.identifier}" on "${mapName}" at "${coord}" is required for ${entitySpec.identifier}.`,
+        );
+      }
+    }
+
+    const fields = [];
+    const metadataKeys = Object.keys(metadata).sort();
+    for (const key of metadataKeys) {
+      if (!entityDefData.fieldDefsByIdentifier.has(key)) {
+        throw new Error(
+          `Entity metadata "${key}" on "${mapName}" at "${coord}" has no LDtk field definition for ${entitySpec.identifier}.`,
+        );
+      }
+    }
+
+    for (const fieldSpec of entitySpec.fieldSpecs) {
+      if (!Object.prototype.hasOwnProperty.call(metadata, fieldSpec.identifier)) {
+        continue;
       }
 
-      const fieldValue = stringifyMetadataValue(key, value, mapName, coord);
-      fields.push(createFieldInstance(fieldDef, fieldValue.value));
+      const fieldDef = entityDefData.fieldDefsByIdentifier.get(fieldSpec.identifier);
+      fields.push(createFieldInstance(
+        fieldDef,
+        serializeEntityMetadataValue(fieldSpec, metadata[fieldSpec.identifier], mapName, coord),
+      ));
     }
 
     const px = [tx * TILE_SIZE, ty * TILE_SIZE];
     entityInstances.push({
       __grid: [tx, ty],
-      __identifier: compatEntityDef.identifier,
+      __identifier: entitySpec.identifier,
       __pivot: [0, 0],
-      __smartColor: '#ffffff',
+      __smartColor: entitySpec.color,
       __tags: [],
-      __tile: {
-        tilesetUid: entitiesTilesetUid,
-        x: (tile.sprite % 16) * TILE_SIZE,
-        y: Math.floor(tile.sprite / 16) * TILE_SIZE,
-        w: TILE_SIZE,
-        h: TILE_SIZE,
-      },
+      __tile: buildEntityTilesetRect(entitiesTilesetUid, entitySpec.legacySpriteId),
       __worldX: worldX + px[0],
       __worldY: worldY + px[1],
-      defUid: compatEntityDef.uid,
+      defUid: entityDefData.entityDef.uid,
       fieldInstances: fields,
       height: TILE_SIZE,
       iid: iidFactory(),
@@ -923,6 +1072,7 @@ function createLevel({
   pxHei,
   pxWid,
   uid,
+  worldDepth,
   worldX,
   worldY,
 }) {
@@ -945,7 +1095,7 @@ function createLevel({
     pxWid,
     uid,
     useAutoIdentifier: false,
-    worldDepth: 0,
+    worldDepth,
     worldX,
     worldY,
   };
@@ -957,6 +1107,7 @@ function buildGroupedLevel({
   npcData,
   levelIdentifier,
   levelUid,
+  worldDepth,
   worldX,
   worldY,
   iidFactory,
@@ -1054,8 +1205,7 @@ function buildGroupedLevel({
     mainMap,
     mapData,
     npcData,
-    compatEntityDef: defs.compatEntityDef,
-    entityFieldDefs: defs.entityFieldDefs,
+    entityDefsByLegacySpriteId: defs.entityDefsByLegacySpriteId,
     entitiesTilesetUid: entitiesTileset.uid,
     iidFactory,
     worldX,
@@ -1081,6 +1231,7 @@ function buildGroupedLevel({
     pxHei: targetHeight * TILE_SIZE,
     pxWid: targetWidth * TILE_SIZE,
     uid: levelUid,
+    worldDepth,
     worldX,
     worldY,
   });
@@ -1091,6 +1242,7 @@ function buildStandaloneLevel({
   mapData,
   levelIdentifier,
   levelUid,
+  worldDepth,
   worldX,
   worldY,
   iidFactory,
@@ -1140,6 +1292,7 @@ function buildStandaloneLevel({
     pxHei: targetHeight * TILE_SIZE,
     pxWid: targetWidth * TILE_SIZE,
     uid: levelUid,
+    worldDepth,
     worldX,
     worldY,
   });
@@ -1166,6 +1319,11 @@ function buildDefs(mapBank, grouped, standalone, uidFactory, tilesetInfoBySheet)
     normalizedTilesetsBySheet.set(sheetPath, tileset);
   }
 
+  const entitiesTileset = normalizedTilesetsBySheet.get('tiles/entities');
+  if (!entitiesTileset) {
+    throw new Error('Missing required "tiles/entities" tileset definition.');
+  }
+
   const layerDefs = collectLayerIdentifiers(grouped, standalone)
     .sort()
     .map((identifier) => createLayerDef(uidFactory(), identifier, identifier === 'entities' ? 'Entities' : 'Tiles'));
@@ -1175,26 +1333,31 @@ function buildDefs(mapBank, grouped, standalone, uidFactory, tilesetInfoBySheet)
     compatMapsJson: createFieldDef(uidFactory(), 'CompatMapsJson', 'Multilines'),
   };
 
-  const entityExtraFieldDefs = [
-    createFieldDef(uidFactory(), 'contents', 'Multilines'),
-    createFieldDef(uidFactory(), 'dialog', 'Multilines'),
-    createFieldDef(uidFactory(), 'item', 'String'),
-    createFieldDef(uidFactory(), 'map', 'String'),
-    createFieldDef(uidFactory(), 'sprite', 'Int'),
-    createFieldDef(uidFactory(), 'weapon', 'String'),
-    createFieldDef(uidFactory(), 'x', 'Int'),
-    createFieldDef(uidFactory(), 'y', 'Int'),
-  ];
-  const entitySpriteFieldDef = createFieldDef(uidFactory(), 'CompatSpriteId', 'Int');
-  const compatEntityDef = createCompatEntityDef(uidFactory(), [entitySpriteFieldDef, ...entityExtraFieldDefs]);
-  const entityFieldDefs = {
-    sprite: entitySpriteFieldDef,
-    extraByIdentifier: new Map(entityExtraFieldDefs.map((def) => [def.identifier, def])),
-  };
+  const entityDefs = [];
+  const entityDefsByLegacySpriteId = new Map();
+  for (const entitySpec of LDTK_ENTITY_SPECS) {
+    const fieldDefs = entitySpec.fieldSpecs.map((fieldSpec) => createFieldDef(
+      uidFactory(),
+      fieldSpec.identifier,
+      fieldSpec.type,
+      {
+        canBeNull: fieldSpec.canBeNull,
+        doc: fieldSpec.doc,
+        editorAlwaysShow: fieldSpec.canBeNull === false,
+        editorDisplayMode: 'NameAndValue',
+      },
+    ));
+    const entityDef = createTypedEntityDef(uidFactory(), entitySpec, fieldDefs, entitiesTileset.uid);
+    entityDefs.push(entityDef);
+    entityDefsByLegacySpriteId.set(entitySpec.legacySpriteId, {
+      entityDef,
+      fieldDefsByIdentifier: new Map(fieldDefs.map((fieldDef) => [fieldDef.identifier, fieldDef])),
+    });
+  }
 
   return {
-    compatEntityDef,
-    entityFieldDefs,
+    entityDefs,
+    entityDefsByLegacySpriteId,
     layerDefs,
     layerDefsByIdentifier,
     levelFieldDefs,
@@ -1203,7 +1366,7 @@ function buildDefs(mapBank, grouped, standalone, uidFactory, tilesetInfoBySheet)
   };
 }
 
-function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet) {
+function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet, existingLevelLayoutByIdentifier) {
   const { grouped, standalone } = buildMapGroups(mapBank);
   const uidFactory = makeUidFactory(1);
   const iidFactory = makeIidFactory();
@@ -1228,14 +1391,16 @@ function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet) {
 
     const mainMap = group.mapsByLayer.get('main');
     const levelUid = uidFactory();
+    const existingLayout = existingLevelLayoutByIdentifier.get(levelIdentifier) || null;
     levels.push(buildGroupedLevel({
       group,
       mapData,
       npcData,
       levelIdentifier,
       levelUid,
-      worldX: layoutX,
-      worldY: layoutY,
+      worldDepth: existingLayout ? existingLayout.worldDepth : 0,
+      worldX: existingLayout ? existingLayout.worldX : layoutX,
+      worldY: existingLayout ? existingLayout.worldY : layoutY,
       iidFactory,
       defs,
     }));
@@ -1257,13 +1422,15 @@ function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet) {
     usedLevelIdentifiers.add(levelIdentifier);
 
     const levelUid = uidFactory();
+    const existingLayout = existingLevelLayoutByIdentifier.get(levelIdentifier) || null;
     levels.push(buildStandaloneLevel({
       pixelboxMap: map,
       mapData,
       levelIdentifier,
       levelUid,
-      worldX: layoutX,
-      worldY: layoutY,
+      worldDepth: existingLayout ? existingLayout.worldDepth : 0,
+      worldX: existingLayout ? existingLayout.worldX : layoutX,
+      worldY: existingLayout ? existingLayout.worldY : layoutY,
       iidFactory,
       defs,
     }));
@@ -1310,7 +1477,7 @@ function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet) {
     defaultPivotX: 0,
     defaultPivotY: 0,
     defs: {
-      entities: [defs.compatEntityDef],
+      entities: defs.entityDefs,
       enums: [],
       externalEnums: [],
       layers: defs.layerDefs,
@@ -1400,13 +1567,20 @@ async function main() {
     throw new Error('assets/data/npcs.json must be a JSON object.');
   }
 
+  const existingLevelLayoutByIdentifier = await readExistingLevelLayout();
   const backupPath = await backupExistingProject();
   if (backupPath) {
     console.log(`Backed up existing maps.ldtk to ${backupPath}`);
   }
 
   const tilesetInfoBySheet = await loadTilesetInfoBySheet(mapBank);
-  const ldtkProject = buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet);
+  const ldtkProject = buildLdtkProject(
+    mapBank,
+    mapData,
+    npcData,
+    tilesetInfoBySheet,
+    existingLevelLayoutByIdentifier,
+  );
   const compatMeta = extractLdtkCompatMeta(ldtkProject);
   await fs.writeFile(TARGET_LDTK_PATH, `${JSON.stringify(ldtkProject, null, 2)}\n`, 'utf8');
   await fs.writeFile(TARGET_LDTK_META_PATH, `${JSON.stringify(compatMeta, null, 2)}\n`, 'utf8');

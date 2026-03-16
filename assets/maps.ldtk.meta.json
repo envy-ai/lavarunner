@@ -720,8 +720,8 @@
         "00000000-0000-4000-8000-000000000054": {
           "sprite": 35,
           "properties": {
-            "item": "Big Bolt",
-            "sprite": 14
+            "sprite": 14,
+            "item": "Big Bolt"
           }
         },
         "00000000-0000-4000-8000-000000000055": {
@@ -739,8 +739,8 @@
         "00000000-0000-4000-8000-000000000057": {
           "sprite": 35,
           "properties": {
-            "item": "Double Jump Ring",
-            "sprite": 12
+            "sprite": 12,
+            "item": "Double Jump Ring"
           }
         }
       },
@@ -748,8 +748,8 @@
         "50,1": {
           "sprite": 35,
           "properties": {
-            "item": "Big Bolt",
-            "sprite": 14
+            "sprite": 14,
+            "item": "Big Bolt"
           }
         },
         "6,13": {
@@ -767,8 +767,8 @@
         "41,15": {
           "sprite": 35,
           "properties": {
-            "item": "Double Jump Ring",
-            "sprite": 12
+            "sprite": 12,
+            "item": "Double Jump Ring"
           }
         }
       }
@@ -869,8 +869,8 @@
         "00000000-0000-4000-8000-000000000069": {
           "sprite": 35,
           "properties": {
-            "item": "Titanium Ore",
-            "sprite": 15
+            "sprite": 15,
+            "item": "Titanium Ore"
           }
         }
       },
@@ -930,8 +930,8 @@
         "45,33": {
           "sprite": 35,
           "properties": {
-            "item": "Titanium Ore",
-            "sprite": 15
+            "sprite": 15,
+            "item": "Titanium Ore"
           }
         }
       }
@@ -954,8 +954,8 @@
         "00000000-0000-4000-8000-00000000006d": {
           "sprite": 35,
           "properties": {
-            "item": "Dilithium Crystal",
-            "sprite": 16
+            "sprite": 16,
+            "item": "Dilithium Crystal"
           }
         },
         "00000000-0000-4000-8000-00000000006e": {
@@ -975,8 +975,8 @@
         "13,12": {
           "sprite": 35,
           "properties": {
-            "item": "Dilithium Crystal",
-            "sprite": 16
+            "sprite": 16,
+            "item": "Dilithium Crystal"
           }
         },
         "1,14": {
@@ -1079,8 +1079,8 @@
         "00000000-0000-4000-8000-00000000007b": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]",
-            "sprite": 133
+            "sprite": 133,
+            "dialog": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]"
           }
         },
         "00000000-0000-4000-8000-00000000007c": {
@@ -1100,8 +1100,8 @@
         "13,13": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]",
-            "sprite": 133
+            "sprite": 133,
+            "dialog": "[\n  {\n    \"pre_eval\": \"console.log('1');\",\n    \"text\": \"Hi Sarah!  A large metal object fell out of the sky to the east of here a few minutes ago, and we've decided that you're the one who gets to go and investigage.  You should go see if anyone needs help.\",\n    \"post_eval\": \"window.Flags.start = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 1\",\n    \"pre_eval\": \"console.log('2');\",\n    \"text\": \"Why you?  We voted.  If you wanted to vote, you should have been there.\",\n    \"post_eval\": \"window.Flags.start = 2\"\n  },\n  {\n    \"condition\": \"window.Flag('start') == 2\",\n    \"pre_eval\": \"console.log('3');\",\n    \"text\": \"Go on.  Go to the west and investigate, and try not to die!\"\n  }\n]"
           }
         },
         "15,13": {
@@ -1177,22 +1177,22 @@
         "00000000-0000-4000-8000-000000000084": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]",
-            "sprite": 129
+            "sprite": 129,
+            "dialog": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]"
           }
         },
         "00000000-0000-4000-8000-000000000085": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]",
-            "sprite": 130
+            "sprite": 130,
+            "dialog": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]"
           }
         },
         "00000000-0000-4000-8000-000000000086": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]",
-            "sprite": 131
+            "sprite": 131,
+            "dialog": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]"
           }
         },
         "00000000-0000-4000-8000-000000000087": {
@@ -1222,22 +1222,22 @@
         "11,13": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]",
-            "sprite": 129
+            "sprite": 129,
+            "dialog": "[\n  {\n    \"text\": \"Someone sabotaged our ship and we crashlanded here on this strange planet.  We thought maybe it was Lime, so we tossed 'em out the airlock, but the stabotage continued.  Poor ${'Lime'}...\"\n  }\n]"
           }
         },
         "15,13": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]",
-            "sprite": 130
+            "sprite": 130,
+            "dialog": "[\n  {\n    \"text\": \"I caught Red sabotaging the navigation system just before we crashed.\"\n  }\n]"
           }
         },
         "17,13": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]",
-            "sprite": 131
+            "sprite": 131,
+            "dialog": "[\n  {\n    \"text\": \"Maybe you can help us get off this planet...  We need a Big Bolt, Titanium Ore, and a Dilithium Crystal.\",\n    \"post_eval\": \"window.Flags.maguffins = 1;\"\n  },\n  {\n    \"condition\": \"window.Flag('maguffins') == 1\",\n    \"text\": \"We still need: ${Scripts.MaguffinList()}\"\n  },\n  {\n    \"condition\": \"window.Scripts.PlayerHasMaguffins()\",\n    \"text\": \"You've got all of the parts for our ship.  Thanks to you, we can get off this rock!\",\n    \"post_eval\": \"Scripts.Ending();\"\n  }\n]"
           }
         },
         "24,13": {
@@ -1295,8 +1295,8 @@
         "00000000-0000-4000-8000-00000000008e": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]",
-            "sprite": 134
+            "sprite": 134,
+            "dialog": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]"
           }
         },
         "00000000-0000-4000-8000-00000000008f": {
@@ -1338,8 +1338,8 @@
         "51,22": {
           "sprite": 32,
           "properties": {
-            "dialog": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]",
-            "sprite": 134
+            "sprite": 134,
+            "dialog": "[\n  {\n    \"text\": \"I've always wanted to explore that old castle up there, but it's just too high up.  If only I had some sort of magical item that would let me jump in midair!\"\n  },\n  {\n    \"text\": \"Wow, you have the double jump ring!  You can go explore that castle up there!\",\n    \"condition\": \"player.hasItem('Double Jump Ring')\"\n  }\n]"
           }
         },
         "56,22": {

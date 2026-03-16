@@ -276,7 +276,68 @@ Original prompt: You're a UI designer working on an intuitive design.  Test the 
     - Playwright smoke pass on edited map succeeded:
       - `tmp/ldtk-smoke-8/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
       - only remaining errors are the pre-existing audio 404/autoplay failures
+ - Docs updated:
+    - `docs/MapConverter.md`
+2026-03-13
+- LDtk visible-field editor-state fix:
+  - Inspected user-created `assets/maps_ldtk_test.ldtk` and found the edited NPC data there, not in `assets/maps.ldtk`.
+  - Root cause: LDtk was reading visible field widgets from `realEditorValues`, not just `__value`.
+  - Our generated typed entity fields had correct `__value` payloads, but empty `realEditorValues`, so reopening the project in LDtk showed blank/default values and saving could rewrite them that way.
+  - Patched `scripts/convert_maps_to_ldtk.mjs` so generated field instances now emit:
+    - `__tile: null`
+    - `realEditorValues` for supported authored field types (`Int`, `String`, `Multilines`)
+  - Re-ran generation for the main project only:
+    - backup: `assets/maps_ldtk_backups/maps_20260313_195410.ldtk`
+    - `assets/maps_ldtk_test.ldtk` was left untouched by request
+    - `npm run convert:maps`
+  - Validation:
+    - `node --check scripts/convert_maps_to_ldtk.mjs`
+    - inspected regenerated `assets/maps.ldtk` and confirmed NPC `sprite`/`dialog` fields now include populated `realEditorValues`
+    - level `CompatMapsJson` field now also includes populated `realEditorValues`
+    - Playwright smoke pass on `http://127.0.0.1:4174` still succeeded:
+      - `tmp/ldtk-smoke-real-editor-values/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+      - only remaining errors are the existing audio 404/autoplay failures in `tmp/ldtk-smoke-real-editor-values/errors-0.json`
   - Docs updated:
     - `docs/MapConverter.md`
     - `docs/PixelboxRuntime.md`
     - `docs/README.md`
+2026-03-13
+- Typed LDtk entity authoring refactor:
+  - Replaced the generated single `CompatEntity` definition with typed LDtk entity defs in `scripts/convert_maps_to_ldtk.mjs`.
+  - Added shared entity spec catalog: `scripts/lib/ldtk_entity_specs.mjs`
+  - Typed defs now carry their own tileset icon plus only the metadata fields relevant to that entity type.
+  - Preserved current LDtk level layout during regeneration by reusing existing `worldX`, `worldY`, and `worldDepth`.
+  - Runtime (`src/pixelbox_compat.js`) now infers legacy sprite ids from typed LDtk entity identifiers, so gameplay still spawns through the existing sprite-id dispatch in `src/main.js`.
+  - Sidecar extraction (`scripts/lib/ldtk_compat_meta.mjs`) now also infers legacy sprite ids from typed LDtk entity identifiers, so `npm run extract:ldtk-meta` works on the typed project.
+  - Validation:
+    - `node --check scripts/convert_maps_to_ldtk.mjs`
+    - `node --check scripts/lib/ldtk_entity_specs.mjs`
+    - `node --check scripts/lib/ldtk_compat_meta.mjs`
+    - `node --check src/pixelbox_compat.js`
+    - `npm run convert:maps`
+    - `npm run extract:ldtk-meta`
+    - Playwright smoke pass on `http://127.0.0.1:4174` succeeded:
+      - `tmp/ldtk-smoke-typed-entities/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+      - only remaining errors are the existing audio 404/autoplay failures in `tmp/ldtk-smoke-typed-entities/errors-0.json`
+  - Docs updated:
+    - `docs/EntityPlacement.md`
+    - `docs/MapConverter.md`
+    - `docs/PixelboxRuntime.md`
+    - `docs/README.md`
+2026-03-13
+- LDtk editor field-display follow-up:
+  - User reported that typed NPC fields like `sprite` and `dialog` appeared empty in the LDtk editor even though gameplay still loaded them.
+  - Root cause: generated typed entity `fieldInstances` were sorted alphabetically by metadata key, which made instance order differ from the LDtk entity definition field order for some types (`Npc`, `ItemPickup`).
+  - Patched `scripts/convert_maps_to_ldtk.mjs` to emit entity `fieldInstances` in entity-definition order while still rejecting unexpected metadata keys.
+  - Re-ran generation and sidecar extraction:
+    - backup: `assets/maps_ldtk_backups/maps_20260313_193855.ldtk`
+    - `npm run convert:maps`
+    - `npm run extract:ldtk-meta`
+  - Validation:
+    - `node --check scripts/convert_maps_to_ldtk.mjs`
+    - inspected regenerated `Npc` instances and confirmed field order is now `sprite`, then `dialog`
+    - Playwright smoke pass on `http://127.0.0.1:4174` still succeeded:
+      - `tmp/ldtk-smoke-field-order/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+      - only remaining errors are the existing audio 404/autoplay failures in `tmp/ldtk-smoke-field-order/errors-0.json`
+  - Docs updated:
+    - `docs/MapConverter.md`

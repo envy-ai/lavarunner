@@ -9,6 +9,7 @@
 - Loads the LDtk project from `assets/maps.ldtk`.
 - Loads optional runtime compat metadata from `assets/maps.ldtk.meta.json`.
 - Resolves LDtk level/layer metadata into virtual per-layer `CompatTileMap` instances.
+- Normalizes typed LDtk entity identifiers back into the legacy sprite ids expected by `src/main.js`.
 - Exposes Pixelbox-like globals:
   - drawing: `tilesheet`, `sprite`, `draw`, `cls`, `rect`, `rectf`, `pen`, `paper`, `print`
   - map access: `getMap`
@@ -57,9 +58,15 @@ Each loaded `CompatTileMap` also carries:
 The runtime currently copies the LDtk `entities` layer onto every virtual map created from the same level,
 matching the old combined-map behavior where the entity object layer was visible from `main`, `bg.*`, and `fg`.
 
+For newly generated projects, `sprite` is inferred from the LDtk entity identifier (`PlayerSpawn`, `Npc`, `DoorOpen`,
+etc.) rather than read from a hidden `CompatSpriteId` field.
+
 ### LDtk Round-Trip Metadata
 
-- LDtk saves can currently null out the hidden compatibility field payloads (`CompatMapsJson`, `CompatSpriteId`, etc.).
+- LDtk saves can currently null out hidden compatibility field payloads.
+- Current generated projects only still depend on one hidden payload: the level field `CompatMapsJson`.
+- Typed LDtk entities no longer require hidden `CompatSpriteId` fields; runtime sprite ids are inferred from the typed
+  entity identifier and older files still fall back to embedded compat data or the sidecar.
 - To keep gameplay loading stable after editor-only level layout changes, the runtime merges preserved metadata from
   `assets/maps.ldtk.meta.json`.
 - Sidecar entity metadata is matched by LDtk entity `iid` first, then by entity grid coordinate as a fallback for
