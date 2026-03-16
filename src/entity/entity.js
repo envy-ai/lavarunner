@@ -113,15 +113,37 @@ export default class Entity {
     return this.y - camera.y;
   }
 
+  getAnimationStateConfig() {
+    if(this.state == state.custom) return null;
+    return this.states[this.state] || null;
+  }
+
   getSprite() {
-    var spr = this.states[this.state].anim[0];
-    for(var c in this.states[this.state].anim) {
+    const animation = this.getAnimationStateConfig();
+    if(animation === null) {
+      throw new Error(`${this.entityName} requested a sprite for custom state playback.`);
+    }
+    if(!animation || !animation.anim || typeof animation.anim !== 'object' || Array.isArray(animation.anim)) {
+      throw new Error(`${this.entityName} has no animation config for state "${this.state}".`);
+    }
+
+    const thresholds = Object.keys(animation.anim)
+      .map((value) => Number.parseInt(value, 10))
+      .filter((value) => Number.isInteger(value))
+      .sort((a, b) => a - b);
+    if(thresholds.length === 0 || animation.anim[0] === undefined) {
+      throw new Error(`${this.entityName} state "${this.state}" is missing a 0-frame animation threshold.`);
+    }
+
+    var spr = animation.anim[0];
+    for(var c of thresholds) {
       if(this.stateCounter >= c) {
-        spr = this.states[this.state].anim[c];
+        spr = animation.anim[c];
       } else {
         break;
       }
     }
+
     return spr;
   }
 
@@ -282,10 +304,20 @@ export default class Entity {
 
   updateStateCounter() {
     this.stateCounter++;
-    try {
-      if(this.states[this.state].reset >= 0 && this.stateCounter >= this.states[this.state].reset) this.stateCounter = 0;
-    } catch(error) {
+    const animation = this.getAnimationStateConfig();
+    if(animation === null) {
       this.stateCounter = 0;
+      return;
+    }
+    if(!animation) {
+      throw new Error(`${this.entityName} has no animation config for state "${this.state}".`);
+    }
+    if(animation.reset >= 0 && this.stateCounter >= animation.reset) {
+      if(Number.isInteger(animation.loopToCounter)) {
+        this.stateCounter = animation.loopToCounter;
+      } else {
+        this.stateCounter = 0;
+      }
     }
   }
 

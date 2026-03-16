@@ -10,6 +10,9 @@ const TILED_FLIP_MASK =
   TILED_FLIPPED_HORIZONTALLY_FLAG |
   TILED_FLIPPED_VERTICALLY_FLAG |
   TILED_FLIPPED_DIAGONALLY_FLAG;
+const FIXED_FRAME_MS = 1000 / 60;
+const PLAYER_SPRITE_EDITOR_IDENTIFIER = 'player_default';
+const PLAYER_SPRITE_EDITOR_TILESET_REL_PATH = 'sprites/player_default.png';
 const PhaserRuntime = window.Phaser;
 
 if (!PhaserRuntime) {
@@ -892,6 +895,7 @@ class PixelboxRuntime {
         weapons: data.get('data/weapons'),
       },
       maps: null,
+      spriteEditor: {},
       patatracker: data.get('patatracker'),
       bleeper: data.get('bleeper'),
       atlas: {
@@ -1019,6 +1023,166 @@ class PixelboxRuntime {
     }
 
     return parsed;
+  }
+
+  convertSpriteEditorMsToTicks(durationMs, context) {
+    if (!Number.isInteger(durationMs) || durationMs <= 0) {
+      throw new Error(`${context} must provide a positive integer durationMs.`);
+    }
+
+    return Math.max(1, Math.round(durationMs / FIXED_FRAME_MS));
+  }
+
+  buildPlayerSpriteEditorState(state, tilesetRelPathByUid, context) {
+    if (!state || typeof state !== 'object' || Array.isArray(state)) {
+      throw new Error(`${context} must be an object.`);
+    }
+    if (typeof state.identifier !== 'string' || state.identifier.length === 0) {
+      throw new Error(`${context} is missing a valid identifier.`);
+    }
+    if (!Array.isArray(state.frames) || state.frames.length === 0) {
+      throw new Error(`${context} must contain at least one frame.`);
+    }
+    if (typeof state.loop !== 'boolean') {
+      throw new Error(`${context} is missing a boolean loop flag.`);
+    }
+    if (!Number.isInteger(state.loopToMs) || state.loopToMs < 0) {
+      throw new Error(`${context} must provide a non-negative integer loopToMs.`);
+    }
+
+    const anim = {};
+    let counter = 0;
+    let resolvedTilesetRelPath = null;
+
+    for (let index = 0; index < state.frames.length; index += 1) {
+      const frame = state.frames[index];
+      const frameContext = `${context} frame ${index}`;
+      if (!frame || typeof frame !== 'object' || Array.isArray(frame)) {
+        throw new Error(`${frameContext} must be an object.`);
+      }
+      if (!Array.isArray(frame.tiles) || frame.tiles.length !== 1) {
+        throw new Error(`${frameContext} must contain exactly one tile for runtime playback.`);
+      }
+
+      const tile = frame.tiles[0];
+      if (!tile || typeof tile !== 'object' || Array.isArray(tile)) {
+        throw new Error(`${frameContext} tile must be an object.`);
+      }
+      if (!Number.isInteger(tile.tileId) || tile.tileId < 0) {
+        throw new Error(`${frameContext} tile must provide a non-negative integer tileId.`);
+      }
+      if (!Number.isInteger(tile.tilesetUid)) {
+        throw new Error(`${frameContext} tile is missing an integer tilesetUid.`);
+      }
+      if (tile.flipX || tile.flipY) {
+        throw new Error(`${frameContext} tile flips are unsupported by the current runtime.`);
+      }
+      if (tile.x !== 0 || tile.y !== 0) {
+        throw new Error(`${frameContext} tile offsets are unsupported by the current runtime.`);
+      }
+
+      const tilesetRelPath = tilesetRelPathByUid.get(tile.tilesetUid);
+      if (!tilesetRelPath) {
+        throw new Error(`${frameContext} references unknown tileset UID ${tile.tilesetUid}.`);
+      }
+      if (resolvedTilesetRelPath === null) {
+        resolvedTilesetRelPath = tilesetRelPath;
+      } else if (resolvedTilesetRelPath !== tilesetRelPath) {
+        throw new Error(`${context} mixes tiles from multiple tilesets, which the current runtime does not support.`);
+      }
+
+      anim[counter] = tile.tileId;
+      counter += this.convertSpriteEditorMsToTicks(frame.durationMs, frameContext);
+    }
+
+    const loopToCounter = Math.round(state.loopToMs / FIXED_FRAME_MS);
+    if (state.loop) {
+      if (counter <= 0) {
+        throw new Error(`${context} resolved to an empty duration.`);
+      }
+      if (!Number.isInteger(loopToCounter) || loopToCounter < 0 || loopToCounter >= counter) {
+        throw new Error(`${context} has loopToMs outside the state duration.`);
+      }
+    }
+
+    return {
+      anim,
+      loopToCounter: state.loop ? loopToCounter : null,
+      reset: state.loop ? counter : -1,
+      tilesetRelPath: resolvedTilesetRelPath,
+    };
+  }
+
+  parseRequiredPlayerSpriteEditor(ldtkProject) {
+    const root = ldtkProject && ldtkProject.spriteEditor;
+    if (!root || typeof root !== 'object' || Array.isArray(root)) {
+      throw new Error('assets/maps.ldtk is missing root spriteEditor data required for player animation.');
+    }
+    if (!Array.isArray(root.sprites)) {
+      throw new Error('assets/maps.ldtk spriteEditor is missing its sprites array.');
+    }
+    if (!ldtkProject.defs || !Array.isArray(ldtkProject.defs.tilesets)) {
+      throw new Error('assets/maps.ldtk is missing defs.tilesets required for spriteEditor playback.');
+    }
+
+    const tilesetRelPathByUid = new Map();
+    for (const tileset of ldtkProject.defs.tilesets) {
+      if (!tileset || typeof tileset !== 'object' || Array.isArray(tileset)) {
+        throw new Error('assets/maps.ldtk contains an invalid tileset definition.');
+      }
+      if (!Number.isInteger(tileset.uid)) {
+        throw new Error('assets/maps.ldtk contains a tileset definition without an integer uid.');
+      }
+      if (typeof tileset.relPath !== 'string' || tileset.relPath.length === 0) {
+        throw new Error(`LDtk tileset UID ${tileset.uid} is missing a valid relPath.`);
+      }
+      if (tilesetRelPathByUid.has(tileset.uid)) {
+        throw new Error(`assets/maps.ldtk contains duplicate tileset UID ${tileset.uid}.`);
+      }
+      tilesetRelPathByUid.set(tileset.uid, tileset.relPath);
+    }
+
+    const playerSprite = root.sprites.find(
+      (sprite) => sprite && sprite.identifier === PLAYER_SPRITE_EDITOR_IDENTIFIER,
+    );
+    if (!playerSprite) {
+      throw new Error(`assets/maps.ldtk spriteEditor is missing the "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" sprite.`);
+    }
+    if (!Number.isInteger(playerSprite.canvasWid) || !Number.isInteger(playerSprite.canvasHei)) {
+      throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" is missing integer canvas dimensions.`);
+    }
+    if (playerSprite.canvasWid !== TILE_SIZE || playerSprite.canvasHei !== TILE_SIZE) {
+      throw new Error(
+        `LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" must be ${TILE_SIZE}x${TILE_SIZE} for the current runtime.`,
+      );
+    }
+    if (!Array.isArray(playerSprite.states) || playerSprite.states.length === 0) {
+      throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" is missing its states array.`);
+    }
+
+    const states = {};
+    for (const rawState of playerSprite.states) {
+      const stateContext = `LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" state "${rawState?.identifier || '<unnamed>'}"`;
+      const parsedState = this.buildPlayerSpriteEditorState(rawState, tilesetRelPathByUid, stateContext);
+      if (states[rawState.identifier]) {
+        throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" has duplicate state "${rawState.identifier}".`);
+      }
+      if (parsedState.tilesetRelPath !== PLAYER_SPRITE_EDITOR_TILESET_REL_PATH) {
+        throw new Error(
+          `LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" state "${rawState.identifier}" references "${parsedState.tilesetRelPath}", ` +
+          `expected "${PLAYER_SPRITE_EDITOR_TILESET_REL_PATH}".`,
+        );
+      }
+      states[rawState.identifier] = parsedState;
+    }
+
+    return {
+      canvasHei: playerSprite.canvasHei,
+      canvasWid: playerSprite.canvasWid,
+      identifier: PLAYER_SPRITE_EDITOR_IDENTIFIER,
+      states,
+      tilesetRelPath: PLAYER_SPRITE_EDITOR_TILESET_REL_PATH,
+    };
   }
 
   buildSharedObjectLayers(level, levelCompatMeta = null) {
@@ -1168,6 +1332,9 @@ class PixelboxRuntime {
 
     this.assets.maps = ldtkProject;
     this.assets.mapsCompat = compatMeta;
+    this.assets.spriteEditor = {
+      [PLAYER_SPRITE_EDITOR_IDENTIFIER]: this.parseRequiredPlayerSpriteEditor(ldtkProject),
+    };
   }
 
   resolveTilesheet(path) {

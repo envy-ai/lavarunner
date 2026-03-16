@@ -7,6 +7,7 @@
 - Loads project images and JSON data through Phaser.
 - Builds the legacy `window.assets` structure expected by gameplay code.
 - Loads the LDtk project from `assets/maps.ldtk`.
+- Parses the LDtk root `spriteEditor` player animation data and exposes it on `assets.spriteEditor.player_default`.
 - Loads optional runtime compat metadata from `assets/maps.ldtk.meta.json`.
 - Resolves LDtk level/layer metadata into virtual per-layer `CompatTileMap` instances.
 - Normalizes typed LDtk entity identifiers back into the legacy sprite ids expected by `src/main.js`.
@@ -71,6 +72,17 @@ etc.) rather than read from a hidden `CompatSpriteId` field.
   `assets/maps.ldtk.meta.json`.
 - Sidecar entity metadata is matched by LDtk entity `iid` first, then by entity grid coordinate as a fallback for
   editor saves that rewrite some entity `iid` values to `0`.
+
+### Player Sprite Animations
+
+- Player body animation is sourced from `assets/maps.ldtk` root `spriteEditor.sprites["player_default"]`.
+- Parsed player state data is exposed on `window.assets.spriteEditor.player_default`.
+- The runtime currently supports the existing single-tile `8x8` player model only:
+  - one tile per frame
+  - tile placed at `(0,0)`
+  - no per-frame tile flips
+  - tileset path must be `sprites/player_default.png`
+- Invalid or missing player sprite editor data throws during startup instead of falling back to hardcoded player frame tables.
 
 ## Testing Hooks
 

@@ -341,3 +341,69 @@ Original prompt: You're a UI designer working on an intuitive design.  Test the 
       - only remaining errors are the existing audio 404/autoplay failures in `tmp/ldtk-smoke-field-order/errors-0.json`
   - Docs updated:
     - `docs/MapConverter.md`
+2026-03-16
+- LDtk sprite editor player-animation seed/preservation:
+  - User added a local LDtk schema extension for root `spriteEditor` data and asked to get the player sprite animations into the project so LDtk can load them.
+  - Patched `scripts/convert_maps_to_ldtk.mjs` to:
+    - preserve existing root `spriteEditor` data across `npm run convert:maps`
+    - preserve non-map tilesets referenced by `spriteEditor`
+    - remap preserved sprite-editor tile references to the regenerated tileset UIDs
+    - fail loudly on malformed preserved sprite-editor/tileset data
+    - seed a default `player_default` sprite editor definition when missing, using `sprites/player_default.png`
+  - Seeded player states mirror the current runtime state tables in `src/entity/player/player.js`:
+    - `stand`, `move`, `jump`, `fall`, `ouch`, `slide`, `knockback`
+  - Regenerated the project:
+    - backup: `assets/maps_ldtk_backups/maps_20260316_163828.ldtk`
+    - `npm run convert:maps`
+  - Validation:
+    - `node --check scripts/convert_maps_to_ldtk.mjs`
+    - inspected regenerated `assets/maps.ldtk` and confirmed:
+      - root `spriteEditor` exists
+      - `defs.tilesets[]` now includes `sprites/player_default.png`
+      - `spriteEditor.sprites[]` contains `player_default` with the expected player state list
+    - Playwright smoke pass on `http://127.0.0.1:4173` after regeneration:
+      - `tmp/ldtk-spriteeditor-smoke/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+      - `tmp/ldtk-spriteeditor-smoke/errors-0.json` only shows the existing audio autoplay/404 failures
+      - `tmp/ldtk-spriteeditor-smoke/shot-0.png` remains the known black headless capture path while `render_game_to_text()` reports a populated frame
+  - Docs updated:
+    - `docs/AnimationAndHitboxes.md`
+    - `docs/MapConverter.md`
+    - `docs/README.md`
+2026-03-16
+- LDtk player animation runtime source-of-truth switch:
+  - User requested that gameplay read the player sprite animation from LDtk instead of the hardcoded table in `src/entity/player/player.js`.
+  - Applied scoped defaults:
+    - only the player body animation was migrated
+    - missing/invalid LDtk player sprite editor data now fails loudly instead of falling back
+  - Runtime changes:
+    - `src/pixelbox_compat.js`
+      - now parses `assets/maps.ldtk` root `spriteEditor.sprites["player_default"]`
+      - validates the current supported player model (`8x8`, one tile per frame, tile at `(0,0)`, no per-frame flips, `sprites/player_default.png`)
+      - exposes parsed player animation data on `assets.spriteEditor.player_default`
+    - `src/entity/entity.js`
+      - generalized animation lookup to read from `getAnimationStateConfig()`
+      - added `loopToCounter` support so LDtk loop timing can restart from non-zero timeline points
+      - now throws on missing non-custom animation configs instead of silently hiding the problem
+    - `src/entity/player/player.js`
+      - removed the hardcoded player `this.states` animation table
+      - maps gameplay state ids to LDtk state identifiers
+      - reads player animation configs from `assets.spriteEditor.player_default`
+  - Validation:
+    - `node --check src/pixelbox_compat.js`
+    - `node --check src/entity/entity.js`
+    - `node --check src/entity/player/player.js`
+    - Playwright smoke pass on `http://127.0.0.1:4173`:
+      - `tmp/ldtk-player-animation-runtime/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+      - `tmp/ldtk-player-animation-runtime/errors-0.json` only shows the existing audio autoplay/404 failures
+      - `tmp/ldtk-player-animation-runtime/shot-0.png` remains the known black headless capture path
+    - Direct browser evaluation on the live page confirmed:
+      - `window.player.states` is empty
+      - `window.assets.spriteEditor` contains `player_default`
+      - `window.player.spriteEditorDefinition.states` contains `stand`, `move`, `jump`, `fall`, `ouch`, `slide`, `knockback`
+      - `window.player.getAnimationStateConfig()` returns the LDtk-derived config
+  - Docs updated:
+    - `docs/AnimationAndHitboxes.md`
+    - `docs/MapConverter.md`
+    - `docs/PixelboxRuntime.md`
+    - `docs/developer_overview.md`
+    - `docs/README.md`

@@ -24,6 +24,9 @@ The runtime renders to a 128x128 offscreen canvas and displays it via Phaser as 
 
 Runtime source of truth is `assets/maps.ldtk`.
 
+- Map/layer/entity data comes from the LDtk level contents.
+- Player body animation also comes from the root `spriteEditor` section in `assets/maps.ldtk`.
+
 The repository still keeps the legacy Pixelbox bank in `assets/maps.json` plus older metadata in:
 
 - `assets/data/mapdata.json`

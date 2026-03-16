@@ -42,6 +42,11 @@ npm run extract:ldtk-meta
   different tilesets.
 - When `assets/maps.ldtk` already exists, `npm run convert:maps` preserves each level's `worldX`, `worldY`, and
   `worldDepth`, so editor layout adjustments survive regeneration.
+- When `assets/maps.ldtk` already exists, `npm run convert:maps` also preserves root `spriteEditor` data and any
+  non-map tilesets it depends on, remapping tileset UIDs as needed during regeneration.
+- If the LDtk project does not yet contain a player sprite editor entry, the converter seeds a default
+  `spriteEditor.sprites[]` definition for `player_default` using `sprites/player_default.png` and the converter's
+  built-in default player animation state table.
 - Background layers are padded to the `main` layer dimensions, and their original width/height plus parallax values
   are stored in the LDtk level field `CompatMapsJson`.
 - Remaining runtime metadata (`bgcolor`, `atlas`) is also serialized into `CompatMapsJson`, so the runtime no longer

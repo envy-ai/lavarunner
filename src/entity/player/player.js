@@ -2,6 +2,9 @@ import Wipe from '../../wipe.js';
 import Entity from '../entity.js';
 import TextParticle from '../particle/text_particle.js';
 
+const PLAYER_SPRITE_EDITOR_IDENTIFIER = 'player_default';
+const PLAYER_SPRITE_EDITOR_TILESET_REL_PATH = 'sprites/player_default.png';
+
 export default class Player extends Entity {
   constructor() {
     super();
@@ -51,54 +54,46 @@ export default class Player extends Entity {
       x2: 6,
       y2: 7,
     };
-
-    this.states = {
-      [state.stand]: {
-        anim: {
-          0: 0,
-        },
-        reset: 0,
-      },
-      [state.move]: {
-        anim: {
-          0: 3,
-          4: 2,
-          8: 1,
-        },
-        reset: 12,
-      },
-      [state.jump]: {
-        anim: {
-          0: 1,
-        }, 
-        reset: 0,
-      },
-      [state.fall]: {
-        anim: {
-          0: 3,
-          12: 4,
-        }, 
-        reset: -1,
-      },
-      [state.ouch]: {
-        anim: {
-          0: 5,
-        },
-        reset: -1,
-      },
-      [state.slide]: {
-        anim: {
-          0: 1,
-        },
-        reset: -1,
-      },
-      [state.knockback]: {
-        anim: {
-          0: 3,
-        },
-        reset: -1,
-      }
+    this.spriteEditorStateIdentifiers = {
+      [state.stand]: 'stand',
+      [state.move]: 'move',
+      [state.jump]: 'jump',
+      [state.fall]: 'fall',
+      [state.ouch]: 'ouch',
+      [state.slide]: 'slide',
+      [state.knockback]: 'knockback',
     };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition();
+  }
+
+  requireSpriteEditorDefinition() {
+    if(!assets || !assets.spriteEditor || typeof assets.spriteEditor !== 'object') {
+      throw new Error('Player runtime requires assets.spriteEditor to be loaded from assets/maps.ldtk.');
+    }
+    const definition = assets.spriteEditor[PLAYER_SPRITE_EDITOR_IDENTIFIER];
+    if(!definition || typeof definition !== 'object') {
+      throw new Error(`Player runtime requires LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}".`);
+    }
+    if(definition.tilesetRelPath !== PLAYER_SPRITE_EDITOR_TILESET_REL_PATH) {
+      throw new Error(
+        `Player runtime expected LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" to use "${PLAYER_SPRITE_EDITOR_TILESET_REL_PATH}", ` +
+        `got "${definition.tilesetRelPath}".`,
+      );
+    }
+    return definition;
+  }
+
+  getAnimationStateConfig() {
+    if(this.state == state.custom) return null;
+    const stateIdentifier = this.spriteEditorStateIdentifiers[this.state];
+    if(typeof stateIdentifier !== 'string' || stateIdentifier.length === 0) {
+      throw new Error(`Player has no LDtk animation mapping for state "${this.state}".`);
+    }
+    const animation = this.spriteEditorDefinition.states[stateIdentifier];
+    if(!animation) {
+      throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" is missing player state "${stateIdentifier}".`);
+    }
+    return animation;
   }
 
   addItem(item, quantity = 1) {

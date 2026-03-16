@@ -39,6 +39,46 @@ const NPCS_PATH = path.join(repoRoot, 'assets', 'data', 'npcs.json');
 const TARGET_LDTK_PATH = path.join(repoRoot, 'assets', 'maps.ldtk');
 const TARGET_LDTK_META_PATH = path.join(repoRoot, 'assets', 'maps.ldtk.meta.json');
 const TARGET_BACKUP_ROOT = path.join(repoRoot, 'assets', 'maps_ldtk_backups');
+const PLAYER_SPRITE_SHEET_PATH = 'sprites/player_default';
+const PLAYER_SPRITE_EDITOR_IDENTIFIER = 'player_default';
+const PLAYER_SPRITE_EDITOR_STATES = [
+  {
+    identifier: 'stand',
+    anim: { 0: 0 },
+    reset: 0,
+  },
+  {
+    identifier: 'move',
+    anim: { 0: 3, 4: 2, 8: 1 },
+    reset: 12,
+  },
+  {
+    identifier: 'jump',
+    anim: { 0: 1 },
+    reset: 0,
+  },
+  {
+    identifier: 'fall',
+    anim: { 0: 3, 12: 4 },
+    reset: -1,
+  },
+  {
+    identifier: 'ouch',
+    anim: { 0: 5 },
+    reset: -1,
+  },
+  {
+    identifier: 'slide',
+    anim: { 0: 1 },
+    reset: -1,
+  },
+  {
+    identifier: 'knockback',
+    anim: { 0: 3 },
+    reset: -1,
+  },
+];
+const SPRITE_EDITOR_TICK_MS = 1000 / 60;
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -264,13 +304,16 @@ async function backupExistingProject() {
   return backupPath;
 }
 
-async function readExistingLevelLayout() {
+async function readExistingProjectData() {
   let raw;
   try {
     raw = await fs.readFile(TARGET_LDTK_PATH, 'utf8');
   } catch (error) {
     if (error && error.code === 'ENOENT') {
-      return new Map();
+      return {
+        layoutByIdentifier: new Map(),
+        project: null,
+      };
     }
     throw new Error(`Failed to read existing LDtk project (${TARGET_LDTK_PATH}): ${error.message}`);
   }
@@ -318,7 +361,10 @@ async function readExistingLevelLayout() {
     });
   }
 
-  return layoutByIdentifier;
+  return {
+    layoutByIdentifier,
+    project,
+  };
 }
 
 async function readJson(filePath, description) {
@@ -620,6 +666,300 @@ function createTilesetDef(uid, sheetPath, imageInfo) {
     tileGridSize: TILE_SIZE,
     uid,
   };
+}
+
+function ticksToSpriteEditorDurationMs(ticks) {
+  if (!Number.isInteger(ticks) || ticks < 0) {
+    throw new Error(`Sprite editor duration ticks must be a non-negative integer, got "${ticks}".`);
+  }
+
+  return Math.max(1, Math.round(ticks * SPRITE_EDITOR_TICK_MS));
+}
+
+function createDefaultPlayerSpriteEditorProject(playerTilesetUid, uidFactory) {
+  const states = PLAYER_SPRITE_EDITOR_STATES.map((state) => {
+    const thresholds = Object.keys(state.anim)
+      .map((value) => Number.parseInt(value, 10))
+      .sort((a, b) => a - b);
+
+    const frames = thresholds.map((threshold, index) => {
+      const nextThreshold = thresholds[index + 1] ?? null;
+      const durationTicks = nextThreshold !== null
+        ? nextThreshold - threshold
+        : (state.reset > threshold ? state.reset - threshold : 1);
+      const tileId = state.anim[threshold];
+
+      if (!Number.isInteger(tileId) || tileId < 0) {
+        throw new Error(
+          `Default player sprite editor state "${state.identifier}" uses an invalid tile id "${tileId}".`,
+        );
+      }
+
+      return {
+        boxes: [],
+        durationMs: ticksToSpriteEditorDurationMs(durationTicks),
+        tiles: [
+          {
+            flipX: false,
+            flipY: false,
+            tileId,
+            tilesetUid: playerTilesetUid,
+            uid: uidFactory(),
+            x: 0,
+            y: 0,
+          },
+        ],
+        uid: uidFactory(),
+      };
+    });
+
+    return {
+      frames,
+      identifier: state.identifier,
+      loop: state.reset > 0,
+      loopToMs: 0,
+      originX: 0,
+      originY: 0,
+      uid: uidFactory(),
+    };
+  });
+
+  return {
+    sprites: [
+      {
+        boxTypes: [],
+        canvasHei: TILE_SIZE,
+        canvasWid: TILE_SIZE,
+        identifier: PLAYER_SPRITE_EDITOR_IDENTIFIER,
+        states,
+        uid: uidFactory(),
+      },
+    ],
+  };
+}
+
+function clonePlainJson(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function remapSpriteEditorProject(spriteEditorProject, existingTilesetUidMap, uidFactory) {
+  if (!isPlainObject(spriteEditorProject)) {
+    throw new Error('Existing spriteEditor payload must be an object.');
+  }
+  if (!Array.isArray(spriteEditorProject.sprites)) {
+    throw new Error('Existing spriteEditor payload must contain a sprites array.');
+  }
+
+  return {
+    sprites: spriteEditorProject.sprites.map((sprite, spriteIndex) => {
+      if (!isPlainObject(sprite)) {
+        throw new Error(`spriteEditor sprite ${spriteIndex} must be an object.`);
+      }
+      if (!Array.isArray(sprite.boxTypes) || !Array.isArray(sprite.states)) {
+        throw new Error(`spriteEditor sprite "${sprite.identifier || spriteIndex}" is missing boxTypes/states arrays.`);
+      }
+
+      const boxTypeUidMap = new Map();
+      const remappedBoxTypes = sprite.boxTypes.map((boxType, boxTypeIndex) => {
+        if (!isPlainObject(boxType) || !Number.isInteger(boxType.uid)) {
+          throw new Error(
+            `spriteEditor sprite "${sprite.identifier || spriteIndex}" has an invalid box type at index ${boxTypeIndex}.`,
+          );
+        }
+
+        const nextUid = uidFactory();
+        boxTypeUidMap.set(boxType.uid, nextUid);
+        return {
+          ...clonePlainJson(boxType),
+          uid: nextUid,
+        };
+      });
+
+      const remappedStates = sprite.states.map((state, stateIndex) => {
+        if (!isPlainObject(state) || !Array.isArray(state.frames)) {
+          throw new Error(
+            `spriteEditor sprite "${sprite.identifier || spriteIndex}" has an invalid state at index ${stateIndex}.`,
+          );
+        }
+
+        const remappedFrames = state.frames.map((frame, frameIndex) => {
+          if (!isPlainObject(frame) || !Array.isArray(frame.boxes) || !Array.isArray(frame.tiles)) {
+            throw new Error(
+              `spriteEditor state "${state.identifier || stateIndex}" has an invalid frame at index ${frameIndex}.`,
+            );
+          }
+
+          const remappedBoxes = frame.boxes.map((box, boxIndex) => {
+            if (!isPlainObject(box) || !Number.isInteger(box.boxTypeUid)) {
+              throw new Error(
+                `spriteEditor frame ${frameIndex} has an invalid box at index ${boxIndex}.`,
+              );
+            }
+
+            const remappedBoxTypeUid = boxTypeUidMap.get(box.boxTypeUid);
+            if (!remappedBoxTypeUid) {
+              throw new Error(
+                `spriteEditor box ${boxIndex} references missing box type UID ${box.boxTypeUid}.`,
+              );
+            }
+
+            return {
+              ...clonePlainJson(box),
+              boxTypeUid: remappedBoxTypeUid,
+              uid: uidFactory(),
+            };
+          });
+
+          const remappedTiles = frame.tiles.map((tile, tileIndex) => {
+            if (!isPlainObject(tile) || !Number.isInteger(tile.tilesetUid)) {
+              throw new Error(
+                `spriteEditor frame ${frameIndex} has an invalid tile at index ${tileIndex}.`,
+              );
+            }
+
+            const remappedTilesetUid = existingTilesetUidMap.get(tile.tilesetUid);
+            if (!remappedTilesetUid) {
+              throw new Error(
+                `spriteEditor tile ${tileIndex} references missing tileset UID ${tile.tilesetUid}.`,
+              );
+            }
+
+            return {
+              ...clonePlainJson(tile),
+              tilesetUid: remappedTilesetUid,
+              uid: uidFactory(),
+            };
+          });
+
+          return {
+            ...clonePlainJson(frame),
+            boxes: remappedBoxes,
+            tiles: remappedTiles,
+            uid: uidFactory(),
+          };
+        });
+
+        return {
+          ...clonePlainJson(state),
+          frames: remappedFrames,
+          uid: uidFactory(),
+        };
+      });
+
+      return {
+        ...clonePlainJson(sprite),
+        boxTypes: remappedBoxTypes,
+        states: remappedStates,
+        uid: uidFactory(),
+      };
+    }),
+  };
+}
+
+function ensureExtraTileset(project, tilesetInfoBySheet, relPathToTileset, uidFactory, sheetPath) {
+  const relPath = buildTilesetImagePath(sheetPath);
+  const existing = relPathToTileset.get(relPath);
+  if (existing) {
+    return existing;
+  }
+
+  const imageInfo = tilesetInfoBySheet.get(sheetPath);
+  if (!imageInfo) {
+    throw new Error(`Missing image info for sprite editor tileset "${sheetPath}".`);
+  }
+
+  const tileset = createTilesetDef(uidFactory(), sheetPath, imageInfo);
+  project.defs.tilesets.push(tileset);
+  relPathToTileset.set(relPath, tileset);
+  return tileset;
+}
+
+function applySpriteEditorAugmentations(project, existingProject, tilesetInfoBySheet, uidFactory) {
+  if (!isPlainObject(project) || !isPlainObject(project.defs) || !Array.isArray(project.defs.tilesets)) {
+    throw new Error('Generated LDtk project is missing defs.tilesets.');
+  }
+
+  const relPathToTileset = new Map();
+  for (const tileset of project.defs.tilesets) {
+    if (!isPlainObject(tileset) || typeof tileset.relPath !== 'string' || !Number.isInteger(tileset.uid)) {
+      throw new Error('Generated LDtk project contains an invalid tileset definition.');
+    }
+    if (relPathToTileset.has(tileset.relPath)) {
+      throw new Error(`Generated LDtk project has duplicate tileset relPath "${tileset.relPath}".`);
+    }
+    relPathToTileset.set(tileset.relPath, tileset);
+  }
+
+  const existingTilesetUidMap = new Map();
+  let remappedSpriteEditor = { sprites: [] };
+
+  if (existingProject !== null) {
+    if (!isPlainObject(existingProject)) {
+      throw new Error('Existing LDtk project payload must be an object.');
+    }
+
+    const existingTilesets = existingProject.defs?.tilesets;
+    if (existingProject.spriteEditor !== undefined && existingProject.spriteEditor !== null && !Array.isArray(existingTilesets)) {
+      throw new Error('Existing LDtk project has spriteEditor data but no defs.tilesets array.');
+    }
+
+    if (Array.isArray(existingTilesets)) {
+      const seenExistingRelPaths = new Set();
+      const seenExistingUids = new Set();
+      for (const tileset of existingTilesets) {
+        if (!isPlainObject(tileset) || !Number.isInteger(tileset.uid)) {
+          throw new Error('Existing LDtk project contains an invalid tileset definition.');
+        }
+        if (seenExistingUids.has(tileset.uid)) {
+          throw new Error(`Existing LDtk project has duplicate tileset UID ${tileset.uid}.`);
+        }
+        seenExistingUids.add(tileset.uid);
+        if (typeof tileset.relPath !== 'string' || tileset.relPath.length === 0) {
+          throw new Error(`Existing tileset UID ${tileset.uid} is missing a relPath.`);
+        }
+        if (seenExistingRelPaths.has(tileset.relPath)) {
+          throw new Error(`Existing LDtk project has duplicate tileset relPath "${tileset.relPath}".`);
+        }
+        seenExistingRelPaths.add(tileset.relPath);
+
+        const baseTileset = relPathToTileset.get(tileset.relPath);
+        if (baseTileset) {
+          existingTilesetUidMap.set(tileset.uid, baseTileset.uid);
+          continue;
+        }
+
+        const preservedTileset = {
+          ...clonePlainJson(tileset),
+          uid: uidFactory(),
+        };
+        project.defs.tilesets.push(preservedTileset);
+        relPathToTileset.set(preservedTileset.relPath, preservedTileset);
+        existingTilesetUidMap.set(tileset.uid, preservedTileset.uid);
+      }
+    }
+
+    if (existingProject.spriteEditor !== undefined && existingProject.spriteEditor !== null) {
+      remappedSpriteEditor = remapSpriteEditorProject(existingProject.spriteEditor, existingTilesetUidMap, uidFactory);
+    }
+  }
+
+  const hasPlayerSprite = remappedSpriteEditor.sprites.some(
+    (sprite) => sprite.identifier === PLAYER_SPRITE_EDITOR_IDENTIFIER,
+  );
+
+  if (!hasPlayerSprite) {
+    const playerTileset = ensureExtraTileset(
+      project,
+      tilesetInfoBySheet,
+      relPathToTileset,
+      uidFactory,
+      PLAYER_SPRITE_SHEET_PATH,
+    );
+    const playerSpriteEditor = createDefaultPlayerSpriteEditorProject(playerTileset.uid, uidFactory);
+    remappedSpriteEditor.sprites.push(...playerSpriteEditor.sprites);
+  }
+
+  project.spriteEditor = remappedSpriteEditor;
 }
 
 function createLayerDef(uid, identifier, type) {
@@ -1366,12 +1706,13 @@ function buildDefs(mapBank, grouped, standalone, uidFactory, tilesetInfoBySheet)
   };
 }
 
-function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet, existingLevelLayoutByIdentifier) {
+function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet, existingProjectData) {
   const { grouped, standalone } = buildMapGroups(mapBank);
   const uidFactory = makeUidFactory(1);
   const iidFactory = makeIidFactory();
   const dummyWorldIid = iidFactory();
   const defs = buildDefs(mapBank, grouped, standalone, uidFactory, tilesetInfoBySheet);
+  const existingLevelLayoutByIdentifier = existingProjectData.layoutByIdentifier;
 
   const levels = [];
   const usedLevelIdentifiers = new Set();
@@ -1453,7 +1794,7 @@ function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet, existin
     defaultLevelHeight,
   );
 
-  return {
+  const project = {
     __header__: {
       fileType: 'LDtk Project JSON',
       app: 'LDtk',
@@ -1504,6 +1845,10 @@ function buildLdtkProject(mapBank, mapData, npcData, tilesetInfoBySheet, existin
     worldLayout: 'Free',
     worlds: [],
   };
+
+  applySpriteEditorAugmentations(project, existingProjectData.project, tilesetInfoBySheet, uidFactory);
+  project.nextUid = uidFactory.peek();
+  return project;
 }
 
 async function loadTilesetInfoBySheet(mapBank) {
@@ -1514,6 +1859,7 @@ async function loadTilesetInfoBySheet(mapBank) {
       sheetPaths.add(sheetPath);
     }
   }
+  sheetPaths.add(PLAYER_SPRITE_SHEET_PATH);
 
   const tilesetInfoBySheet = new Map();
   for (const sheetPath of Array.from(sheetPaths).sort()) {
@@ -1567,7 +1913,7 @@ async function main() {
     throw new Error('assets/data/npcs.json must be a JSON object.');
   }
 
-  const existingLevelLayoutByIdentifier = await readExistingLevelLayout();
+  const existingProjectData = await readExistingProjectData();
   const backupPath = await backupExistingProject();
   if (backupPath) {
     console.log(`Backed up existing maps.ldtk to ${backupPath}`);
@@ -1579,7 +1925,7 @@ async function main() {
     mapData,
     npcData,
     tilesetInfoBySheet,
-    existingLevelLayoutByIdentifier,
+    existingProjectData,
   );
   const compatMeta = extractLdtkCompatMeta(ldtkProject);
   await fs.writeFile(TARGET_LDTK_PATH, `${JSON.stringify(ldtkProject, null, 2)}\n`, 'utf8');

@@ -4,7 +4,8 @@ This project uses a custom entity animation and collision model on top of Pixelb
 
 ## Quick Answer
 
-- Entity animations are defined in each entity class via `this.states` (`anim` + `reset`).
+- Player body animations now come from `assets/maps.ldtk` root `spriteEditor.sprites["player_default"]`.
+- Other entity animations are still defined in each entity class via `this.states` (`anim` + `reset`).
 - Entity body hitboxes are defined via `this.bbox` in each entity class.
 - Player weapon attack hitboxes are defined in `assets/data/weapons.json` per frame (`bbox`).
 - Tile collision categories (`solid`, `platform`, `exit`) come from `assets/data/tiletypes.json`.
@@ -17,7 +18,23 @@ This project uses a custom entity animation and collision model on top of Pixelb
 
 ## Where Animations Are Defined
 
-### 1. Per-entity state animation tables
+### 1. Player body animation (LDtk)
+
+The runtime now reads the player body animation from the LDtk project root:
+
+- `assets/maps.ldtk` -> `spriteEditor` -> `sprites[]` -> `identifier: "player_default"`
+- `src/pixelbox_compat.js` parses the player sprite definition at startup and exposes it on `assets.spriteEditor.player_default`
+- `src/entity/player/player.js` maps gameplay states like `state.stand` and `state.move` to LDtk state identifiers like
+  `stand` and `move`
+
+Current runtime constraints for the player sprite editor data:
+
+- the sprite must exist and be named `player_default`
+- it must use `sprites/player_default.png`
+- each frame must contain exactly one `8x8` tile at `(0,0)`
+- per-frame tile flips and multi-tile compositions are rejected by the current runtime
+
+### 2. Other entity state animation tables
 
 Each entity class defines a `states` object in its constructor. Example pattern:
 
@@ -36,32 +53,42 @@ this.states = {
 
 Key files:
 
-- `src/entity/player/player.js`
 - `src/entity/enemy/enemies/*.js`
 - `src/entity/goodie/goodies/*.js`
 
-### 2. How a frame is picked
+### 3. How a frame is picked
 
 Frame selection is centralized in `src/entity/entity.js`:
 
-- `getSprite()` reads `this.states[this.state].anim`
+- `getSprite()` reads the current animation config for the entity state
+- for the player, that config comes from `assets.spriteEditor.player_default.states[...]`
+- for other entities, that config still comes from `this.states[this.state].anim`
 - It selects the latest sprite key whose counter threshold is <= `stateCounter`
 
 `stateCounter` lifecycle:
 
 - Incremented every update in `updateStateCounter()`
 - Reset to `0` when `setState(newState)` changes state
-- Looped or held by each state's `reset` value:
+- Looped or held by each state's timing config:
 - `reset > 0`: loop when counter reaches reset
-- `reset == 0`: effectively fixed first frame
+- optional `loopToCounter`: restart from a non-zero timeline point
 - `reset == -1`: do not auto-loop
 
-### 3. Global enums used by states/facing
+### 4. Global enums used by states/facing
 
 Defined in `src/main.js`:
 
 - `window.state` enum values (`stand`, `move`, `jump`, etc.)
 - `window.facing` (`left`, `right`)
+
+### 5. LDtk editor/runtime relationship
+
+`assets/maps.ldtk` contains a root `spriteEditor` block with a seeded `player_default` sprite definition that uses
+`sprites/player_default.png`.
+
+- `npm run convert:maps` preserves existing `spriteEditor` content and seeds the default player sprite if it is missing.
+- The player body animation now uses that LDtk data at runtime.
+- Other entity body animations still use hardcoded `this.states` tables.
 
 ## Where Hitboxes Are Defined
 
@@ -160,7 +187,9 @@ The actual draw call is in `Entity.draw()` (`src/entity/entity.js`) via Pixelbox
 
 When changing visuals/collision for an entity:
 
-1. Update the entity's `this.states` animation map.
+1. Update the animation source for the thing you are changing:
+   - player body animation: `assets/maps.ldtk` root `spriteEditor`
+   - other entities: the entity's `this.states` animation map
 2. Update the entity's `this.bbox`.
 3. Verify behavior in both facings (left/right mirroring).
 4. If changing attacks, update `assets/data/weapons.json` `frames` `sprite`/`bbox`.
@@ -169,6 +198,8 @@ When changing visuals/collision for an entity:
 ## Common Gotchas
 
 - This project does not use Phaser animation clips for gameplay entities; changing Phaser `anims` will not affect these sprites.
+- Player body animation is now sourced from LDtk `spriteEditor`, but enemies/goodies are not.
+- If `assets/maps.ldtk` is missing `spriteEditor.sprites["player_default"]`, the player runtime throws instead of silently falling back to `player.js`.
 - `anim` and weapon `frames` keys are threshold points, not "single-frame only" entries.
 - A `bbox: null` on a weapon frame means no hitbox (no damage) for that slice.
 - Facing left mirrors bboxes automatically, so raw numbers should usually be authored for right-facing orientation.
