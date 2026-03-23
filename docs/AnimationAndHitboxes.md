@@ -1,13 +1,18 @@
 # Animation And Hitboxes
 
-This project uses a custom entity animation and collision model on top of Pixelbox-style rendering. Sprite selection and hitboxes are defined in gameplay code/data, not in Phaser animation configs.
+This project uses a custom entity animation and collision model on top of Pixelbox-style rendering. Gameplay entity
+body animation and body boxes now come from LDtk `spriteEditor`; weapon hitboxes and some script triggers still come
+from gameplay code/data, not Phaser animation configs.
 
 ## Quick Answer
 
-- Player body animations now come from `assets/maps.ldtk` root `spriteEditor.sprites["player_default"]`.
-- Other entity animations are still defined in each entity class via `this.states` (`anim` + `reset`).
-- Entity body hitboxes are defined via `this.bbox` in each entity class.
-- Player weapon attack hitboxes are defined in `assets/data/weapons.json` per frame (`bbox`).
+- Gameplay entity body animations now come from `assets/maps.ldtk` root `spriteEditor`.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still override their stand-frame sprite id from metadata at runtime, but
+  they now do it on top of seeded LDtk sprite definitions instead of local `this.states` tables.
+- Gameplay entity body hitboxes now come from LDtk `spriteEditor` `body` boxes.
+- Script trigger hitboxes still come from `this.bbox` in `src/entity/script/*.js`.
+- Player weapon attack hitboxes now come from LDtk `spriteEditor` `attack` boxes.
+- Player weapon attack visuals, origin, timing, knockback, and eval hooks still come from `assets/data/weapons.json`.
 - Tile collision categories (`solid`, `platform`, `exit`) come from `assets/data/tiletypes.json`.
 
 ## Confirmed Authoring Conventions
@@ -15,54 +20,61 @@ This project uses a custom entity animation and collision model on top of Pixelb
 - `bbox` max edges (`x2`, `y2`) are treated as inclusive in collision math.
 - Author body and weapon `bbox` values in right-facing local space; runtime mirroring handles left-facing.
 - Include a `0` threshold key in entity `anim` tables and weapon `frames` tables.
+- LDtk `spriteEditor` frame boxes use `x`/`y` plus positive `w`/`h`; the runtime converts them to inclusive
+  `{x1, y1, x2, y2}` bbox values.
+- Weapon attack frames can intentionally clear a hitbox by using an LDtk frame with no `attack` box at that threshold.
 
 ## Where Animations Are Defined
 
-### 1. Player body animation (LDtk)
+### 1. LDtk body animation + body boxes
 
-The runtime now reads the player body animation from the LDtk project root:
+The runtime now reads gameplay body animation from the LDtk project root:
 
-- `assets/maps.ldtk` -> `spriteEditor` -> `sprites[]` -> `identifier: "player_default"`
-- `src/pixelbox_compat.js` parses the player sprite definition at startup and exposes it on `assets.spriteEditor.player_default`
-- `src/entity/player/player.js` maps gameplay states like `state.stand` and `state.move` to LDtk state identifiers like
-  `stand` and `move`
+- `assets/maps.ldtk` -> `spriteEditor` -> `sprites[]`
+- `src/pixelbox_compat.js` parses all runtime-supported sprite definitions at startup and exposes them on
+  `assets.spriteEditor[identifier]`
+- parsed sprite states now include both `anim` thresholds and `boxesByType.body` thresholds
+- entity classes map gameplay states like `state.move` or `state.closed` to LDtk state identifiers like `move`,
+  `knockback`, `open`, and `closed`
 
-Current runtime constraints for the player sprite editor data:
+Current runtime-backed body-animation identifiers:
 
-- the sprite must exist and be named `player_default`
-- it must use `sprites/player_default.png`
+- player: `player_default`
+- enemies: `bee_enemy`, `fireball_enemy`, `inky_enemy`, `inky_projectile`, `lava_bubble_enemy`, `mogus_enemy`
+- goodies: `chest_goodie`, `coin_goodie`, `door_goodie`, `grenade_projectile`, `item_goodie`, `npc_goodie`,
+  `volcano_goodie`, `weapon_goodie`
+
+Current runtime constraints for LDtk sprite editor playback:
+
+- the referenced sprite identifier must exist in `spriteEditor.sprites[]`
+- each runtime-played sprite must be `8x8`
 - each frame must contain exactly one `8x8` tile at `(0,0)`
+- gameplay sprites must define a `body` box type, and every gameplay-used state must have a `body` box at threshold `0`
 - per-frame tile flips and multi-tile compositions are rejected by the current runtime
+- each sprite must resolve to a single tileset path across all of its states
 
-### 2. Other entity state animation tables
+### 2. Metadata-driven LDtk stand-frame overrides
 
-Each entity class defines a `states` object in its constructor. Example pattern:
+Some goodies still change their visible sprite index from entity metadata at runtime. Those classes now clone and
+override the seeded LDtk `stand` frame instead of keeping local `this.states` tables:
 
 ```js
-this.states = {
-  [state.move]: {
-    anim: {
-      0: 3,
-      4: 2,
-      8: 1,
-    },
-    reset: 12,
-  },
-};
+this.overrideSpriteEditorStateFrame('stand', 0, metadata.sprite);
 ```
 
 Key files:
 
-- `src/entity/enemy/enemies/*.js`
-- `src/entity/goodie/goodies/*.js`
+- `src/entity/goodie/goodies/npc_goodie.js`
+- `src/entity/goodie/goodies/weapon_goodie.js`
+- `src/entity/goodie/goodies/item_goodie.js`
 
 ### 3. How a frame is picked
 
 Frame selection is centralized in `src/entity/entity.js`:
 
 - `getSprite()` reads the current animation config for the entity state
-- for the player, that config comes from `assets.spriteEditor.player_default.states[...]`
-- for other entities, that config still comes from `this.states[this.state].anim`
+- for all gameplay entities, that config now comes from `assets.spriteEditor[identifier].states[...]`
+- metadata-driven goodies first override the seeded `stand` frame on their per-instance `spriteEditorDefinition`
 - It selects the latest sprite key whose counter threshold is <= `stateCounter`
 
 `stateCounter` lifecycle:
@@ -83,46 +95,61 @@ Defined in `src/main.js`:
 
 ### 5. LDtk editor/runtime relationship
 
-`assets/maps.ldtk` contains a root `spriteEditor` block with a seeded `player_default` sprite definition that uses
-`sprites/player_default.png`.
+`assets/maps.ldtk` contains a root `spriteEditor` block with seeded runtime sprite definitions for the player and the
+gameplay entity classes listed above.
 
-- `npm run convert:maps` preserves existing `spriteEditor` content and seeds the default player sprite if it is missing.
-- The player body animation now uses that LDtk data at runtime.
-- Other entity body animations still use hardcoded `this.states` tables.
+- `npm run convert:maps` preserves existing `spriteEditor` content and seeds any missing runtime sprite definitions.
+- All gameplay entity body animation now uses that LDtk data at runtime.
+- Player weapon attack hitboxes now also use LDtk `spriteEditor` definitions:
+  - `weapon_attack_dagger_0`
+  - `weapon_attack_sword_0`
+  - `weapon_attack_sword_1`
+  - `weapon_attack_sword_2`
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still inject metadata-specific stand-frame sprite ids after
+  construction, but the animation timing/source still comes from LDtk.
 
 ## Where Hitboxes Are Defined
 
-### 1. Entity body hitbox (`this.bbox`)
+### 1. Gameplay entity body hitbox (`spriteEditor` `body`)
 
-Base default is in `src/entity/entity.js`, but each gameplay entity usually overrides it in its constructor:
+Gameplay entity body boxes now live in LDtk:
 
-- `src/entity/player/player.js`
-- `src/entity/enemy/enemies/*.js`
-- `src/entity/goodie/goodies/*.js`
-- `src/entity/script/*.js`
+- `assets/maps.ldtk` -> `spriteEditor` -> `sprites[]` -> `states[]` -> `frames[]` -> `boxes[]`
+- `scripts/convert_maps_to_ldtk.mjs` seeds and backfills a `body` box type plus per-frame body boxes for the
+  runtime-backed gameplay sprites
+- `src/pixelbox_compat.js` parses those boxes into `assets.spriteEditor[identifier].states[stateId].boxesByType.body`
+- `src/entity/entity.js` resolves `getBbox()` from the current LDtk `body` box track for sprite-editor entities
+- `state.custom` falls back to `assets.spriteEditor[identifier].defaultBoxes.body`
 
-`bbox` format:
+Scripts are still code-authored:
 
-```js
-{
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number
-}
-```
+- `src/entity/script/script.js`
+- `src/entity/script/scripts/exit_script.js`
 
-Coordinates are local to the entity's top-left sprite anchor (tile size is 8 px).
+### 2. Player weapon attack hitbox (`spriteEditor` `attack`)
 
-### 2. Facing-aware mirroring
+Player weapon hitboxes now live in separate LDtk sprite-editor definitions:
 
-`getBbox()` in `src/entity/entity.js` mirrors `bbox` when facing left. This is why most entities only define one bbox orientation.
+- `assets/maps.ldtk` -> `spriteEditor` -> `sprites[]` -> `identifier: "weapon_attack_*"`
+- each weapon-chain definition uses an `attack` box type and a single `attack` state
+- `src/entity/player/player.js` resolves `getWeaponBbox()` from the LDtk `attack` box track for the current weapon,
+  chain index, and frame threshold
+- explicit empty attack frames resolve to `null` hitboxes, matching the old `bbox: null` behavior
+- weapon attack visuals still come from `assets/data/weapons.json` `frames[*].sprite`
 
-### 3. World-space conversion
+### 3. Facing-aware mirroring
+
+`getBbox()` in `src/entity/entity.js` mirrors the resolved local body box when facing left. This is why gameplay body
+boxes are still authored once in right-facing local space.
+
+Weapon hitboxes are mirrored separately in `Player.getWeaponBbox()`.
+
+### 4. World-space conversion
 
 `getRealBbox()` in `src/entity/entity.js` converts local bbox to world coordinates by offsetting with entity `x`/`y`.
+`Player.getRealWeaponBbox()` does the same for the current weapon attack box plus weapon origin offsets.
 
-### 4. Collision checks that consume bboxes
+### 5. Collision checks that consume bboxes
 
 In `src/entity/entity.js`:
 
@@ -144,6 +171,7 @@ Tile collision is property-driven:
 Player melee/ranged attack frame data is data-driven in:
 
 - `assets/data/weapons.json`
+- `assets/maps.ldtk` root `spriteEditor` (`weapon_attack_*` definitions for hitboxes only)
 
 Each weapon chain entry can contain:
 
@@ -155,7 +183,6 @@ Each weapon chain entry can contain:
 Inside `frames`, each key is a frame threshold and each value can contain:
 
 - `sprite`: weapon sprite index/atlas chunk
-- `bbox`: attack hitbox for that frame, or `null`
 - optional motion impulses: `xm`, `ym`
 
 Runtime flow in `src/entity/player/player.js`:
@@ -163,7 +190,8 @@ Runtime flow in `src/entity/player/player.js`:
 1. Determine current attack frame from `anim_duration - attackTimer`
 2. Select latest applicable `frames[f]`
 3. Set `weapon_sprite`
-4. Read `bbox` via `getWeaponBbox()`, mirror for facing, then convert to world coords via `getRealWeaponBbox()`
+4. Read the LDtk `weapon_attack_*` `attack` box via `getWeaponBbox()`, mirror for facing, then convert to world coords
+   via `getRealWeaponBbox()`
 5. Check enemies with `enemy.collidingWithBox(weapon_real_bbox)`
 
 ## Sprite Sheets Used For Entity Drawing
@@ -188,20 +216,32 @@ The actual draw call is in `Entity.draw()` (`src/entity/entity.js`) via Pixelbox
 When changing visuals/collision for an entity:
 
 1. Update the animation source for the thing you are changing:
-   - player body animation: `assets/maps.ldtk` root `spriteEditor`
-   - other entities: the entity's `this.states` animation map
-2. Update the entity's `this.bbox`.
+   - entity body animation: `assets/maps.ldtk` root `spriteEditor`
+   - if the entity also takes a sprite id from metadata (`NpcGoodie` / `WeaponGoodie` / `ItemGoodie`), keep the LDtk
+     state timing and only override the `stand` frame sprite id in code
+2. Update the gameplay entity's LDtk `body` boxes, or update `this.bbox` only if you are editing a script trigger.
 3. Verify behavior in both facings (left/right mirroring).
-4. If changing attacks, update `assets/data/weapons.json` `frames` `sprite`/`bbox`.
+4. If changing attacks, update:
+   - `assets/maps.ldtk` `weapon_attack_*` `attack` boxes for hitboxes
+   - `assets/data/weapons.json` `frames` `sprite` plus other non-hitbox weapon metadata
 5. Validate against solid/platform tiles from `assets/data/tiletypes.json`.
 
 ## Common Gotchas
 
 - This project does not use Phaser animation clips for gameplay entities; changing Phaser `anims` will not affect these sprites.
-- Player body animation is now sourced from LDtk `spriteEditor`, but enemies/goodies are not.
-- If `assets/maps.ldtk` is missing `spriteEditor.sprites["player_default"]`, the player runtime throws instead of silently falling back to `player.js`.
+- Gameplay body animation is now sourced from LDtk `spriteEditor`.
+- Gameplay body hitboxes are now sourced from LDtk `spriteEditor` `body` boxes.
+- Player weapon attack hitboxes are now sourced from LDtk `spriteEditor` `attack` boxes.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still need runtime sprite-id overrides from metadata, so changing their
+  authored default tile in LDtk does not replace metadata-provided sprite ids.
+- If `assets/maps.ldtk` is missing required runtime sprite definitions, entity construction throws instead of silently
+  falling back to hardcoded constructor tables.
+- If a gameplay LDtk sprite is missing its `body` boxes, entity construction/runtime bbox lookup throws instead of
+  silently falling back to constructor `bbox` data.
+- If a weapon attack LDtk sprite is missing its `attack` boxes, `Player.getWeaponBbox()` throws instead of silently
+  falling back to `weapons.json`.
 - `anim` and weapon `frames` keys are threshold points, not "single-frame only" entries.
-- A `bbox: null` on a weapon frame means no hitbox (no damage) for that slice.
+- An attack frame with no LDtk `attack` box means no hitbox (no damage) for that slice.
 - Facing left mirrors bboxes automatically, so raw numbers should usually be authored for right-facing orientation.
 - Bbox bounds are inclusive; avoid assuming `x2`/`y2` are exclusive edges when tuning collision.
 - Omitting a `0` threshold can cause undefined startup frame behavior; always include `0`.

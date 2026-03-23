@@ -44,9 +44,13 @@ npm run extract:ldtk-meta
   `worldDepth`, so editor layout adjustments survive regeneration.
 - When `assets/maps.ldtk` already exists, `npm run convert:maps` also preserves root `spriteEditor` data and any
   non-map tilesets it depends on, remapping tileset UIDs as needed during regeneration.
-- If the LDtk project does not yet contain a player sprite editor entry, the converter seeds a default
-  `spriteEditor.sprites[]` definition for `player_default` using `sprites/player_default.png` and the converter's
-  built-in default player animation state table.
+- If the LDtk project is missing any runtime sprite editor entries, the converter seeds default
+  `spriteEditor.sprites[]` definitions for the player and all gameplay-entity body-animation identifiers using shared
+  defaults from `src/entity/sprite_editor_definitions.js`.
+- For those runtime-backed sprite definitions, the converter also seeds/backfills a `body` box type plus per-frame
+  `boxes[]` entries derived from the shared `bodyBbox` defaults, so existing projects gain body boxes on regeneration.
+- The converter also seeds dedicated `weapon_attack_*` sprite-editor definitions for player weapon hitboxes, using
+  `attack` boxes plus multi-tile editor visuals from the shared weapon-attack seed data.
 - Background layers are padded to the `main` layer dimensions, and their original width/height plus parallax values
   are stored in the LDtk level field `CompatMapsJson`.
 - Remaining runtime metadata (`bgcolor`, `atlas`) is also serialized into `CompatMapsJson`, so the runtime no longer

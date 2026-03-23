@@ -1,4 +1,9 @@
 import Goodie from '../goodie.js';
+import {
+  GOODIE_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class ChestGoodie extends Goodie {
   constructor(spr) {
@@ -18,27 +23,15 @@ export default class ChestGoodie extends Goodie {
     this.flipH = true;
     this.entityName = 'Chest';
 
-    this.bbox = {
-      x1: 2,
-      y1: 1,
-      x2: 6,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.CHEST_GOODIE;
+    this.spriteEditorStateIdentifiers = {
+      [state.closed]: 'closed',
+      [state.open]: 'open',
     };
-
-    this.states = {
-      [state.closed]: {
-        anim: {
-          0: 4,
-        },
-        reset: -1,
-      },
-      [state.open]: {
-        anim: {
-          0: 5,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(GOODIE_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

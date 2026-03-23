@@ -1706,7 +1706,7 @@
         "spacing": 0,
         "tags": [],
         "tileGridSize": 8,
-        "uid": 61
+        "uid": 89
       },
       {
         "__cHei": 16,
@@ -1724,25 +1724,7 @@
         "spacing": 0,
         "tags": [],
         "tileGridSize": 8,
-        "uid": 62
-      },
-      {
-        "__cHei": 16,
-        "__cWid": 16,
-        "cachedPixelData": null,
-        "customData": [],
-        "embedAtlas": null,
-        "enumTags": [],
-        "identifier": "sprites_weapons",
-        "padding": 0,
-        "pxHei": 128,
-        "pxWid": 128,
-        "relPath": "sprites/weapons.png",
-        "savedSelections": [],
-        "spacing": 0,
-        "tags": [],
-        "tileGridSize": 8,
-        "uid": 241
+        "uid": 141
       }
     ]
   },
@@ -92141,7 +92123,7 @@
     }
   ],
   "minifyJson": false,
-  "nextUid": 307,
+  "nextUid": 174,
   "simplifiedExport": false,
   "toc": [],
   "worldGridHeight": 1328,
@@ -92151,14 +92133,7 @@
   "spriteEditor": {
     "sprites": [
       {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 63
-          }
-        ],
+        "boxTypes": [],
         "canvasHei": 8,
         "canvasWid": 8,
         "identifier": "player_default",
@@ -92166,16 +92141,7 @@
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 64,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
@@ -92183,12 +92149,12 @@
                     "flipY": false,
                     "tileId": 0,
                     "tilesetUid": 60,
-                    "uid": 65,
+                    "uid": 61,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 66
+                "uid": 62
               }
             ],
             "identifier": "stand",
@@ -92196,21 +92162,12 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 67
+            "uid": 63
           },
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 68,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
@@ -92218,24 +92175,15 @@
                     "flipY": false,
                     "tileId": 3,
                     "tilesetUid": 60,
-                    "uid": 69,
+                    "uid": 64,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 70
+                "uid": 65
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 71,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
@@ -92243,24 +92191,15 @@
                     "flipY": false,
                     "tileId": 2,
                     "tilesetUid": 60,
-                    "uid": 72,
+                    "uid": 66,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 73
+                "uid": 67
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 74,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
@@ -92268,12 +92207,12 @@
                     "flipY": false,
                     "tileId": 1,
                     "tilesetUid": 60,
-                    "uid": 75,
+                    "uid": 68,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 76
+                "uid": 69
               }
             ],
             "identifier": "move",
@@ -92281,27 +92220,86 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 77
+            "uid": 70
           },
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 78,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 1,
+                    "tilesetUid": 60,
+                    "uid": 71,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 72
+              }
+            ],
+            "identifier": "jump",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 73
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 200,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 3,
+                    "tilesetUid": 60,
+                    "uid": 74,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 75
+              },
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 4,
+                    "tilesetUid": 60,
+                    "uid": 76,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 77
+              }
+            ],
+            "identifier": "fall",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 78
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 5,
                     "tilesetUid": 60,
                     "uid": 79,
                     "x": 0,
@@ -92311,7 +92309,7 @@
                 "uid": 80
               }
             ],
-            "identifier": "jump",
+            "identifier": "ouch",
             "loop": false,
             "loopToMs": 0,
             "originX": 0,
@@ -92321,83 +92319,75 @@
           {
             "frames": [
               {
-                "boxes": [
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
                   {
-                    "boxTypeUid": 63,
-                    "h": 7,
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 1,
+                    "tilesetUid": 60,
                     "uid": 82,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
+                    "x": 0,
+                    "y": 0
                   }
                 ],
-                "durationMs": 200,
+                "uid": 83
+              }
+            ],
+            "identifier": "slide",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 84
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 3,
                     "tilesetUid": 60,
-                    "uid": 83,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 84
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
                     "uid": 85,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 4,
-                    "tilesetUid": 60,
-                    "uid": 86,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 87
+                "uid": 86
               }
             ],
-            "identifier": "fall",
+            "identifier": "knockback",
             "loop": false,
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 88
-          },
+            "uid": 87
+          }
+        ],
+        "uid": 88
+      },
+      {
+        "boxTypes": [],
+        "canvasHei": 8,
+        "canvasWid": 8,
+        "identifier": "bee_enemy",
+        "states": [
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 89,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
+                "boxes": [],
+                "durationMs": 3333,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
-                    "tileId": 5,
-                    "tilesetUid": 60,
+                    "tileId": 48,
+                    "tilesetUid": 89,
                     "uid": 90,
                     "x": 0,
                     "y": 0
@@ -92406,8 +92396,8 @@
                 "uid": 91
               }
             ],
-            "identifier": "ouch",
-            "loop": false,
+            "identifier": "move",
+            "loop": true,
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
@@ -92416,64 +92406,20 @@
           {
             "frames": [
               {
-                "boxes": [
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
                   {
-                    "boxTypeUid": 63,
-                    "h": 7,
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 48,
+                    "tilesetUid": 89,
                     "uid": 93,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 1,
-                    "tilesetUid": 60,
-                    "uid": 94,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 95
-              }
-            ],
-            "identifier": "slide",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 96
-          },
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 63,
-                    "h": 7,
-                    "uid": 97,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 3,
-                    "tilesetUid": 60,
-                    "uid": 98,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 99
+                "uid": 94
               }
             ],
             "identifier": "knockback",
@@ -92481,106 +92427,13 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 100
+            "uid": 95
           }
         ],
-        "uid": 101
+        "uid": 96
       },
       {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 102
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "bee_enemy",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 102,
-                    "h": 7,
-                    "uid": 103,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 3333,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 48,
-                    "tilesetUid": 61,
-                    "uid": 104,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 105
-              }
-            ],
-            "identifier": "move",
-            "loop": true,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 106
-          },
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 102,
-                    "h": 7,
-                    "uid": 107,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 48,
-                    "tilesetUid": 61,
-                    "uid": 108,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 109
-              }
-            ],
-            "identifier": "knockback",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 110
-          }
-        ],
-        "uid": 111
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 112
-          }
-        ],
+        "boxTypes": [],
         "canvasHei": 8,
         "canvasWid": 8,
         "identifier": "fireball_enemy",
@@ -92588,54 +92441,36 @@
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 112,
-                    "h": 6,
-                    "uid": 113,
-                    "w": 6,
-                    "x": 1,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 200,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 16,
-                    "tilesetUid": 61,
-                    "uid": 114,
+                    "tilesetUid": 89,
+                    "uid": 97,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 115
+                "uid": 98
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 112,
-                    "h": 6,
-                    "uid": 116,
-                    "w": 6,
-                    "x": 1,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 200,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 17,
-                    "tilesetUid": 61,
-                    "uid": 117,
+                    "tilesetUid": 89,
+                    "uid": 99,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 118
+                "uid": 100
               }
             ],
             "identifier": "move",
@@ -92643,20 +92478,13 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 119
+            "uid": 101
           }
         ],
-        "uid": 120
+        "uid": 102
       },
       {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 121
-          }
-        ],
+        "boxTypes": [],
         "canvasHei": 8,
         "canvasWid": 8,
         "identifier": "inky_enemy",
@@ -92664,79 +92492,52 @@
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 121,
-                    "h": 7,
-                    "uid": 122,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 64,
-                    "tilesetUid": 61,
-                    "uid": 123,
+                    "tilesetUid": 89,
+                    "uid": 103,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 124
+                "uid": 104
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 121,
-                    "h": 7,
-                    "uid": 125,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 65,
-                    "tilesetUid": 61,
-                    "uid": 126,
+                    "tilesetUid": 89,
+                    "uid": 105,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 127
+                "uid": 106
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 121,
-                    "h": 7,
-                    "uid": 128,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 66,
-                    "tilesetUid": 61,
-                    "uid": 129,
+                    "tilesetUid": 89,
+                    "uid": 107,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 130
+                "uid": 108
               }
             ],
             "identifier": "move",
@@ -92744,84 +92545,57 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 131
+            "uid": 109
           },
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 121,
-                    "h": 7,
-                    "uid": 132,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 64,
-                    "tilesetUid": 61,
-                    "uid": 133,
+                    "tilesetUid": 89,
+                    "uid": 110,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 134
+                "uid": 111
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 121,
-                    "h": 7,
-                    "uid": 135,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 65,
-                    "tilesetUid": 61,
-                    "uid": 136,
+                    "tilesetUid": 89,
+                    "uid": 112,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 137
+                "uid": 113
               },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 121,
-                    "h": 7,
-                    "uid": 138,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 67,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 66,
-                    "tilesetUid": 61,
-                    "uid": 139,
+                    "tilesetUid": 89,
+                    "uid": 114,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 140
+                "uid": 115
               }
             ],
             "identifier": "knockback",
@@ -92829,20 +92603,13 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 141
+            "uid": 116
           }
         ],
-        "uid": 142
+        "uid": 117
       },
       {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 143
-          }
-        ],
+        "boxTypes": [],
         "canvasHei": 8,
         "canvasWid": 8,
         "identifier": "inky_projectile",
@@ -92850,23 +92617,239 @@
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 143,
-                    "h": 3,
-                    "uid": 144,
-                    "w": 3,
-                    "x": 3,
-                    "y": 3
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 80,
-                    "tilesetUid": 61,
+                    "tilesetUid": 89,
+                    "uid": 118,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 119
+              }
+            ],
+            "identifier": "move",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 120
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 80,
+                    "tilesetUid": 89,
+                    "uid": 121,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 122
+              }
+            ],
+            "identifier": "knockback",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 123
+          }
+        ],
+        "uid": 124
+      },
+      {
+        "boxTypes": [],
+        "canvasHei": 8,
+        "canvasWid": 8,
+        "identifier": "lava_bubble_enemy",
+        "states": [
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 500,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 32,
+                    "tilesetUid": 89,
+                    "uid": 125,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 126
+              }
+            ],
+            "identifier": "move",
+            "loop": true,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 127
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 32,
+                    "tilesetUid": 89,
+                    "uid": 128,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 129
+              }
+            ],
+            "identifier": "ouch",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 130
+          }
+        ],
+        "uid": 131
+      },
+      {
+        "boxTypes": [],
+        "canvasHei": 8,
+        "canvasWid": 8,
+        "identifier": "mogus_enemy",
+        "states": [
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 133,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 0,
+                    "tilesetUid": 89,
+                    "uid": 132,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 133
+              },
+              {
+                "boxes": [],
+                "durationMs": 133,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 1,
+                    "tilesetUid": 89,
+                    "uid": 134,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 135
+              }
+            ],
+            "identifier": "move",
+            "loop": true,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 136
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 0,
+                    "tilesetUid": 89,
+                    "uid": 137,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 138
+              }
+            ],
+            "identifier": "knockback",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 139
+          }
+        ],
+        "uid": 140
+      },
+      {
+        "boxTypes": [],
+        "canvasHei": 8,
+        "canvasWid": 8,
+        "identifier": "chest_goodie",
+        "states": [
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 4,
+                    "tilesetUid": 141,
+                    "uid": 142,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 143
+              }
+            ],
+            "identifier": "closed",
+            "loop": false,
+            "loopToMs": 0,
+            "originX": 0,
+            "originY": 0,
+            "uid": 144
+          },
+          {
+            "frames": [
+              {
+                "boxes": [],
+                "durationMs": 17,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 5,
+                    "tilesetUid": 141,
                     "uid": 145,
                     "x": 0,
                     "y": 0
@@ -92875,84 +92858,81 @@
                 "uid": 146
               }
             ],
-            "identifier": "move",
+            "identifier": "open",
             "loop": false,
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
             "uid": 147
-          },
+          }
+        ],
+        "uid": 148
+      },
+      {
+        "boxTypes": [],
+        "canvasHei": 8,
+        "canvasWid": 8,
+        "identifier": "coin_goodie",
+        "states": [
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 143,
-                    "h": 3,
-                    "uid": 148,
-                    "w": 3,
-                    "x": 3,
-                    "y": 3
-                  }
-                ],
-                "durationMs": 17,
+                "boxes": [],
+                "durationMs": 100,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
-                    "tileId": 80,
-                    "tilesetUid": 61,
+                    "tileId": 0,
+                    "tilesetUid": 141,
                     "uid": 149,
                     "x": 0,
                     "y": 0
                   }
                 ],
                 "uid": 150
-              }
-            ],
-            "identifier": "knockback",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 151
-          }
-        ],
-        "uid": 152
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 153
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "lava_bubble_enemy",
-        "states": [
-          {
-            "frames": [
+              },
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 153,
-                    "h": 2,
-                    "uid": 154,
-                    "w": 2,
-                    "x": 3,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 500,
+                "boxes": [],
+                "durationMs": 100,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
-                    "tileId": 32,
-                    "tilesetUid": 61,
+                    "tileId": 1,
+                    "tilesetUid": 141,
+                    "uid": 151,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 152
+              },
+              {
+                "boxes": [],
+                "durationMs": 100,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 2,
+                    "tilesetUid": 141,
+                    "uid": 153,
+                    "x": 0,
+                    "y": 0
+                  }
+                ],
+                "uid": 154
+              },
+              {
+                "boxes": [],
+                "durationMs": 100,
+                "tiles": [
+                  {
+                    "flipX": false,
+                    "flipY": false,
+                    "tileId": 3,
+                    "tilesetUid": 141,
                     "uid": 155,
                     "x": 0,
                     "y": 0
@@ -92961,33 +92941,33 @@
                 "uid": 156
               }
             ],
-            "identifier": "move",
+            "identifier": "stand",
             "loop": true,
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
             "uid": 157
-          },
+          }
+        ],
+        "uid": 158
+      },
+      {
+        "boxTypes": [],
+        "canvasHei": 8,
+        "canvasWid": 8,
+        "identifier": "door_goodie",
+        "states": [
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 153,
-                    "h": 2,
-                    "uid": 158,
-                    "w": 2,
-                    "x": 3,
-                    "y": 2
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
-                    "tileId": 32,
-                    "tilesetUid": 61,
+                    "tileId": 8,
+                    "tilesetUid": 141,
                     "uid": 159,
                     "x": 0,
                     "y": 0
@@ -92996,413 +92976,30 @@
                 "uid": 160
               }
             ],
-            "identifier": "ouch",
+            "identifier": "closed",
             "loop": false,
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
             "uid": 161
-          }
-        ],
-        "uid": 162
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 163
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "mogus_enemy",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 163,
-                    "h": 7,
-                    "uid": 164,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 133,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 0,
-                    "tilesetUid": 61,
-                    "uid": 165,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 166
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 163,
-                    "h": 7,
-                    "uid": 167,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 133,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 1,
-                    "tilesetUid": 61,
-                    "uid": 168,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 169
-              }
-            ],
-            "identifier": "move",
-            "loop": true,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 170
           },
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 163,
-                    "h": 7,
-                    "uid": 171,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 0,
-                    "tilesetUid": 61,
-                    "uid": 172,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 173
-              }
-            ],
-            "identifier": "knockback",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 174
-          }
-        ],
-        "uid": 175
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 176
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "chest_goodie",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 176,
-                    "h": 7,
-                    "uid": 177,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 4,
-                    "tilesetUid": 62,
-                    "uid": 178,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 179
-              }
-            ],
-            "identifier": "closed",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 180
-          },
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 176,
-                    "h": 7,
-                    "uid": 181,
-                    "w": 5,
-                    "x": 2,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 5,
-                    "tilesetUid": 62,
-                    "uid": 182,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 183
-              }
-            ],
-            "identifier": "open",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 184
-          }
-        ],
-        "uid": 185
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 186
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "coin_goodie",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 186,
-                    "h": 6,
-                    "uid": 187,
-                    "w": 4,
-                    "x": 2,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 100,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 0,
-                    "tilesetUid": 62,
-                    "uid": 188,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 189
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 186,
-                    "h": 6,
-                    "uid": 190,
-                    "w": 4,
-                    "x": 2,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 100,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 1,
-                    "tilesetUid": 62,
-                    "uid": 191,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 192
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 186,
-                    "h": 6,
-                    "uid": 193,
-                    "w": 4,
-                    "x": 2,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 100,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 2,
-                    "tilesetUid": 62,
-                    "uid": 194,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 195
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 186,
-                    "h": 6,
-                    "uid": 196,
-                    "w": 4,
-                    "x": 2,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 100,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 3,
-                    "tilesetUid": 62,
-                    "uid": 197,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 198
-              }
-            ],
-            "identifier": "stand",
-            "loop": true,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 199
-          }
-        ],
-        "uid": 200
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 201
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "door_goodie",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 201,
-                    "h": 7,
-                    "uid": 202,
-                    "w": 6,
-                    "x": 1,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 8,
-                    "tilesetUid": 62,
-                    "uid": 203,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 204
-              }
-            ],
-            "identifier": "closed",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 205
-          },
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 201,
-                    "h": 7,
-                    "uid": 206,
-                    "w": 6,
-                    "x": 1,
-                    "y": 1
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 7,
-                    "tilesetUid": 62,
-                    "uid": 207,
+                    "tilesetUid": 141,
+                    "uid": 162,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 208
+                "uid": 163
               }
             ],
             "identifier": "open",
@@ -93410,20 +93007,13 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 209
+            "uid": 164
           }
         ],
-        "uid": 210
+        "uid": 165
       },
       {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 211
-          }
-        ],
+        "boxTypes": [],
         "canvasHei": 8,
         "canvasWid": 8,
         "identifier": "grenade_projectile",
@@ -93431,29 +93021,20 @@
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 211,
-                    "h": 3,
-                    "uid": 212,
-                    "w": 2,
-                    "x": 3,
-                    "y": 3
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 10,
-                    "tilesetUid": 62,
-                    "uid": 213,
+                    "tilesetUid": 141,
+                    "uid": 166,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 214
+                "uid": 167
               }
             ],
             "identifier": "stand",
@@ -93461,20 +93042,13 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 215
+            "uid": 168
           }
         ],
-        "uid": 216
+        "uid": 169
       },
       {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 217
-          }
-        ],
+        "boxTypes": [],
         "canvasHei": 8,
         "canvasWid": 8,
         "identifier": "volcano_goodie",
@@ -93482,29 +93056,20 @@
           {
             "frames": [
               {
-                "boxes": [
-                  {
-                    "boxTypeUid": 217,
-                    "h": 4,
-                    "uid": 218,
-                    "w": 6,
-                    "x": 1,
-                    "y": 4
-                  }
-                ],
+                "boxes": [],
                 "durationMs": 17,
                 "tiles": [
                   {
                     "flipX": false,
                     "flipY": false,
                     "tileId": 33,
-                    "tilesetUid": 61,
-                    "uid": 219,
+                    "tilesetUid": 89,
+                    "uid": 170,
                     "x": 0,
                     "y": 0
                   }
                 ],
-                "uid": 220
+                "uid": 171
               }
             ],
             "identifier": "stand",
@@ -93512,713 +93077,10 @@
             "loopToMs": 0,
             "originX": 0,
             "originY": 0,
-            "uid": 221
+            "uid": 172
           }
         ],
-        "uid": 222
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 223
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "item_goodie",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 223,
-                    "h": 5,
-                    "uid": 224,
-                    "w": 5,
-                    "x": 2,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 1333,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 6,
-                    "tilesetUid": 62,
-                    "uid": 225,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 226
-              }
-            ],
-            "identifier": "stand",
-            "loop": true,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 227
-          }
-        ],
-        "uid": 228
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 229
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "npc_goodie",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 229,
-                    "h": 7,
-                    "uid": 230,
-                    "w": 20,
-                    "x": -6,
-                    "y": 1
-                  }
-                ],
-                "durationMs": 17,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 32,
-                    "tilesetUid": 62,
-                    "uid": 231,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 232
-              }
-            ],
-            "identifier": "stand",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 233
-          }
-        ],
-        "uid": 234
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ff5a5a",
-            "identifier": "body",
-            "uid": 235
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "weapon_goodie",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 235,
-                    "h": 5,
-                    "uid": 236,
-                    "w": 5,
-                    "x": 2,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 1333,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 6,
-                    "tilesetUid": 62,
-                    "uid": 237,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 238
-              }
-            ],
-            "identifier": "stand",
-            "loop": true,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 239
-          }
-        ],
-        "uid": 240
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ffd166",
-            "identifier": "attack",
-            "uid": 242
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 8,
-        "identifier": "weapon_attack_dagger_0",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 242,
-                    "h": 1,
-                    "uid": 243,
-                    "w": 3,
-                    "x": 0,
-                    "y": 5
-                  }
-                ],
-                "durationMs": 50,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 0,
-                    "tilesetUid": 241,
-                    "uid": 244,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 245
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 242,
-                    "h": 1,
-                    "uid": 246,
-                    "w": 6,
-                    "x": 0,
-                    "y": 5
-                  }
-                ],
-                "durationMs": 150,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 1,
-                    "tilesetUid": 241,
-                    "uid": 247,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 248
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 242,
-                    "h": 1,
-                    "uid": 249,
-                    "w": 3,
-                    "x": 0,
-                    "y": 5
-                  }
-                ],
-                "durationMs": 50,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 0,
-                    "tilesetUid": 241,
-                    "uid": 250,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 251
-              }
-            ],
-            "identifier": "attack",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 252
-          }
-        ],
-        "uid": 253
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ffd166",
-            "identifier": "attack",
-            "uid": 254
-          }
-        ],
-        "canvasHei": 16,
-        "canvasWid": 16,
-        "identifier": "weapon_attack_sword_0",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 254,
-                    "h": 9,
-                    "uid": 255,
-                    "w": 8,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "durationMs": 50,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 2,
-                    "tilesetUid": 241,
-                    "uid": 256,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 18,
-                    "tilesetUid": 241,
-                    "uid": 257,
-                    "x": 0,
-                    "y": 8
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 3,
-                    "tilesetUid": 241,
-                    "uid": 258,
-                    "x": 8,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 19,
-                    "tilesetUid": 241,
-                    "uid": 259,
-                    "x": 8,
-                    "y": 8
-                  }
-                ],
-                "uid": 260
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 254,
-                    "h": 13,
-                    "uid": 261,
-                    "w": 11,
-                    "x": 0,
-                    "y": 2
-                  }
-                ],
-                "durationMs": 50,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 4,
-                    "tilesetUid": 241,
-                    "uid": 262,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 20,
-                    "tilesetUid": 241,
-                    "uid": 263,
-                    "x": 0,
-                    "y": 8
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 5,
-                    "tilesetUid": 241,
-                    "uid": 264,
-                    "x": 8,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 21,
-                    "tilesetUid": 241,
-                    "uid": 265,
-                    "x": 8,
-                    "y": 8
-                  }
-                ],
-                "uid": 266
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 254,
-                    "h": 7,
-                    "uid": 267,
-                    "w": 10,
-                    "x": 0,
-                    "y": 9
-                  }
-                ],
-                "durationMs": 50,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 6,
-                    "tilesetUid": 241,
-                    "uid": 268,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 22,
-                    "tilesetUid": 241,
-                    "uid": 269,
-                    "x": 0,
-                    "y": 8
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 7,
-                    "tilesetUid": 241,
-                    "uid": 270,
-                    "x": 8,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 23,
-                    "tilesetUid": 241,
-                    "uid": 271,
-                    "x": 8,
-                    "y": 8
-                  }
-                ],
-                "uid": 272
-              },
-              {
-                "boxes": [],
-                "durationMs": 433,
-                "tiles": [],
-                "uid": 273
-              }
-            ],
-            "identifier": "attack",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 274
-          }
-        ],
-        "uid": 275
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ffd166",
-            "identifier": "attack",
-            "uid": 276
-          }
-        ],
-        "canvasHei": 16,
-        "canvasWid": 16,
-        "identifier": "weapon_attack_sword_1",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 276,
-                    "h": 7,
-                    "uid": 277,
-                    "w": 10,
-                    "x": 0,
-                    "y": 9
-                  }
-                ],
-                "durationMs": 33,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 8,
-                    "tilesetUid": 241,
-                    "uid": 278,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 24,
-                    "tilesetUid": 241,
-                    "uid": 279,
-                    "x": 0,
-                    "y": 8
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 9,
-                    "tilesetUid": 241,
-                    "uid": 280,
-                    "x": 8,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 25,
-                    "tilesetUid": 241,
-                    "uid": 281,
-                    "x": 8,
-                    "y": 8
-                  }
-                ],
-                "uid": 282
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 276,
-                    "h": 15,
-                    "uid": 283,
-                    "w": 11,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "durationMs": 133,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 10,
-                    "tilesetUid": 241,
-                    "uid": 284,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 26,
-                    "tilesetUid": 241,
-                    "uid": 285,
-                    "x": 0,
-                    "y": 8
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 11,
-                    "tilesetUid": 241,
-                    "uid": 286,
-                    "x": 8,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 27,
-                    "tilesetUid": 241,
-                    "uid": 287,
-                    "x": 8,
-                    "y": 8
-                  }
-                ],
-                "uid": 288
-              },
-              {
-                "boxes": [],
-                "durationMs": 417,
-                "tiles": [],
-                "uid": 289
-              }
-            ],
-            "identifier": "attack",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 290
-          }
-        ],
-        "uid": 291
-      },
-      {
-        "boxTypes": [
-          {
-            "builtin": false,
-            "color": "#ffd166",
-            "identifier": "attack",
-            "uid": 292
-          }
-        ],
-        "canvasHei": 8,
-        "canvasWid": 16,
-        "identifier": "weapon_attack_sword_2",
-        "states": [
-          {
-            "frames": [
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 292,
-                    "h": 1,
-                    "uid": 293,
-                    "w": 4,
-                    "x": 0,
-                    "y": 4
-                  }
-                ],
-                "durationMs": 50,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 12,
-                    "tilesetUid": 241,
-                    "uid": 294,
-                    "x": 0,
-                    "y": 0
-                  }
-                ],
-                "uid": 295
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 292,
-                    "h": 1,
-                    "uid": 296,
-                    "w": 11,
-                    "x": 0,
-                    "y": 4
-                  }
-                ],
-                "durationMs": 117,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 13,
-                    "tilesetUid": 241,
-                    "uid": 297,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 14,
-                    "tilesetUid": 241,
-                    "uid": 298,
-                    "x": 8,
-                    "y": 0
-                  }
-                ],
-                "uid": 299
-              },
-              {
-                "boxes": [
-                  {
-                    "boxTypeUid": 292,
-                    "h": 1,
-                    "uid": 300,
-                    "w": 11,
-                    "x": 0,
-                    "y": 4
-                  }
-                ],
-                "durationMs": 83,
-                "tiles": [
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 29,
-                    "tilesetUid": 241,
-                    "uid": 301,
-                    "x": 0,
-                    "y": 0
-                  },
-                  {
-                    "flipX": false,
-                    "flipY": false,
-                    "tileId": 30,
-                    "tilesetUid": 241,
-                    "uid": 302,
-                    "x": 8,
-                    "y": 0
-                  }
-                ],
-                "uid": 303
-              },
-              {
-                "boxes": [],
-                "durationMs": 333,
-                "tiles": [],
-                "uid": 304
-              }
-            ],
-            "identifier": "attack",
-            "loop": false,
-            "loopToMs": 0,
-            "originX": 0,
-            "originY": 0,
-            "uid": 305
-          }
-        ],
-        "uid": 306
+        "uid": 173
       }
     ]
   }

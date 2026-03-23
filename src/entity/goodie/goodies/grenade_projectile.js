@@ -1,5 +1,10 @@
 import Goodie from '../goodie.js';
 import Particle from '../../particle/particle.js';
+import {
+  GOODIE_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 
 export default class GrenadeProjectile extends Goodie {
@@ -40,21 +45,14 @@ export default class GrenadeProjectile extends Goodie {
       y: 4
     }
 
-    this.bbox = {
-      x1: 3,
-      y1: 3,
-      x2: 4,
-      y2: 5,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.GRENADE_PROJECTILE;
+    this.spriteEditorStateIdentifiers = {
+      [state.stand]: 'stand',
     };
-
-    this.states = {
-      [state.stand]: {
-        anim: {
-          0: 10,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(GOODIE_SPRITE_SHEET_PATH),
+    );
   }
 
   die() {

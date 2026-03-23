@@ -31,6 +31,9 @@ export default class Entity {
     this.knockbackTimer = 0;
     this.spriteSheet = assets.tilesheet;
     this.ignoreEdges = false;
+    this.spriteEditorIdentifier = null;
+    this.spriteEditorDefinition = null;
+    this.spriteEditorStateIdentifiers = null;
   }
 
   init(x, y, metadata = null) {
@@ -89,12 +92,13 @@ export default class Entity {
   }
 
   getBbox() {
-    if(this.facing == facing.right) return this.bbox;
+    const bbox = this.spriteEditorDefinition !== null ? this.getAnimationBox('body') : this.bbox;
+    if(this.facing == facing.right) return bbox;
     return {
-      x1: tileSize - this.bbox.x2 - 1,
-      y1: this.bbox.y1,
-      x2: tileSize - this.bbox.x1,
-      y2: this.bbox.y2,
+      x1: tileSize - bbox.x2 - 1,
+      y1: bbox.y1,
+      x2: tileSize - bbox.x1,
+      y2: bbox.y2,
     }
   }
 
@@ -113,9 +117,197 @@ export default class Entity {
     return this.y - camera.y;
   }
 
+  requireSpriteEditorDefinition(identifier, expectedTilesetRelPath = null, requiredBoxIdentifiers = ['body']) {
+    if(typeof identifier !== 'string' || identifier.length === 0) {
+      throw new Error(`${this.entityName} requires a non-empty LDtk sprite identifier.`);
+    }
+    if(!assets || !assets.spriteEditor || typeof assets.spriteEditor !== 'object' || Array.isArray(assets.spriteEditor)) {
+      throw new Error(`${this.entityName} runtime requires assets.spriteEditor to be loaded from assets/maps.ldtk.`);
+    }
+
+    const definition = assets.spriteEditor[identifier];
+    if(!definition || typeof definition !== 'object' || Array.isArray(definition)) {
+      throw new Error(`${this.entityName} runtime requires LDtk sprite "${identifier}".`);
+    }
+    if(expectedTilesetRelPath !== null && definition.tilesetRelPath !== expectedTilesetRelPath) {
+      throw new Error(
+        `${this.entityName} expected LDtk sprite "${identifier}" to use "${expectedTilesetRelPath}", ` +
+        `got "${definition.tilesetRelPath}".`,
+      );
+    }
+    if(!Array.isArray(requiredBoxIdentifiers)) {
+      throw new Error(`${this.entityName} requires requiredBoxIdentifiers to be an array.`);
+    }
+    if(!definition.defaultBoxes || typeof definition.defaultBoxes !== 'object' || Array.isArray(definition.defaultBoxes)) {
+      throw new Error(`${this.entityName} requires LDtk sprite "${identifier}" to define default boxes.`);
+    }
+    for(const boxIdentifier of requiredBoxIdentifiers) {
+      if(typeof boxIdentifier !== 'string' || boxIdentifier.length === 0) {
+        throw new Error(`${this.entityName} requires non-empty LDtk box identifiers.`);
+      }
+      if(definition.defaultBoxes[boxIdentifier] === undefined || definition.defaultBoxes[boxIdentifier] === null) {
+        throw new Error(
+          `${this.entityName} requires LDtk sprite "${identifier}" to define a default "${boxIdentifier}" box.`,
+        );
+      }
+    }
+    return definition;
+  }
+
   getAnimationStateConfig() {
     if(this.state == state.custom) return null;
+    if(this.spriteEditorDefinition !== null) {
+      if(!this.spriteEditorStateIdentifiers || typeof this.spriteEditorStateIdentifiers !== 'object' || Array.isArray(this.spriteEditorStateIdentifiers)) {
+        throw new Error(`${this.entityName} is missing spriteEditorStateIdentifiers.`);
+      }
+      const stateIdentifier = this.spriteEditorStateIdentifiers[this.state];
+      if(typeof stateIdentifier !== 'string' || stateIdentifier.length === 0) {
+        throw new Error(`${this.entityName} has no LDtk animation mapping for state "${this.state}".`);
+      }
+      const animation = this.spriteEditorDefinition.states[stateIdentifier];
+      if(!animation) {
+        throw new Error(
+          `LDtk sprite "${this.spriteEditorDefinition.identifier}" is missing state "${stateIdentifier}" ` +
+          `required by ${this.entityName}.`,
+        );
+      }
+      return animation;
+    }
     return this.states[this.state] || null;
+  }
+
+  hasAnimationState(stateValue) {
+    if(stateValue == state.custom) return false;
+    if(this.spriteEditorDefinition !== null) {
+      if(!this.spriteEditorStateIdentifiers || typeof this.spriteEditorStateIdentifiers !== 'object' || Array.isArray(this.spriteEditorStateIdentifiers)) {
+        return false;
+      }
+      const stateIdentifier = this.spriteEditorStateIdentifiers[stateValue];
+      if(typeof stateIdentifier !== 'string' || stateIdentifier.length === 0) {
+        return false;
+      }
+      return this.spriteEditorDefinition.states[stateIdentifier] !== undefined;
+    }
+    return this.states[stateValue] !== undefined;
+  }
+
+  overrideSpriteEditorStateFrame(stateIdentifier, threshold, spriteId) {
+    if(this.spriteEditorDefinition === null) {
+      throw new Error(`${this.entityName} cannot override an LDtk sprite frame without a spriteEditorDefinition.`);
+    }
+    if(typeof stateIdentifier !== 'string' || stateIdentifier.length === 0) {
+      throw new Error(`${this.entityName} requires a non-empty LDtk state identifier for sprite overrides.`);
+    }
+    if(!Number.isInteger(threshold) || threshold < 0) {
+      throw new Error(`${this.entityName} requires a non-negative integer threshold for sprite overrides.`);
+    }
+    if(!Number.isInteger(spriteId) || spriteId < 0) {
+      throw new Error(`${this.entityName} requires a non-negative integer sprite id for LDtk sprite overrides.`);
+    }
+
+    const animation = this.spriteEditorDefinition.states[stateIdentifier];
+    if(!animation) {
+      throw new Error(
+        `LDtk sprite "${this.spriteEditorDefinition.identifier}" is missing state "${stateIdentifier}" ` +
+        `required by ${this.entityName}.`,
+      );
+    }
+    if(animation.anim[threshold] === undefined) {
+      throw new Error(
+        `LDtk sprite "${this.spriteEditorDefinition.identifier}" state "${stateIdentifier}" is missing threshold "${threshold}" ` +
+        `required by ${this.entityName}.`,
+      );
+    }
+
+    this.spriteEditorDefinition = {
+      ...this.spriteEditorDefinition,
+      states: {
+        ...this.spriteEditorDefinition.states,
+        [stateIdentifier]: {
+          ...animation,
+          anim: {
+            ...animation.anim,
+            [threshold]: spriteId,
+          },
+        },
+      },
+    };
+  }
+
+  resolveAnimationTrackValue(track, description, counterValue = this.stateCounter) {
+    if(!track || typeof track !== 'object' || Array.isArray(track)) {
+      throw new Error(`${description} is missing its threshold map.`);
+    }
+    if(!Number.isInteger(counterValue)) {
+      throw new Error(`${description} requires an integer counter value.`);
+    }
+
+    const thresholds = Object.keys(track)
+      .map((value) => Number.parseInt(value, 10))
+      .filter((value) => Number.isInteger(value))
+      .sort((a, b) => a - b);
+    if(thresholds.length === 0 || track[0] === undefined) {
+      throw new Error(`${description} is missing a 0-frame threshold.`);
+    }
+
+    var resolvedValue = track[0];
+    for(var threshold of thresholds) {
+      if(counterValue >= threshold) {
+        resolvedValue = track[threshold];
+      } else {
+        break;
+      }
+    }
+
+    return resolvedValue;
+  }
+
+  getAnimationBox(boxIdentifier) {
+    if(this.spriteEditorDefinition === null) {
+      throw new Error(`${this.entityName} cannot resolve LDtk animation boxes without a spriteEditorDefinition.`);
+    }
+    if(typeof boxIdentifier !== 'string' || boxIdentifier.length === 0) {
+      throw new Error(`${this.entityName} requires a non-empty LDtk box identifier.`);
+    }
+
+    if(this.state == state.custom) {
+      const defaultBox = this.spriteEditorDefinition.defaultBoxes?.[boxIdentifier];
+      if(defaultBox === undefined) {
+        throw new Error(
+          `LDtk sprite "${this.spriteEditorDefinition.identifier}" is missing default box "${boxIdentifier}" ` +
+          `required by ${this.entityName}.`,
+        );
+      }
+      return defaultBox;
+    }
+
+    const animation = this.getAnimationStateConfig();
+    if(animation === null) {
+      throw new Error(`${this.entityName} requested LDtk animation boxes for custom state playback.`);
+    }
+    if(!animation.boxesByType || typeof animation.boxesByType !== 'object' || Array.isArray(animation.boxesByType)) {
+      throw new Error(`${this.entityName} has no LDtk box data for state "${this.state}".`);
+    }
+
+    const boxTrack = animation.boxesByType[boxIdentifier];
+    if(boxTrack === undefined) {
+      throw new Error(
+        `LDtk sprite "${this.spriteEditorDefinition.identifier}" state "${this.state}" is missing box "${boxIdentifier}" ` +
+        `required by ${this.entityName}.`,
+      );
+    }
+
+    const resolvedBox = this.resolveAnimationTrackValue(
+      boxTrack,
+      `LDtk sprite "${this.spriteEditorDefinition.identifier}" state box "${boxIdentifier}"`,
+    );
+    if(resolvedBox === null) {
+      throw new Error(
+        `LDtk sprite "${this.spriteEditorDefinition.identifier}" state "${this.state}" resolved box "${boxIdentifier}" ` +
+        `to null for ${this.entityName}.`,
+      );
+    }
+    return resolvedBox;
   }
 
   getSprite() {
@@ -127,24 +319,7 @@ export default class Entity {
       throw new Error(`${this.entityName} has no animation config for state "${this.state}".`);
     }
 
-    const thresholds = Object.keys(animation.anim)
-      .map((value) => Number.parseInt(value, 10))
-      .filter((value) => Number.isInteger(value))
-      .sort((a, b) => a - b);
-    if(thresholds.length === 0 || animation.anim[0] === undefined) {
-      throw new Error(`${this.entityName} state "${this.state}" is missing a 0-frame animation threshold.`);
-    }
-
-    var spr = animation.anim[0];
-    for(var c of thresholds) {
-      if(this.stateCounter >= c) {
-        spr = animation.anim[c];
-      } else {
-        break;
-      }
-    }
-
-    return spr;
+    return this.resolveAnimationTrackValue(animation.anim, `${this.entityName} state "${this.state}" animation`);
   }
 
   colliding() {
@@ -531,7 +706,7 @@ export default class Entity {
     }
     this.ym = y;
 
-    if(this.states.knockback !== undefined) this.state = knockback;
+    if(this.hasAnimationState(state.knockback)) this.setState(state.knockback);
     this.knockbackTimer = this.knockbackDuration;
     //console.log('.');
   }

@@ -1,4 +1,9 @@
 import Goodie from '../goodie.js';
+import {
+  GOODIE_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class NpcGoodie extends Goodie {
   constructor(spr) {
@@ -19,21 +24,14 @@ export default class NpcGoodie extends Goodie {
     this.entityName = 'Npc';
     this.data = {};
 
-    this.bbox = {
-      x1: -6,
-      y1: 1,
-      x2: 13,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.NPC_GOODIE;
+    this.spriteEditorStateIdentifiers = {
+      [state.stand]: 'stand',
     };
-
-    this.states = {
-      [state.stand]: {
-        anim: {
-          0: 32,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(GOODIE_SPRITE_SHEET_PATH),
+    );
   }
 
   init(x, y, metadata = null) {
@@ -63,7 +61,7 @@ export default class NpcGoodie extends Goodie {
   }
 
   setSprite(s) {
-    this.states[state.stand].anim[0] = s;
+    this.overrideSpriteEditorStateFrame('stand', 0, s);
   }
 
   update() {

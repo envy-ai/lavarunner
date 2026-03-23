@@ -1,9 +1,15 @@
 import Wipe from '../../wipe.js';
 import Entity from '../entity.js';
 import TextParticle from '../particle/text_particle.js';
-
-const PLAYER_SPRITE_EDITOR_IDENTIFIER = 'player_default';
-const PLAYER_SPRITE_EDITOR_TILESET_REL_PATH = 'sprites/player_default.png';
+import {
+  PLAYER_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  SPRITE_EDITOR_ATTACK_BOX_IDENTIFIER,
+  SPRITE_EDITOR_WEAPON_ATTACK_STATE_IDENTIFIER,
+  WEAPON_SPRITE_SHEET_PATH,
+  buildWeaponAttackSpriteEditorIdentifier,
+  buildSpriteEditorTilesetRelPath,
+} from '../sprite_editor_definitions.js';
 
 export default class Player extends Entity {
   constructor() {
@@ -30,6 +36,7 @@ export default class Player extends Entity {
     this.inventory = {};
     this.entityName = 'Player';
     this.weapon = null;
+    this.weaponName = null;
     this.attackTimer = 0;
     this.maxLife = 10;
     this.life = 10;
@@ -48,12 +55,6 @@ export default class Player extends Entity {
     // Turn on to debug
     this.showBbox = false;
 
-    this.bbox = {
-      x1: 2,
-      y1: 1,
-      x2: 6,
-      y2: 7,
-    };
     this.spriteEditorStateIdentifiers = {
       [state.stand]: 'stand',
       [state.move]: 'move',
@@ -63,37 +64,11 @@ export default class Player extends Entity {
       [state.slide]: 'slide',
       [state.knockback]: 'knockback',
     };
-    this.spriteEditorDefinition = this.requireSpriteEditorDefinition();
-  }
-
-  requireSpriteEditorDefinition() {
-    if(!assets || !assets.spriteEditor || typeof assets.spriteEditor !== 'object') {
-      throw new Error('Player runtime requires assets.spriteEditor to be loaded from assets/maps.ldtk.');
-    }
-    const definition = assets.spriteEditor[PLAYER_SPRITE_EDITOR_IDENTIFIER];
-    if(!definition || typeof definition !== 'object') {
-      throw new Error(`Player runtime requires LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}".`);
-    }
-    if(definition.tilesetRelPath !== PLAYER_SPRITE_EDITOR_TILESET_REL_PATH) {
-      throw new Error(
-        `Player runtime expected LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" to use "${PLAYER_SPRITE_EDITOR_TILESET_REL_PATH}", ` +
-        `got "${definition.tilesetRelPath}".`,
-      );
-    }
-    return definition;
-  }
-
-  getAnimationStateConfig() {
-    if(this.state == state.custom) return null;
-    const stateIdentifier = this.spriteEditorStateIdentifiers[this.state];
-    if(typeof stateIdentifier !== 'string' || stateIdentifier.length === 0) {
-      throw new Error(`Player has no LDtk animation mapping for state "${this.state}".`);
-    }
-    const animation = this.spriteEditorDefinition.states[stateIdentifier];
-    if(!animation) {
-      throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" is missing player state "${stateIdentifier}".`);
-    }
-    return animation;
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.PLAYER_DEFAULT;
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(PLAYER_SPRITE_SHEET_PATH),
+    );
   }
 
   addItem(item, quantity = 1) {
@@ -192,19 +167,59 @@ export default class Player extends Entity {
 
   addWeapon(weapon) {
     console.log("Got weapon " + weapon);
-    this.weapon = assets.data.weapons[weapon];
+    const weaponData = assets.data.weapons[weapon];
+    if(!Array.isArray(weaponData) || weaponData.length === 0) {
+      throw new Error(`Player tried to equip unknown or invalid weapon "${weapon}".`);
+    }
+    this.weaponName = weapon;
+    this.weapon = weaponData;
+  }
+
+  getWeaponAttackSpriteEditorDefinition(chainIndex = this.chain_atk_count) {
+    if(this.weaponName === null || this.weapon === null) {
+      throw new Error('Player requested weapon attack LDtk data without an equipped weapon.');
+    }
+    if(!Number.isInteger(chainIndex) || chainIndex < 0 || chainIndex >= this.weapon.length) {
+      throw new Error(`Player requested invalid weapon chain index "${chainIndex}" for "${this.weaponName}".`);
+    }
+
+    return this.requireSpriteEditorDefinition(
+      buildWeaponAttackSpriteEditorIdentifier(this.weaponName, chainIndex),
+      buildSpriteEditorTilesetRelPath(WEAPON_SPRITE_SHEET_PATH),
+      [SPRITE_EDITOR_ATTACK_BOX_IDENTIFIER],
+    );
   }
 
   getWeaponBbox() {
-    if(this.weaponFrame === null || this.attackTimer == 0) return null;
-    var bbox = null;
-
-    try {
-      bbox = this.weapon[this.chain_atk_count].frames[this.weaponFrame].bbox;
-    } catch(e) {
+    if(this.weapon === null || this.weaponFrame === null || this.weaponFrame < 0 || this.attackTimer == 0) return null;
+    const chain = this.weapon[this.chain_atk_count];
+    if(!chain || typeof chain !== 'object' || Array.isArray(chain)) {
+      throw new Error(`Player weapon "${this.weaponName}" chain "${this.chain_atk_count}" is invalid.`);
+    }
+    if(chain.frames === undefined) {
       return null;
     }
-    //console.log(f, bbox);
+
+    const definition = this.getWeaponAttackSpriteEditorDefinition(this.chain_atk_count);
+    const attackState = definition.states[SPRITE_EDITOR_WEAPON_ATTACK_STATE_IDENTIFIER];
+    if(!attackState || !attackState.boxesByType || typeof attackState.boxesByType !== 'object' || Array.isArray(attackState.boxesByType)) {
+      throw new Error(
+        `LDtk sprite "${definition.identifier}" is missing attack state box data required by Player.`,
+      );
+    }
+
+    const boxTrack = attackState.boxesByType[SPRITE_EDITOR_ATTACK_BOX_IDENTIFIER];
+    if(boxTrack === undefined) {
+      throw new Error(
+        `LDtk sprite "${definition.identifier}" is missing attack box track required by Player.`,
+      );
+    }
+
+    const bbox = this.resolveAnimationTrackValue(
+      boxTrack,
+      `LDtk sprite "${definition.identifier}" attack box`,
+      this.weaponFrame,
+    );
     if(bbox === null || this.facing == facing.right) return bbox;
     return {
       x1: tileSize - bbox.x2 - 1,

@@ -1,4 +1,9 @@
 import Goodie from '../goodie.js';
+import {
+  GOODIE_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class WeaponGoodie extends Goodie {
   constructor(spr) {
@@ -19,25 +24,18 @@ export default class WeaponGoodie extends Goodie {
     this.entityName = 'Weapon';
     this.weapon = "Sword";
 
-    this.bbox = {
-      x1: 2,
-      y1: 2,
-      x2: 6,
-      y2: 6,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.WEAPON_GOODIE;
+    this.spriteEditorStateIdentifiers = {
+      [state.stand]: 'stand',
     };
-
-    this.states = {
-      [state.stand]: {
-        anim: {
-          0: 6,
-        },
-        reset: 80,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(GOODIE_SPRITE_SHEET_PATH),
+    );
   }
 
   setSprite(s) {
-    this.states[state.stand]['anim'][0] = s;
+    this.overrideSpriteEditorStateFrame('stand', 0, s);
   }
 
   init(x, y, metadata = null) {

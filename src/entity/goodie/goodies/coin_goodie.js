@@ -1,4 +1,9 @@
 import Goodie from '../goodie.js';
+import {
+  GOODIE_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class CoinGoodie extends Goodie {
   constructor(spr) {
@@ -18,24 +23,14 @@ export default class CoinGoodie extends Goodie {
     this.flipH = true;
     this.entityName = 'Coin';
 
-    this.bbox = {
-      x1: 2,
-      y1: 2,
-      x2: 5,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.COIN_GOODIE;
+    this.spriteEditorStateIdentifiers = {
+      [state.stand]: 'stand',
     };
-
-    this.states = {
-      [state.stand]: {
-        anim: {
-          0: 0,
-          6: 1,
-          12: 2,
-          18: 3,
-        },
-        reset: 24,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(GOODIE_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

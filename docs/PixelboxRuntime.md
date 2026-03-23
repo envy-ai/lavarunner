@@ -7,7 +7,8 @@
 - Loads project images and JSON data through Phaser.
 - Builds the legacy `window.assets` structure expected by gameplay code.
 - Loads the LDtk project from `assets/maps.ldtk`.
-- Parses the LDtk root `spriteEditor` player animation data and exposes it on `assets.spriteEditor.player_default`.
+- Parses runtime-supported LDtk root `spriteEditor` animation/body-box/attack-box data and exposes it on
+  `assets.spriteEditor[identifier]`.
 - Loads optional runtime compat metadata from `assets/maps.ldtk.meta.json`.
 - Resolves LDtk level/layer metadata into virtual per-layer `CompatTileMap` instances.
 - Normalizes typed LDtk entity identifiers back into the legacy sprite ids expected by `src/main.js`.
@@ -73,16 +74,33 @@ etc.) rather than read from a hidden `CompatSpriteId` field.
 - Sidecar entity metadata is matched by LDtk entity `iid` first, then by entity grid coordinate as a fallback for
   editor saves that rewrite some entity `iid` values to `0`.
 
-### Player Sprite Animations
+### Sprite Editor Animations And Box Data
 
-- Player body animation is sourced from `assets/maps.ldtk` root `spriteEditor.sprites["player_default"]`.
-- Parsed player state data is exposed on `window.assets.spriteEditor.player_default`.
-- The runtime currently supports the existing single-tile `8x8` player model only:
+- Gameplay entity body animation/body boxes and player weapon attack boxes are sourced from `assets/maps.ldtk` root
+  `spriteEditor`.
+- Parsed sprite data is exposed on `window.assets.spriteEditor`.
+- Each parsed state includes animation thresholds plus `boxesByType` threshold maps.
+- Each parsed sprite definition also exposes `defaultBoxes` for fallback use during `state.custom`.
+- Runtime-backed identifiers currently include:
+  - `player_default`
+  - `bee_enemy`, `fireball_enemy`, `inky_enemy`, `inky_projectile`, `lava_bubble_enemy`, `mogus_enemy`
+  - `chest_goodie`, `coin_goodie`, `door_goodie`, `grenade_projectile`, `item_goodie`, `npc_goodie`, `volcano_goodie`,
+    `weapon_goodie`
+  - `weapon_attack_dagger_0`, `weapon_attack_sword_0`, `weapon_attack_sword_1`, `weapon_attack_sword_2`
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still override their per-instance `stand` frame sprite id from entity
+  metadata after construction, but they no longer keep local `this.states` tables.
+- Body-animation playback still supports the existing single-tile `8x8` sprite model only:
   - one tile per frame
   - tile placed at `(0,0)`
+  - gameplay sprites require a `body` box type with usable per-state box tracks
   - no per-frame tile flips
-  - tileset path must be `sprites/player_default.png`
-- Invalid or missing player sprite editor data throws during startup instead of falling back to hardcoded player frame tables.
+  - one tileset path per runtime sprite definition
+- Weapon attack hitbox definitions are box-driven only at runtime:
+  - they use an `attack` box type instead of `body`
+  - they may use larger canvases and multi-tile frame visuals for editor context
+  - explicit empty `attack` thresholds resolve to `null` hitboxes
+- Invalid root `spriteEditor` data throws during startup, and missing required sprite identifiers/body boxes throw when
+  the corresponding gameplay entity is constructed.
 
 ## Testing Hooks
 

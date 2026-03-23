@@ -1,4 +1,9 @@
 import Enemy from '../enemy.js';
+import {
+  ENEMY_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class InkyProjectile extends Enemy {
   constructor(spr) {
@@ -24,27 +29,15 @@ export default class InkyProjectile extends Enemy {
     this.jumpFrame = 0;
     this.jumpAccel = 1.75;
 
-    this.bbox = {
-      x1: 3,
-      y1: 3,
-      x2: 5,
-      y2: 5,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.INKY_PROJECTILE;
+    this.spriteEditorStateIdentifiers = {
+      [state.move]: 'move',
+      [state.knockback]: 'knockback',
     };
-
-    this.states = {
-      [state.move]: {
-        anim: {
-          0: 80,
-        },
-        reset: -1,
-      },
-      [state.knockback]: {
-        anim: {
-          0: 80
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(ENEMY_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

@@ -1,5 +1,10 @@
 import Enemy from '../enemy.js';
 import Particle from '../../particle/particle.js';
+import {
+  ENEMY_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class FireballEnemy extends Enemy {
   constructor(spr) {
@@ -20,22 +25,14 @@ export default class FireballEnemy extends Enemy {
     this.noKnockback = true;
     this.ignoreEdges = true;
 
-    this.bbox = {
-      x1: 1,
-      y1: 1,
-      x2: 6,
-      y2: 6,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.FIREBALL_ENEMY;
+    this.spriteEditorStateIdentifiers = {
+      [state.move]: 'move',
     };
-
-    this.states = {
-      [state.move]: {
-        anim: {
-          0: 16,
-          12: 17,
-        },
-        reset: 24,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(ENEMY_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

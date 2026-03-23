@@ -11,8 +11,6 @@ const TILED_FLIP_MASK =
   TILED_FLIPPED_VERTICALLY_FLAG |
   TILED_FLIPPED_DIAGONALLY_FLAG;
 const FIXED_FRAME_MS = 1000 / 60;
-const PLAYER_SPRITE_EDITOR_IDENTIFIER = 'player_default';
-const PLAYER_SPRITE_EDITOR_TILESET_REL_PATH = 'sprites/player_default.png';
 const PhaserRuntime = window.Phaser;
 
 if (!PhaserRuntime) {
@@ -1033,7 +1031,109 @@ class PixelboxRuntime {
     return Math.max(1, Math.round(durationMs / FIXED_FRAME_MS));
   }
 
-  buildPlayerSpriteEditorState(state, tilesetRelPathByUid, context) {
+  convertSpriteEditorFrameBoxToBbox(box, context) {
+    if (!box || typeof box !== 'object' || Array.isArray(box)) {
+      throw new Error(`${context} must be an object.`);
+    }
+    if (!Number.isInteger(box.x) || !Number.isInteger(box.y)) {
+      throw new Error(`${context} must provide integer x/y coordinates.`);
+    }
+    if (!Number.isInteger(box.w) || !Number.isInteger(box.h) || box.w <= 0 || box.h <= 0) {
+      throw new Error(`${context} must provide positive integer w/h dimensions.`);
+    }
+
+    return {
+      x1: box.x,
+      y1: box.y,
+      x2: box.x + box.w - 1,
+      y2: box.y + box.h - 1,
+    };
+  }
+
+  buildSpriteEditorFrameBoxes(frameBoxes, boxTypeIdentifierByUid, context) {
+    if (!Array.isArray(frameBoxes)) {
+      throw new Error(`${context} must provide a boxes array.`);
+    }
+
+    const boxesByType = {};
+    for (let index = 0; index < frameBoxes.length; index += 1) {
+      const box = frameBoxes[index];
+      const boxContext = `${context} box ${index}`;
+      if (!box || typeof box !== 'object' || Array.isArray(box)) {
+        throw new Error(`${boxContext} must be an object.`);
+      }
+      if (!Number.isInteger(box.boxTypeUid)) {
+        throw new Error(`${boxContext} is missing an integer boxTypeUid.`);
+      }
+
+      const boxIdentifier = boxTypeIdentifierByUid.get(box.boxTypeUid);
+      if (!boxIdentifier) {
+        throw new Error(`${boxContext} references unknown box type UID ${box.boxTypeUid}.`);
+      }
+      if (boxesByType[boxIdentifier] !== undefined) {
+        throw new Error(`${context} has multiple boxes for box type "${boxIdentifier}".`);
+      }
+
+      boxesByType[boxIdentifier] = this.convertSpriteEditorFrameBoxToBbox(box, boxContext);
+    }
+
+    return boxesByType;
+  }
+
+  buildSpriteEditorFrameTiles(frameTiles, tilesetRelPathByUid, context, requiresSingleTilePlayback) {
+    if (!Array.isArray(frameTiles)) {
+      throw new Error(`${context} must provide a tiles array.`);
+    }
+
+    if (requiresSingleTilePlayback && frameTiles.length !== 1) {
+      throw new Error(`${context} must contain exactly one tile for runtime playback.`);
+    }
+
+    let resolvedTilesetRelPath = null;
+    let runtimeTileId = null;
+    for (let index = 0; index < frameTiles.length; index += 1) {
+      const tile = frameTiles[index];
+      const tileContext = `${context} tile ${index}`;
+      if (!tile || typeof tile !== 'object' || Array.isArray(tile)) {
+        throw new Error(`${tileContext} must be an object.`);
+      }
+      if (!Number.isInteger(tile.tileId) || tile.tileId < 0) {
+        throw new Error(`${tileContext} must provide a non-negative integer tileId.`);
+      }
+      if (!Number.isInteger(tile.tilesetUid)) {
+        throw new Error(`${tileContext} is missing an integer tilesetUid.`);
+      }
+
+      const tilesetRelPath = tilesetRelPathByUid.get(tile.tilesetUid);
+      if (!tilesetRelPath) {
+        throw new Error(`${tileContext} references unknown tileset UID ${tile.tilesetUid}.`);
+      }
+      if (resolvedTilesetRelPath === null) {
+        resolvedTilesetRelPath = tilesetRelPath;
+      } else if (resolvedTilesetRelPath !== tilesetRelPath) {
+        throw new Error(`${context} mixes tiles from multiple tilesets, which the current runtime does not support.`);
+      }
+
+      if (!requiresSingleTilePlayback) {
+        continue;
+      }
+
+      if (tile.flipX || tile.flipY) {
+        throw new Error(`${tileContext} flips are unsupported by the current runtime.`);
+      }
+      if (tile.x !== 0 || tile.y !== 0) {
+        throw new Error(`${tileContext} offsets are unsupported by the current runtime.`);
+      }
+      runtimeTileId = tile.tileId;
+    }
+
+    return {
+      runtimeTileId,
+      tilesetRelPath: resolvedTilesetRelPath,
+    };
+  }
+
+  buildSpriteEditorState(state, boxTypeIdentifierByUid, tilesetRelPathByUid, context, requiresSingleTilePlayback) {
     if (!state || typeof state !== 'object' || Array.isArray(state)) {
       throw new Error(`${context} must be an object.`);
     }
@@ -1050,7 +1150,9 @@ class PixelboxRuntime {
       throw new Error(`${context} must provide a non-negative integer loopToMs.`);
     }
 
-    const anim = {};
+    const anim = requiresSingleTilePlayback ? {} : null;
+    const boxesByType = {};
+    const declaredBoxIdentifiers = Array.from(new Set(boxTypeIdentifierByUid.values()));
     let counter = 0;
     let resolvedTilesetRelPath = null;
 
@@ -1060,38 +1162,34 @@ class PixelboxRuntime {
       if (!frame || typeof frame !== 'object' || Array.isArray(frame)) {
         throw new Error(`${frameContext} must be an object.`);
       }
-      if (!Array.isArray(frame.tiles) || frame.tiles.length !== 1) {
-        throw new Error(`${frameContext} must contain exactly one tile for runtime playback.`);
+      if (!Array.isArray(frame.boxes)) {
+        throw new Error(`${frameContext} must contain a boxes array.`);
+      }
+      const frameTileData = this.buildSpriteEditorFrameTiles(
+        frame.tiles,
+        tilesetRelPathByUid,
+        frameContext,
+        requiresSingleTilePlayback,
+      );
+      if (frameTileData.tilesetRelPath !== null) {
+        if (resolvedTilesetRelPath === null) {
+          resolvedTilesetRelPath = frameTileData.tilesetRelPath;
+        } else if (resolvedTilesetRelPath !== frameTileData.tilesetRelPath) {
+          throw new Error(`${context} mixes tiles from multiple tilesets, which the current runtime does not support.`);
+        }
       }
 
-      const tile = frame.tiles[0];
-      if (!tile || typeof tile !== 'object' || Array.isArray(tile)) {
-        throw new Error(`${frameContext} tile must be an object.`);
-      }
-      if (!Number.isInteger(tile.tileId) || tile.tileId < 0) {
-        throw new Error(`${frameContext} tile must provide a non-negative integer tileId.`);
-      }
-      if (!Number.isInteger(tile.tilesetUid)) {
-        throw new Error(`${frameContext} tile is missing an integer tilesetUid.`);
-      }
-      if (tile.flipX || tile.flipY) {
-        throw new Error(`${frameContext} tile flips are unsupported by the current runtime.`);
-      }
-      if (tile.x !== 0 || tile.y !== 0) {
-        throw new Error(`${frameContext} tile offsets are unsupported by the current runtime.`);
+      const frameBoxesByType = this.buildSpriteEditorFrameBoxes(frame.boxes, boxTypeIdentifierByUid, frameContext);
+      for (const boxIdentifier of declaredBoxIdentifiers) {
+        if (boxesByType[boxIdentifier] === undefined) {
+          boxesByType[boxIdentifier] = {};
+        }
+        boxesByType[boxIdentifier][counter] = frameBoxesByType[boxIdentifier] ?? null;
       }
 
-      const tilesetRelPath = tilesetRelPathByUid.get(tile.tilesetUid);
-      if (!tilesetRelPath) {
-        throw new Error(`${frameContext} references unknown tileset UID ${tile.tilesetUid}.`);
+      if (requiresSingleTilePlayback) {
+        anim[counter] = frameTileData.runtimeTileId;
       }
-      if (resolvedTilesetRelPath === null) {
-        resolvedTilesetRelPath = tilesetRelPath;
-      } else if (resolvedTilesetRelPath !== tilesetRelPath) {
-        throw new Error(`${context} mixes tiles from multiple tilesets, which the current runtime does not support.`);
-      }
-
-      anim[counter] = tile.tileId;
       counter += this.convertSpriteEditorMsToTicks(frame.durationMs, frameContext);
     }
 
@@ -1107,16 +1205,17 @@ class PixelboxRuntime {
 
     return {
       anim,
+      boxesByType,
       loopToCounter: state.loop ? loopToCounter : null,
       reset: state.loop ? counter : -1,
       tilesetRelPath: resolvedTilesetRelPath,
     };
   }
 
-  parseRequiredPlayerSpriteEditor(ldtkProject) {
+  parseRequiredSpriteEditor(ldtkProject) {
     const root = ldtkProject && ldtkProject.spriteEditor;
     if (!root || typeof root !== 'object' || Array.isArray(root)) {
-      throw new Error('assets/maps.ldtk is missing root spriteEditor data required for player animation.');
+      throw new Error('assets/maps.ldtk is missing root spriteEditor data required for runtime animation playback.');
     }
     if (!Array.isArray(root.sprites)) {
       throw new Error('assets/maps.ldtk spriteEditor is missing its sprites array.');
@@ -1142,47 +1241,108 @@ class PixelboxRuntime {
       tilesetRelPathByUid.set(tileset.uid, tileset.relPath);
     }
 
-    const playerSprite = root.sprites.find(
-      (sprite) => sprite && sprite.identifier === PLAYER_SPRITE_EDITOR_IDENTIFIER,
-    );
-    if (!playerSprite) {
-      throw new Error(`assets/maps.ldtk spriteEditor is missing the "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" sprite.`);
-    }
-    if (!Number.isInteger(playerSprite.canvasWid) || !Number.isInteger(playerSprite.canvasHei)) {
-      throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" is missing integer canvas dimensions.`);
-    }
-    if (playerSprite.canvasWid !== TILE_SIZE || playerSprite.canvasHei !== TILE_SIZE) {
-      throw new Error(
-        `LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" must be ${TILE_SIZE}x${TILE_SIZE} for the current runtime.`,
-      );
-    }
-    if (!Array.isArray(playerSprite.states) || playerSprite.states.length === 0) {
-      throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" is missing its states array.`);
-    }
-
-    const states = {};
-    for (const rawState of playerSprite.states) {
-      const stateContext = `LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" state "${rawState?.identifier || '<unnamed>'}"`;
-      const parsedState = this.buildPlayerSpriteEditorState(rawState, tilesetRelPathByUid, stateContext);
-      if (states[rawState.identifier]) {
-        throw new Error(`LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" has duplicate state "${rawState.identifier}".`);
+    const definitions = {};
+    for (const sprite of root.sprites) {
+      if (!sprite || typeof sprite !== 'object' || Array.isArray(sprite)) {
+        throw new Error('assets/maps.ldtk spriteEditor contains an invalid sprite definition.');
       }
-      if (parsedState.tilesetRelPath !== PLAYER_SPRITE_EDITOR_TILESET_REL_PATH) {
-        throw new Error(
-          `LDtk sprite "${PLAYER_SPRITE_EDITOR_IDENTIFIER}" state "${rawState.identifier}" references "${parsedState.tilesetRelPath}", ` +
-          `expected "${PLAYER_SPRITE_EDITOR_TILESET_REL_PATH}".`,
+      if (typeof sprite.identifier !== 'string' || sprite.identifier.length === 0) {
+        throw new Error('assets/maps.ldtk spriteEditor contains a sprite without a valid identifier.');
+      }
+      if (definitions[sprite.identifier] !== undefined) {
+        throw new Error(`assets/maps.ldtk spriteEditor has duplicate sprite "${sprite.identifier}".`);
+      }
+      if (!Number.isInteger(sprite.canvasWid) || !Number.isInteger(sprite.canvasHei)) {
+        throw new Error(`LDtk sprite "${sprite.identifier}" is missing integer canvas dimensions.`);
+      }
+      if (sprite.canvasWid <= 0 || sprite.canvasHei <= 0) {
+        throw new Error(`LDtk sprite "${sprite.identifier}" must use positive canvas dimensions.`);
+      }
+      if (!Array.isArray(sprite.boxTypes)) {
+        throw new Error(`LDtk sprite "${sprite.identifier}" is missing its boxTypes array.`);
+      }
+      if (!Array.isArray(sprite.states) || sprite.states.length === 0) {
+        throw new Error(`LDtk sprite "${sprite.identifier}" is missing its states array.`);
+      }
+
+      const boxTypeIdentifierByUid = new Map();
+      const seenBoxTypeIdentifiers = new Set();
+      for (const boxType of sprite.boxTypes) {
+        if (!boxType || typeof boxType !== 'object' || Array.isArray(boxType)) {
+          throw new Error(`LDtk sprite "${sprite.identifier}" has an invalid box type definition.`);
+        }
+        if (!Number.isInteger(boxType.uid)) {
+          throw new Error(`LDtk sprite "${sprite.identifier}" has a box type without an integer uid.`);
+        }
+        if (boxTypeIdentifierByUid.has(boxType.uid)) {
+          throw new Error(`LDtk sprite "${sprite.identifier}" has duplicate box type UID ${boxType.uid}.`);
+        }
+        if (typeof boxType.identifier !== 'string' || boxType.identifier.length === 0) {
+          throw new Error(`LDtk sprite "${sprite.identifier}" has a box type without a valid identifier.`);
+        }
+        if (seenBoxTypeIdentifiers.has(boxType.identifier)) {
+          throw new Error(
+            `LDtk sprite "${sprite.identifier}" has duplicate box type identifier "${boxType.identifier}".`,
+          );
+        }
+        seenBoxTypeIdentifiers.add(boxType.identifier);
+        boxTypeIdentifierByUid.set(boxType.uid, boxType.identifier);
+      }
+      const requiresSingleTilePlayback = seenBoxTypeIdentifiers.has('body');
+      if (requiresSingleTilePlayback && (sprite.canvasWid !== TILE_SIZE || sprite.canvasHei !== TILE_SIZE)) {
+        throw new Error(`LDtk sprite "${sprite.identifier}" must be ${TILE_SIZE}x${TILE_SIZE} for the current runtime.`);
+      }
+
+      const states = {};
+      const defaultBoxes = {};
+      let spriteTilesetRelPath = null;
+      for (const rawState of sprite.states) {
+        const stateContext = `LDtk sprite "${sprite.identifier}" state "${rawState?.identifier || '<unnamed>'}"`;
+        const parsedState = this.buildSpriteEditorState(
+          rawState,
+          boxTypeIdentifierByUid,
+          tilesetRelPathByUid,
+          stateContext,
+          requiresSingleTilePlayback,
         );
+        if (states[rawState.identifier]) {
+          throw new Error(`LDtk sprite "${sprite.identifier}" has duplicate state "${rawState.identifier}".`);
+        }
+        if (spriteTilesetRelPath === null) {
+          spriteTilesetRelPath = parsedState.tilesetRelPath;
+        } else if (spriteTilesetRelPath !== parsedState.tilesetRelPath) {
+          throw new Error(`LDtk sprite "${sprite.identifier}" mixes tiles from multiple tilesets, which the current runtime does not support.`);
+        }
+        for (const [boxIdentifier, boxTrack] of Object.entries(parsedState.boxesByType)) {
+          if (defaultBoxes[boxIdentifier] !== undefined) {
+            continue;
+          }
+          const thresholds = Object.keys(boxTrack)
+            .map((value) => Number.parseInt(value, 10))
+            .filter((value) => Number.isInteger(value))
+            .sort((a, b) => a - b);
+          for (const threshold of thresholds) {
+            if (boxTrack[threshold] === null || boxTrack[threshold] === undefined) {
+              continue;
+            }
+            defaultBoxes[boxIdentifier] = boxTrack[threshold];
+            break;
+          }
+        }
+        states[rawState.identifier] = parsedState;
       }
-      states[rawState.identifier] = parsedState;
+
+      definitions[sprite.identifier] = {
+        canvasHei: sprite.canvasHei,
+        canvasWid: sprite.canvasWid,
+        defaultBoxes,
+        identifier: sprite.identifier,
+        states,
+        tilesetRelPath: spriteTilesetRelPath,
+      };
     }
 
-    return {
-      canvasHei: playerSprite.canvasHei,
-      canvasWid: playerSprite.canvasWid,
-      identifier: PLAYER_SPRITE_EDITOR_IDENTIFIER,
-      states,
-      tilesetRelPath: PLAYER_SPRITE_EDITOR_TILESET_REL_PATH,
-    };
+    return definitions;
   }
 
   buildSharedObjectLayers(level, levelCompatMeta = null) {
@@ -1332,9 +1492,7 @@ class PixelboxRuntime {
 
     this.assets.maps = ldtkProject;
     this.assets.mapsCompat = compatMeta;
-    this.assets.spriteEditor = {
-      [PLAYER_SPRITE_EDITOR_IDENTIFIER]: this.parseRequiredPlayerSpriteEditor(ldtkProject),
-    };
+    this.assets.spriteEditor = this.parseRequiredSpriteEditor(ldtkProject);
   }
 
   resolveTilesheet(path) {

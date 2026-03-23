@@ -1,4 +1,9 @@
 import Enemy from '../enemy.js';
+import {
+  ENEMY_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class BeeEnemy extends Enemy {
   constructor(spr) {
@@ -22,27 +27,15 @@ export default class BeeEnemy extends Enemy {
     this.knockbackDuration = 50;
     this.friction = 0.3;
 
-    this.bbox = {
-      x1: 2,
-      y1: 1,
-      x2: 6,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.BEE_ENEMY;
+    this.spriteEditorStateIdentifiers = {
+      [state.move]: 'move',
+      [state.knockback]: 'knockback',
     };
-
-    this.states = {
-      [state.move]: {
-        anim: {
-          0: 48,
-        },
-        reset: 200,
-      },
-      [state.knockback]: {
-        anim: {
-          0: 48,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(ENEMY_SPRITE_SHEET_PATH),
+    );
   }
 
   knockback(x, y, flipX) {    
@@ -54,7 +47,7 @@ export default class BeeEnemy extends Enemy {
       this.xm = x;
     }
 
-    if(this.states.knockback !== undefined) this.state = knockback;
+    if(this.hasAnimationState(state.knockback)) this.setState(state.knockback);
     this.knockbackTimer = this.knockbackDuration;
   }
 

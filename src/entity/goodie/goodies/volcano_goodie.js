@@ -1,6 +1,11 @@
 import Goodie from '../goodie.js';
 import LavaBubbleEnemy from '../../enemy/enemies/lava_bubble_enemy.js';
 import Particle from '../../particle/particle.js';
+import {
+  ENEMY_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class VolcanoGoodie extends Goodie {
   constructor(spr) {
@@ -23,21 +28,14 @@ export default class VolcanoGoodie extends Goodie {
     this.bubbleCounter = random(this.bubbleInterval);
     this.spriteSheet = assets.sprites.enemies;
 
-    this.bbox = {
-      x1: 1,
-      y1: 4,
-      x2: 6,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.VOLCANO_GOODIE;
+    this.spriteEditorStateIdentifiers = {
+      [state.stand]: 'stand',
     };
-
-    this.states = {
-      [state.stand]: {
-        anim: {
-          0: 33,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(ENEMY_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

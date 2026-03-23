@@ -1,5 +1,10 @@
 import Enemy from '../enemy.js';
 import Particle from '../../particle/particle.js';
+import {
+  ENEMY_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class LavaBubbleEnemy extends Enemy {
   constructor(spr) {
@@ -22,27 +27,15 @@ export default class LavaBubbleEnemy extends Enemy {
     this.noKnockback = true;
     this.ignoreEdges = true;
 
-    this.bbox = {
-      x1: 3,
-      y1: 2,
-      x2: 4,
-      y2: 3,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.LAVA_BUBBLE_ENEMY;
+    this.spriteEditorStateIdentifiers = {
+      [state.move]: 'move',
+      [state.ouch]: 'ouch',
     };
-
-    this.states = {
-      [state.move]: {
-        anim: {
-          0: 32,
-        },
-        reset: 30,
-      },
-      [state.ouch]: {
-        anim: {
-          0: 32,
-        },
-        reset: -1,
-      }
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(ENEMY_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

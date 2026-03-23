@@ -1,4 +1,9 @@
 import Enemy from '../enemy.js';
+import {
+  ENEMY_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class MogusEnemy extends Enemy {
   constructor(spr) {
@@ -21,28 +26,15 @@ export default class MogusEnemy extends Enemy {
     this.knockbackDuration = 50;
     this.friction = 0.3;
 
-    this.bbox = {
-      x1: 2,
-      y1: 1,
-      x2: 6,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.MOGUS_ENEMY;
+    this.spriteEditorStateIdentifiers = {
+      [state.move]: 'move',
+      [state.knockback]: 'knockback',
     };
-
-    this.states = {
-      [state.move]: {
-        anim: {
-          0: 0,
-          8: 1,
-        },
-        reset: 16,
-      },
-      [state.knockback]: {
-        anim: {
-          0: 0,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(ENEMY_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

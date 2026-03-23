@@ -1,4 +1,9 @@
 import Goodie from '../goodie.js';
+import {
+  GOODIE_SPRITE_SHEET_PATH,
+  SPRITE_EDITOR_IDENTIFIERS,
+  buildSpriteEditorTilesetRelPath,
+} from '../../sprite_editor_definitions.js';
 
 export default class DoorGoodie extends Goodie {
   constructor(spr) {
@@ -22,27 +27,15 @@ export default class DoorGoodie extends Goodie {
       this.state = state.closed;
     }
 
-    this.bbox = {
-      x1: 1,
-      y1: 1,
-      x2: 6,
-      y2: 7,
+    this.spriteEditorIdentifier = SPRITE_EDITOR_IDENTIFIERS.DOOR_GOODIE;
+    this.spriteEditorStateIdentifiers = {
+      [state.closed]: 'closed',
+      [state.open]: 'open',
     };
-
-    this.states = {
-      [state.closed]: {
-        anim: {
-          0: 8,
-        },
-        reset: -1,
-      },
-      [state.open]: {
-        anim: {
-          0: 7,
-        },
-        reset: -1,
-      },
-    };
+    this.spriteEditorDefinition = this.requireSpriteEditorDefinition(
+      this.spriteEditorIdentifier,
+      buildSpriteEditorTilesetRelPath(GOODIE_SPRITE_SHEET_PATH),
+    );
   }
 
   update() {

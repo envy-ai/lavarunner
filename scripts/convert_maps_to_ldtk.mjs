@@ -10,6 +10,12 @@ import {
   getLdtkEntitySpecByLegacySpriteId,
   LDTK_ENTITY_SPECS,
 } from './lib/ldtk_entity_specs.mjs';
+import {
+  SPRITE_EDITOR_ATTACK_BOX_IDENTIFIER,
+  SPRITE_EDITOR_DEFAULT_SPRITES,
+  SPRITE_EDITOR_DEFAULT_WEAPON_ATTACK_SPRITES,
+  SPRITE_EDITOR_WEAPON_ATTACK_STATE_IDENTIFIER,
+} from '../src/entity/sprite_editor_definitions.js';
 
 const TILEMAP_CHARSET = "#$%&'()*+,-~/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}. !";
 const TILEMAP_CHAR_LOOKUP = (() => {
@@ -39,46 +45,8 @@ const NPCS_PATH = path.join(repoRoot, 'assets', 'data', 'npcs.json');
 const TARGET_LDTK_PATH = path.join(repoRoot, 'assets', 'maps.ldtk');
 const TARGET_LDTK_META_PATH = path.join(repoRoot, 'assets', 'maps.ldtk.meta.json');
 const TARGET_BACKUP_ROOT = path.join(repoRoot, 'assets', 'maps_ldtk_backups');
-const PLAYER_SPRITE_SHEET_PATH = 'sprites/player_default';
-const PLAYER_SPRITE_EDITOR_IDENTIFIER = 'player_default';
-const PLAYER_SPRITE_EDITOR_STATES = [
-  {
-    identifier: 'stand',
-    anim: { 0: 0 },
-    reset: 0,
-  },
-  {
-    identifier: 'move',
-    anim: { 0: 3, 4: 2, 8: 1 },
-    reset: 12,
-  },
-  {
-    identifier: 'jump',
-    anim: { 0: 1 },
-    reset: 0,
-  },
-  {
-    identifier: 'fall',
-    anim: { 0: 3, 12: 4 },
-    reset: -1,
-  },
-  {
-    identifier: 'ouch',
-    anim: { 0: 5 },
-    reset: -1,
-  },
-  {
-    identifier: 'slide',
-    anim: { 0: 1 },
-    reset: -1,
-  },
-  {
-    identifier: 'knockback',
-    anim: { 0: 3 },
-    reset: -1,
-  },
-];
 const SPRITE_EDITOR_TICK_MS = 1000 / 60;
+const LEGACY_MULTI_TILE_SPRITE_ROW_WIDTH = 16;
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -676,8 +644,67 @@ function ticksToSpriteEditorDurationMs(ticks) {
   return Math.max(1, Math.round(ticks * SPRITE_EDITOR_TICK_MS));
 }
 
-function createDefaultPlayerSpriteEditorProject(playerTilesetUid, uidFactory) {
-  const states = PLAYER_SPRITE_EDITOR_STATES.map((state) => {
+function createSpriteEditorBoxFromBbox(bbox, boxTypeUid, spriteIdentifier, uidFactory, bboxLabel = 'bodyBbox') {
+  if (!isPlainObject(bbox)) {
+    throw new Error(`Sprite editor seed "${spriteIdentifier}" is missing a valid ${bboxLabel} object.`);
+  }
+
+  for (const key of ['x1', 'y1', 'x2', 'y2']) {
+    if (!Number.isInteger(bbox[key])) {
+      throw new Error(`Sprite editor seed "${spriteIdentifier}" ${bboxLabel}.${key} must be an integer.`);
+    }
+  }
+  if (bbox.x2 < bbox.x1 || bbox.y2 < bbox.y1) {
+    throw new Error(`Sprite editor seed "${spriteIdentifier}" has an invalid inclusive ${bboxLabel}.`);
+  }
+
+  return {
+    boxTypeUid,
+    h: bbox.y2 - bbox.y1 + 1,
+    uid: uidFactory(),
+    w: bbox.x2 - bbox.x1 + 1,
+    x: bbox.x1,
+    y: bbox.y1,
+  };
+}
+
+function createSpriteEditorBoxType(uidFactory, identifier, color) {
+  if (typeof identifier !== 'string' || identifier.length === 0) {
+    throw new Error('Sprite editor box type requires a non-empty identifier.');
+  }
+  if (typeof color !== 'string' || color.length === 0) {
+    throw new Error(`Sprite editor box type "${identifier}" requires a non-empty color.`);
+  }
+
+  return {
+    builtin: false,
+    color,
+    identifier,
+    uid: uidFactory(),
+  };
+}
+
+function createBodySpriteEditorBoxType(uidFactory) {
+  return createSpriteEditorBoxType(uidFactory, 'body', '#ff5a5a');
+}
+
+function createAttackSpriteEditorBoxType(uidFactory) {
+  return createSpriteEditorBoxType(uidFactory, SPRITE_EDITOR_ATTACK_BOX_IDENTIFIER, '#ffd166');
+}
+
+function createDefaultSpriteEditorSprite(spriteDefinition, tilesetUid, uidFactory) {
+  if (!isPlainObject(spriteDefinition)) {
+    throw new Error('Sprite editor seed definition must be an object.');
+  }
+  if (typeof spriteDefinition.identifier !== 'string' || spriteDefinition.identifier.length === 0) {
+    throw new Error('Sprite editor seed definition is missing a valid identifier.');
+  }
+  if (!Array.isArray(spriteDefinition.states) || spriteDefinition.states.length === 0) {
+    throw new Error(`Sprite editor seed "${spriteDefinition.identifier}" is missing its states array.`);
+  }
+
+  const bodyBoxType = createBodySpriteEditorBoxType(uidFactory);
+  const states = spriteDefinition.states.map((state) => {
     const thresholds = Object.keys(state.anim)
       .map((value) => Number.parseInt(value, 10))
       .sort((a, b) => a - b);
@@ -691,19 +718,19 @@ function createDefaultPlayerSpriteEditorProject(playerTilesetUid, uidFactory) {
 
       if (!Number.isInteger(tileId) || tileId < 0) {
         throw new Error(
-          `Default player sprite editor state "${state.identifier}" uses an invalid tile id "${tileId}".`,
+          `Default sprite editor state "${state.identifier}" uses an invalid tile id "${tileId}".`,
         );
       }
 
       return {
-        boxes: [],
+        boxes: [createSpriteEditorBoxFromBbox(spriteDefinition.bodyBbox, bodyBoxType.uid, spriteDefinition.identifier, uidFactory)],
         durationMs: ticksToSpriteEditorDurationMs(durationTicks),
         tiles: [
           {
             flipX: false,
             flipY: false,
             tileId,
-            tilesetUid: playerTilesetUid,
+            tilesetUid,
             uid: uidFactory(),
             x: 0,
             y: 0,
@@ -725,17 +752,212 @@ function createDefaultPlayerSpriteEditorProject(playerTilesetUid, uidFactory) {
   });
 
   return {
-    sprites: [
+    boxTypes: [bodyBoxType],
+    canvasHei: TILE_SIZE,
+    canvasWid: TILE_SIZE,
+    identifier: spriteDefinition.identifier,
+    states,
+    uid: uidFactory(),
+  };
+}
+
+function createSpriteEditorTilesFromLegacySpriteSpec(spriteSpec, tilesetUid, spriteIdentifier, uidFactory) {
+  if (spriteSpec === null) {
+    return [];
+  }
+  if (Number.isInteger(spriteSpec)) {
+    return [
       {
-        boxTypes: [],
-        canvasHei: TILE_SIZE,
-        canvasWid: TILE_SIZE,
-        identifier: PLAYER_SPRITE_EDITOR_IDENTIFIER,
-        states,
+        flipX: false,
+        flipY: false,
+        tileId: spriteSpec,
+        tilesetUid,
+        uid: uidFactory(),
+        x: 0,
+        y: 0,
+      },
+    ];
+  }
+  if (!Array.isArray(spriteSpec) || spriteSpec.length !== 3) {
+    throw new Error(
+      `Weapon attack sprite editor seed "${spriteIdentifier}" must use a null, integer, or [tileId, width, height] sprite spec.`,
+    );
+  }
+
+  const [tileId, width, height] = spriteSpec;
+  if (!Number.isInteger(tileId) || tileId < 0 || !Number.isInteger(width) || width <= 0 || !Number.isInteger(height) || height <= 0) {
+    throw new Error(`Weapon attack sprite editor seed "${spriteIdentifier}" has an invalid multi-tile sprite spec.`);
+  }
+
+  const tiles = [];
+  for (let x = 0; x < width; x += 1) {
+    for (let y = 0; y < height; y += 1) {
+      tiles.push({
+        flipX: false,
+        flipY: false,
+        tileId: tileId + x + y * LEGACY_MULTI_TILE_SPRITE_ROW_WIDTH,
+        tilesetUid,
+        uid: uidFactory(),
+        x: x * TILE_SIZE,
+        y: y * TILE_SIZE,
+      });
+    }
+  }
+  return tiles;
+}
+
+function getSpriteEditorCanvasSizeFromFrames(frames, spriteIdentifier) {
+  let canvasWid = TILE_SIZE;
+  let canvasHei = TILE_SIZE;
+
+  for (const frame of frames) {
+    if (!isPlainObject(frame) || !Array.isArray(frame.tiles)) {
+      throw new Error(`Sprite editor seed "${spriteIdentifier}" has an invalid frame while computing canvas size.`);
+    }
+
+    for (const tile of frame.tiles) {
+      if (!isPlainObject(tile) || !Number.isInteger(tile.x) || !Number.isInteger(tile.y)) {
+        throw new Error(`Sprite editor seed "${spriteIdentifier}" has an invalid tile while computing canvas size.`);
+      }
+      canvasWid = Math.max(canvasWid, tile.x + TILE_SIZE);
+      canvasHei = Math.max(canvasHei, tile.y + TILE_SIZE);
+    }
+  }
+
+  return { canvasWid, canvasHei };
+}
+
+function createDefaultWeaponAttackSpriteEditorSprite(spriteDefinition, tilesetUid, uidFactory) {
+  if (!isPlainObject(spriteDefinition)) {
+    throw new Error('Weapon attack sprite editor seed definition must be an object.');
+  }
+  if (typeof spriteDefinition.identifier !== 'string' || spriteDefinition.identifier.length === 0) {
+    throw new Error('Weapon attack sprite editor seed definition is missing a valid identifier.');
+  }
+  if (!Number.isInteger(spriteDefinition.animDuration) || spriteDefinition.animDuration <= 0) {
+    throw new Error(`Weapon attack sprite editor seed "${spriteDefinition.identifier}" requires a positive animDuration.`);
+  }
+  if (!isPlainObject(spriteDefinition.frames)) {
+    throw new Error(`Weapon attack sprite editor seed "${spriteDefinition.identifier}" is missing its frames map.`);
+  }
+
+  const attackBoxType = createAttackSpriteEditorBoxType(uidFactory);
+  const thresholds = Object.keys(spriteDefinition.frames)
+    .map((value) => Number.parseInt(value, 10))
+    .filter((value) => Number.isInteger(value) && value >= 0)
+    .sort((a, b) => a - b);
+  if (thresholds.length === 0 || thresholds[0] !== 0) {
+    throw new Error(`Weapon attack sprite editor seed "${spriteDefinition.identifier}" requires a 0-frame threshold.`);
+  }
+
+  const frames = thresholds.map((threshold, index) => {
+    const frameDefinition = spriteDefinition.frames[threshold];
+    if (!isPlainObject(frameDefinition)) {
+      throw new Error(
+        `Weapon attack sprite editor seed "${spriteDefinition.identifier}" threshold "${threshold}" must be an object.`,
+      );
+    }
+
+    const nextThreshold = thresholds[index + 1] ?? spriteDefinition.animDuration;
+    const durationTicks = nextThreshold - threshold;
+    if (!Number.isInteger(durationTicks) || durationTicks <= 0) {
+      throw new Error(
+        `Weapon attack sprite editor seed "${spriteDefinition.identifier}" threshold "${threshold}" has invalid duration.`,
+      );
+    }
+    if (!('attackBbox' in frameDefinition)) {
+      throw new Error(
+        `Weapon attack sprite editor seed "${spriteDefinition.identifier}" threshold "${threshold}" is missing attackBbox.`,
+      );
+    }
+
+    return {
+      boxes: frameDefinition.attackBbox === null
+        ? []
+        : [createSpriteEditorBoxFromBbox(
+          frameDefinition.attackBbox,
+          attackBoxType.uid,
+          spriteDefinition.identifier,
+          uidFactory,
+          'attackBbox',
+        )],
+      durationMs: ticksToSpriteEditorDurationMs(durationTicks),
+      tiles: createSpriteEditorTilesFromLegacySpriteSpec(
+        frameDefinition.sprite ?? null,
+        tilesetUid,
+        spriteDefinition.identifier,
+        uidFactory,
+      ),
+      uid: uidFactory(),
+    };
+  });
+
+  const { canvasWid, canvasHei } = getSpriteEditorCanvasSizeFromFrames(frames, spriteDefinition.identifier);
+  return {
+    boxTypes: [attackBoxType],
+    canvasHei,
+    canvasWid,
+    identifier: spriteDefinition.identifier,
+    states: [
+      {
+        frames,
+        identifier: SPRITE_EDITOR_WEAPON_ATTACK_STATE_IDENTIFIER,
+        loop: false,
+        loopToMs: 0,
+        originX: 0,
+        originY: 0,
         uid: uidFactory(),
       },
     ],
+    uid: uidFactory(),
   };
+}
+
+function backfillSpriteEditorBodyBoxes(sprite, spriteDefinition, uidFactory) {
+  if (!isPlainObject(sprite)) {
+    throw new Error('Sprite editor sprite backfill target must be an object.');
+  }
+  if (!isPlainObject(spriteDefinition)) {
+    throw new Error('Sprite editor sprite backfill definition must be an object.');
+  }
+  if (!Array.isArray(sprite.boxTypes) || !Array.isArray(sprite.states)) {
+    throw new Error(`Sprite editor sprite "${sprite.identifier || '<unnamed>'}" is missing boxTypes/states arrays.`);
+  }
+
+  let bodyBoxType = sprite.boxTypes.find((boxType) => boxType?.identifier === 'body') || null;
+  if (bodyBoxType !== null && !Number.isInteger(bodyBoxType.uid)) {
+    throw new Error(`Sprite editor sprite "${sprite.identifier || '<unnamed>'}" has an invalid body box type uid.`);
+  }
+  if (bodyBoxType === null) {
+    bodyBoxType = createBodySpriteEditorBoxType(uidFactory);
+    sprite.boxTypes.push(bodyBoxType);
+  }
+
+  for (const state of sprite.states) {
+    if (!isPlainObject(state) || !Array.isArray(state.frames)) {
+      throw new Error(`Sprite editor sprite "${sprite.identifier || '<unnamed>'}" has an invalid state.`);
+    }
+
+    for (const frame of state.frames) {
+      if (!isPlainObject(frame) || !Array.isArray(frame.boxes)) {
+        throw new Error(`Sprite editor sprite "${sprite.identifier || '<unnamed>'}" has an invalid frame.`);
+      }
+
+      const hasBodyBox = frame.boxes.some((box) => isPlainObject(box) && box.boxTypeUid === bodyBoxType.uid);
+      if (hasBodyBox) {
+        continue;
+      }
+
+      frame.boxes.push(
+        createSpriteEditorBoxFromBbox(
+          spriteDefinition.bodyBbox,
+          bodyBoxType.uid,
+          spriteDefinition.identifier,
+          uidFactory,
+        ),
+      );
+    }
+  }
 }
 
 function clonePlainJson(value) {
@@ -943,20 +1165,50 @@ function applySpriteEditorAugmentations(project, existingProject, tilesetInfoByS
     }
   }
 
-  const hasPlayerSprite = remappedSpriteEditor.sprites.some(
-    (sprite) => sprite.identifier === PLAYER_SPRITE_EDITOR_IDENTIFIER,
-  );
+  const seededIdentifiers = new Set(remappedSpriteEditor.sprites.map((sprite) => sprite.identifier));
+  for (const spriteDefinition of SPRITE_EDITOR_DEFAULT_SPRITES) {
+    if (seededIdentifiers.has(spriteDefinition.identifier)) {
+      continue;
+    }
 
-  if (!hasPlayerSprite) {
-    const playerTileset = ensureExtraTileset(
+    const spriteTileset = ensureExtraTileset(
       project,
       tilesetInfoBySheet,
       relPathToTileset,
       uidFactory,
-      PLAYER_SPRITE_SHEET_PATH,
+      spriteDefinition.sheetPath,
     );
-    const playerSpriteEditor = createDefaultPlayerSpriteEditorProject(playerTileset.uid, uidFactory);
-    remappedSpriteEditor.sprites.push(...playerSpriteEditor.sprites);
+    remappedSpriteEditor.sprites.push(createDefaultSpriteEditorSprite(spriteDefinition, spriteTileset.uid, uidFactory));
+    seededIdentifiers.add(spriteDefinition.identifier);
+  }
+
+  for (const spriteDefinition of SPRITE_EDITOR_DEFAULT_WEAPON_ATTACK_SPRITES) {
+    if (seededIdentifiers.has(spriteDefinition.identifier)) {
+      continue;
+    }
+
+    const spriteTileset = ensureExtraTileset(
+      project,
+      tilesetInfoBySheet,
+      relPathToTileset,
+      uidFactory,
+      spriteDefinition.sheetPath,
+    );
+    remappedSpriteEditor.sprites.push(
+      createDefaultWeaponAttackSpriteEditorSprite(spriteDefinition, spriteTileset.uid, uidFactory),
+    );
+    seededIdentifiers.add(spriteDefinition.identifier);
+  }
+
+  const spriteDefinitionsByIdentifier = new Map(
+    SPRITE_EDITOR_DEFAULT_SPRITES.map((spriteDefinition) => [spriteDefinition.identifier, spriteDefinition]),
+  );
+  for (const sprite of remappedSpriteEditor.sprites) {
+    const spriteDefinition = spriteDefinitionsByIdentifier.get(sprite.identifier);
+    if (!spriteDefinition) {
+      continue;
+    }
+    backfillSpriteEditorBodyBoxes(sprite, spriteDefinition, uidFactory);
   }
 
   project.spriteEditor = remappedSpriteEditor;
@@ -1859,7 +2111,12 @@ async function loadTilesetInfoBySheet(mapBank) {
       sheetPaths.add(sheetPath);
     }
   }
-  sheetPaths.add(PLAYER_SPRITE_SHEET_PATH);
+  for (const spriteDefinition of SPRITE_EDITOR_DEFAULT_SPRITES) {
+    sheetPaths.add(spriteDefinition.sheetPath);
+  }
+  for (const spriteDefinition of SPRITE_EDITOR_DEFAULT_WEAPON_ATTACK_SPRITES) {
+    sheetPaths.add(spriteDefinition.sheetPath);
+  }
 
   const tilesetInfoBySheet = new Map();
   for (const sheetPath of Array.from(sheetPaths).sort()) {

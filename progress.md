@@ -218,16 +218,83 @@ Original prompt: You're a UI designer working on an intuitive design.  Test the 
   - LDtk loader reported `mapsLoaded=27`, `currentMap="Home/main"`, `background=["Home/bg.0","Home/bg.1","Home/bg.2"]`, `entityObjects=3`, and `fatalError=null`.
   - Headless Playwright canvas capture is still visually black even though `render_game_to_text()` reports the offscreen surface is fully populated (`litPixels=16384`); treat this as a capture-path issue, not an LDtk loading failure.
 - Docs updated:
-  - `docs/developer_overview.md`
+2026-03-23
+- New task: start migrating fixed enemy/goodie body animations from hardcoded `this.states` tables to LDtk `spriteEditor`.
+- Defaults applied:
+  - keep `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` on metadata-driven sprite selection for now.
+  - expand runtime parsing from player-only to multi-sprite LDtk `spriteEditor` support.
+  - seed default LDtk sprite definitions for migrated enemy/goodie classes in the converter.
+  - leave entity `bbox` collision boxes hardcoded for this pass.
+- Implemented runtime/converter groundwork:
+  - added shared sprite-editor seed definitions in `src/entity/sprite_editor_definitions.js`.
+  - generalized `src/pixelbox_compat.js` to parse all root `spriteEditor.sprites[]` entries into `assets.spriteEditor`.
+  - generalized `src/entity/entity.js` LDtk animation lookup and knockback-state detection so non-player entities can use LDtk-backed animation definitions.
+  - migrated player setup onto the shared sprite-editor definition helper.
+- Migrated fixed enemy/goodie classes off hardcoded `this.states`:
+  - enemies: `BeeEnemy`, `FireballEnemy`, `InkyEnemy`, `InkyProjectile`, `LavaBubbleEnemy`, `MogusEnemy`
+  - goodies: `ChestGoodie`, `CoinGoodie`, `DoorGoodie`, `GrenadeProjectile`, `VolcanoGoodie`
+- Validation:
+  - `node --check` passed for all changed runtime/entity/converter files, including:
+    - `src/entity/sprite_editor_definitions.js`
+    - `src/pixelbox_compat.js`
+    - `src/entity/entity.js`
+    - `src/entity/player/player.js`
+    - migrated enemy/goodie classes
+    - `scripts/convert_maps_to_ldtk.mjs`
+  - `npm run convert:maps` passed and regenerated `assets/maps.ldtk`.
+  - Playwright smoke pass on `http://127.0.0.1:4173`:
+    - `tmp/ldtk-enemy-goodie-runtime/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+    - `tmp/ldtk-enemy-goodie-runtime/errors-0.json` only shows the existing audio autoplay/404 failures
+    - `tmp/ldtk-enemy-goodie-runtime/shot-0.png` remains the known black headless capture path
+  - Direct browser evaluation on the live page confirmed:
+    - `window.assets.spriteEditor` now includes the fixed enemy/goodie identifiers
+    - a constructed `MogusEnemy` has empty `this.states`, `spriteEditorIdentifier="mogus_enemy"`, and returns LDtk-derived animation config
+    - a constructed `CoinGoodie` has empty `this.states`, `spriteEditorIdentifier="coin_goodie"`, and returns LDtk-derived animation config
+    - `NpcGoodie` still keeps a local `this.states` table and no LDtk sprite identifier, as intended for this pass
+- Docs updated:
+  - `docs/AnimationAndHitboxes.md`
   - `docs/PixelboxRuntime.md`
+  - `docs/developer_overview.md`
   - `docs/MapConverter.md`
-  - `docs/EntityPlacement.md`
   - `docs/README.md`
-- LDtk editor follow-up:
-  - User reported LDtk open failure: `cannot read properties of null (reading 'externalLevels')`.
-  - Likely cause: generated project included an empty top-level `worlds` array plus extra null root/level fields, which appears to push the editor down a multi-world path with no active world.
-  - Adjusted `scripts/convert_maps_to_ldtk.mjs` to emit the simpler single-world root/level shape (`__header__`, `bgColor`, `defs`, `externalLevels`, `iid`, `jsonVersion`, `levels`, `worldLayout`).
-  - Re-ran `npm run convert:maps`; fresh backup at `assets/maps_ldtk_backups/maps_20260312_210855.ldtk`.
+2026-03-23
+- Follow-up task: finish body-animation migration for the remaining metadata-driven goodies (`NpcGoodie`,
+  `WeaponGoodie`, `ItemGoodie`).
+- Runtime/data changes:
+  - added `item_goodie`, `npc_goodie`, and `weapon_goodie` seed definitions to `src/entity/sprite_editor_definitions.js`.
+  - added `Entity.overrideSpriteEditorStateFrame(stateIdentifier, threshold, spriteId)` in `src/entity/entity.js` so
+    per-instance metadata can override a seeded LDtk frame without mutating shared `assets.spriteEditor` data.
+  - migrated:
+    - `src/entity/goodie/goodies/npc_goodie.js`
+    - `src/entity/goodie/goodies/weapon_goodie.js`
+    - `src/entity/goodie/goodies/item_goodie.js`
+    off local `this.states` tables and onto LDtk-backed `spriteEditorDefinition` state lookup.
+  - these three goodies still override the `stand` frame sprite id from metadata at runtime, but animation timing now
+    comes from LDtk like the rest of the gameplay entities.
+- Validation:
+  - `node --check` passed for:
+    - `src/entity/sprite_editor_definitions.js`
+    - `src/entity/entity.js`
+    - `src/entity/goodie/goodies/npc_goodie.js`
+    - `src/entity/goodie/goodies/weapon_goodie.js`
+    - `src/entity/goodie/goodies/item_goodie.js`
+    - `scripts/convert_maps_to_ldtk.mjs`
+  - `npm run convert:maps` passed and regenerated `assets/maps.ldtk`.
+  - `assets/maps.ldtk` now contains `item_goodie`, `npc_goodie`, and `weapon_goodie` under root `spriteEditor.sprites[]`.
+  - Playwright smoke pass on `http://127.0.0.1:4173`:
+    - `tmp/ldtk-metadata-goodies-runtime/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`, `fatalError=null`
+    - `tmp/ldtk-metadata-goodies-runtime/errors-0.json` only shows the existing audio autoplay/404 failures
+    - `tmp/ldtk-metadata-goodies-runtime/shot-0.png` remains the known black headless capture path
+  - Browser eval after clearing Chromium cache confirmed:
+    - constructed `NpcGoodie` -> `spriteEditorIdentifier="npc_goodie"`, `statesSize=0`, `anim[0]=41`
+    - constructed `WeaponGoodie` -> `spriteEditorIdentifier="weapon_goodie"`, `statesSize=0`, `anim[0]=12`
+    - constructed `ItemGoodie` -> `spriteEditorIdentifier="item_goodie"`, `statesSize=0`, `anim[0]=14`
+- Docs updated:
+  - `docs/AnimationAndHitboxes.md`
+  - `docs/PixelboxRuntime.md`
+  - `docs/developer_overview.md`
+  - `docs/MapConverter.md`
+  - `docs/README.md`
 2026-03-12
 - LDtk editor tileset-binding follow-up:
   - User reported the project opened, but tile layers were not visibly associated with their respective tilesets in the editor.
@@ -405,5 +472,129 @@ Original prompt: You're a UI designer working on an intuitive design.  Test the 
     - `docs/AnimationAndHitboxes.md`
     - `docs/MapConverter.md`
     - `docs/PixelboxRuntime.md`
+    - `docs/developer_overview.md`
+    - `docs/README.md`
+2026-03-23
+- LDtk gameplay body-box runtime migration:
+  - User requested the next migration step: move gameplay entity body `bbox` data into LDtk so runtime collision boxes
+    no longer come from hardcoded constructor literals.
+  - Applied scoped defaults:
+    - moved gameplay entity body boxes only
+    - left player weapon attack hitboxes in `assets/data/weapons.json`
+    - left script trigger hitboxes in `src/entity/script/*.js`
+  - Shared seed data:
+    - `src/entity/sprite_editor_definitions.js` now carries `bodyBbox` for every runtime-backed sprite-editor
+      identifier
+  - Converter changes:
+    - `scripts/convert_maps_to_ldtk.mjs`
+      - seeds `spriteEditor` `body` box types and per-frame `boxes[]` from shared `bodyBbox` defaults
+      - backfills missing `body` boxes into already-existing runtime sprite definitions during regeneration, instead of
+        only affecting newly seeded sprites
+  - Runtime changes:
+    - `src/pixelbox_compat.js`
+      - now parses sprite-editor `boxTypes` and per-frame `boxes[]`
+      - converts LDtk `x`/`y`/`w`/`h` boxes into inclusive runtime bbox objects
+      - exposes parsed per-state `boxesByType` plus definition-level `defaultBoxes`
+    - `src/entity/entity.js`
+      - validates required LDtk default boxes during `requireSpriteEditorDefinition(...)`
+      - resolves gameplay entity `getBbox()` from LDtk `body` boxes for sprite-editor-backed entities
+      - uses definition `defaultBoxes.body` during `state.custom`
+  - Gameplay entity cleanup:
+    - removed duplicated hardcoded `this.bbox` literals from the player, all LDtk-backed enemies, and all LDtk-backed
+      goodies
+    - scripts still keep code-authored `this.bbox`
+  - Regenerated project:
+    - backup: `assets/maps_ldtk_backups/maps_20260323_211152.ldtk`
+    - `npm run convert:maps`
+    - confirmed regenerated `assets/maps.ldtk` now includes `body` box types and per-frame `boxes[]` entries in root
+      `spriteEditor`
+  - Validation:
+    - `node --check` passed for:
+      - `scripts/convert_maps_to_ldtk.mjs`
+      - `src/pixelbox_compat.js`
+      - `src/entity/entity.js`
+      - `src/entity/sprite_editor_definitions.js`
+      - all touched gameplay entity class files
+    - Playwright smoke pass on `http://127.0.0.1:4173`:
+      - `tmp/ldtk-body-box-runtime/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`, `entityObjects=3`,
+        `fatalError=null`
+      - `tmp/ldtk-body-box-runtime/errors-0.json` only shows the existing audio autoplay/404 failures
+      - `tmp/ldtk-body-box-runtime/shot-0.png` remains the known black headless capture path
+    - Direct browser evaluation confirmed:
+      - sprite-editor-backed entities still have only the base placeholder `this.bbox`
+      - `getBbox()` resolves the LDtk-authored `body` box instead
+      - parsed sprite-editor state data now includes `boxesByType.body`
+  - Docs updated:
+    - `docs/AnimationAndHitboxes.md`
+    - `docs/PixelboxRuntime.md`
+    - `docs/MapConverter.md`
+    - `docs/developer_overview.md`
+    - `docs/README.md`
+2026-03-23
+- LDtk player weapon-attack box migration:
+  - User requested the next migration step: move player weapon attack hitboxes out of `assets/data/weapons.json` and
+    into LDtk.
+  - Applied scoped defaults:
+    - moved weapon attack hitboxes only
+    - kept weapon visuals, timing, origin, knockback, and eval hooks in `assets/data/weapons.json`
+    - modeled weapon hitboxes as separate root `spriteEditor` definitions with an `attack` box type
+  - Shared seed/runtime identifier changes:
+    - `src/entity/sprite_editor_definitions.js`
+      - added `WEAPON_SPRITE_SHEET_PATH`
+      - added helper `buildWeaponAttackSpriteEditorIdentifier(...)`
+      - added default weapon-attack sprite definitions for:
+        - `weapon_attack_dagger_0`
+        - `weapon_attack_sword_0`
+        - `weapon_attack_sword_1`
+        - `weapon_attack_sword_2`
+      - each weapon-attack seed uses `attackBbox` data plus legacy weapon sprite specs for LDtk editor visuals
+  - Converter changes:
+    - `scripts/convert_maps_to_ldtk.mjs`
+      - now seeds the weapon-attack sprite-editor definitions into `assets/maps.ldtk`
+      - converts legacy multi-tile weapon sprite specs (`[tileId, width, height]`) into multi-tile LDtk frame tile
+        arrays for editor context
+      - keeps existing body-box backfill behavior for gameplay entities
+  - Runtime changes:
+    - `src/pixelbox_compat.js`
+      - generalized sprite-editor parsing so body sprites remain strict single-tile `8x8` playback definitions
+      - added support for box-only-at-runtime definitions that can use larger canvases and multi-tile frames
+      - preserves explicit null box thresholds, which are needed for “no hitbox on this attack frame” semantics
+    - `src/entity/entity.js`
+      - `resolveAnimationTrackValue(...)` now accepts an explicit counter value so non-entity timelines can reuse the
+        threshold resolver
+      - still throws if an entity body box track resolves to `null`
+    - `src/entity/player/player.js`
+      - now stores `weaponName` on equip
+      - resolves `getWeaponBbox()` from LDtk `weapon_attack_*` `attack` box tracks
+      - validates weapon-attack sprite-editor definitions via `requireSpriteEditorDefinition(...)`
+  - Data cleanup:
+    - removed legacy per-frame `bbox` fields from `assets/data/weapons.json`
+  - Regenerated project:
+    - backup: `assets/maps_ldtk_backups/maps_20260323_213817.ldtk`
+    - `npm run convert:maps`
+    - confirmed regenerated `assets/maps.ldtk` now contains the `weapon_attack_*` definitions under root
+      `spriteEditor`
+  - Validation:
+    - `node --check` passed for:
+      - `src/entity/sprite_editor_definitions.js`
+      - `scripts/convert_maps_to_ldtk.mjs`
+      - `src/pixelbox_compat.js`
+      - `src/entity/entity.js`
+      - `src/entity/player/player.js`
+    - `assets/data/weapons.json` parses as valid JSON after removing legacy `bbox` fields
+    - Playwright smoke pass on `http://127.0.0.1:4173`:
+      - `tmp/ldtk-weapon-attack-box-runtime/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`,
+        `entityObjects=3`, `fatalError=null`
+      - `tmp/ldtk-weapon-attack-box-runtime/errors-0.json` only shows the existing audio autoplay/404 failures
+      - `tmp/ldtk-weapon-attack-box-runtime/shot-0.png` remains the known black headless capture path
+    - Direct browser evaluation after cache clear confirmed:
+      - `window.player.getWeaponBbox()` returns LDtk-derived sword attack boxes
+      - `weapon_attack_sword_0` and `weapon_attack_sword_2` preserve explicit null hitbox thresholds
+      - `assets.data.weapons.Sword[0].frames[3].bbox` and `assets.data.weapons.Dagger[0].frames[0].bbox` are no longer
+        present
+  - Docs updated:
+    - `docs/AnimationAndHitboxes.md`
+    - `docs/PixelboxRuntime.md`
+    - `docs/MapConverter.md`
     - `docs/developer_overview.md`
     - `docs/README.md`

@@ -25,7 +25,12 @@ The runtime renders to a 128x128 offscreen canvas and displays it via Phaser as 
 Runtime source of truth is `assets/maps.ldtk`.
 
 - Map/layer/entity data comes from the LDtk level contents.
-- Player body animation also comes from the root `spriteEditor` section in `assets/maps.ldtk`.
+- Gameplay entity body animations and body hitboxes also come from the root `spriteEditor` section in `assets/maps.ldtk`.
+- Player weapon attack hitboxes also come from root `spriteEditor` `weapon_attack_*` definitions.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still choose their visible stand-frame sprite id in gameplay code,
+  but their animation timing/source is now LDtk-backed too.
+- Script trigger hitboxes still use hardcoded `this.bbox`.
+- Player weapon visuals, origin, timing, knockback, and eval hooks still come from `assets/data/weapons.json`.
 
 The repository still keeps the legacy Pixelbox bank in `assets/maps.json` plus older metadata in:
 
