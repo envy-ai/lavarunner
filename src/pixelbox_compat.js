@@ -1,4 +1,5 @@
 import { createMiniTextCharsetCanvas, miniTextFontMetrics } from './minitext_bitmap_font.js';
+import { LDTK_PLACEMENT_SPRITE_METADATA_KEY } from './entity/sprite_editor_definitions.js';
 
 const SCREEN_WIDTH = 128;
 const SCREEN_HEIGHT = 128;
@@ -45,6 +46,12 @@ const LDTK_ENTITY_IDENTIFIER_TO_SPRITE_ID = Object.freeze({
   LegacySprite115: 115,
   BeeEnemy: 116,
   InkyEnemy: 117,
+});
+
+const LDTK_ENTITY_IDENTIFIER_TO_PLACEMENT_SPRITE_FIELD = Object.freeze({
+  ItemPickup: 'sprite',
+  Npc: 'sprite',
+  WeaponPickup: 'sprite',
 });
 
 class ImageRef {
@@ -573,6 +580,18 @@ class CompatTileMap {
       throw new Error(`${fieldContext} is missing a valid CompatSpriteId field.`);
     }
 
+    const placementSpriteField = typeof entity.__identifier === 'string'
+      ? LDTK_ENTITY_IDENTIFIER_TO_PLACEMENT_SPRITE_FIELD[entity.__identifier]
+      : undefined;
+    const placementSpriteId = placementSpriteField === undefined
+      ? undefined
+      : fields[placementSpriteField];
+    if (placementSpriteField !== undefined && (!Number.isInteger(placementSpriteId) || placementSpriteId < 0)) {
+      throw new Error(
+        `${fieldContext} is missing a valid integer "${placementSpriteField}" field required for placement sprite playback.`,
+      );
+    }
+
     const px = Array.isArray(entity.px) ? entity.px : null;
     const x = px ? px[0] : entity.x;
     const y = px ? px[1] : entity.y;
@@ -593,6 +612,9 @@ class CompatTileMap {
         continue;
       }
       properties[key] = value;
+    }
+    if (placementSpriteField !== undefined) {
+      properties[LDTK_PLACEMENT_SPRITE_METADATA_KEY] = placementSpriteId;
     }
 
     return {

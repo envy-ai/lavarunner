@@ -7,8 +7,8 @@ from gameplay code/data, not Phaser animation configs.
 ## Quick Answer
 
 - Gameplay entity body animations now come from `assets/maps.ldtk` root `spriteEditor`.
-- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still override their stand-frame sprite id from metadata at runtime, but
-  they now do it on top of seeded LDtk sprite definitions instead of local `this.states` tables.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` now get their per-instance stand-frame sprite id from typed LDtk entity
+  `sprite` fields through a shared runtime placement-sprite path.
 - Gameplay entity body hitboxes now come from LDtk `spriteEditor` `body` boxes.
 - Script trigger hitboxes still come from `this.bbox` in `src/entity/script/*.js`.
 - Player weapon attack hitboxes now come from LDtk `spriteEditor` `attack` boxes.
@@ -53,20 +53,17 @@ Current runtime constraints for LDtk sprite editor playback:
 - per-frame tile flips and multi-tile compositions are rejected by the current runtime
 - each sprite must resolve to a single tileset path across all of its states
 
-### 2. Metadata-driven LDtk stand-frame overrides
+### 2. LDtk placement-sprite overrides
 
-Some goodies still change their visible sprite index from entity metadata at runtime. Those classes now clone and
-override the seeded LDtk `stand` frame instead of keeping local `this.states` tables:
+Some typed LDtk entities carry a per-instance `sprite` field that should replace the seeded `stand` frame at runtime.
+That override is now applied generically by the runtime instead of per-class goodie code.
 
-```js
-this.overrideSpriteEditorStateFrame('stand', 0, metadata.sprite);
-```
+Runtime flow:
 
-Key files:
-
-- `src/entity/goodie/goodies/npc_goodie.js`
-- `src/entity/goodie/goodies/weapon_goodie.js`
-- `src/entity/goodie/goodies/item_goodie.js`
+- `src/pixelbox_compat.js` normalizes typed LDtk entity fields and stamps a reserved placement-sprite metadata key for
+  `Npc`, `WeaponPickup`, and `ItemPickup`
+- `src/entity/entity.js` applies that reserved value to the seeded LDtk `stand` frame during `init(...)`
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` no longer keep custom `setSprite(...)` / `metadata.sprite` override code
 
 ### 3. How a frame is picked
 
@@ -74,7 +71,7 @@ Frame selection is centralized in `src/entity/entity.js`:
 
 - `getSprite()` reads the current animation config for the entity state
 - for all gameplay entities, that config now comes from `assets.spriteEditor[identifier].states[...]`
-- metadata-driven goodies first override the seeded `stand` frame on their per-instance `spriteEditorDefinition`
+- runtime placement-sprite entities first receive the LDtk-authored `stand` frame override during `Entity.init(...)`
 - It selects the latest sprite key whose counter threshold is <= `stateCounter`
 
 `stateCounter` lifecycle:
@@ -105,8 +102,8 @@ gameplay entity classes listed above.
   - `weapon_attack_sword_0`
   - `weapon_attack_sword_1`
   - `weapon_attack_sword_2`
-- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still inject metadata-specific stand-frame sprite ids after
-  construction, but the animation timing/source still comes from LDtk.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still use typed LDtk `sprite` fields for per-instance visuals, but the
+  shared runtime now applies those overrides before class-specific gameplay logic runs.
 
 ## Where Hitboxes Are Defined
 
@@ -217,8 +214,8 @@ When changing visuals/collision for an entity:
 
 1. Update the animation source for the thing you are changing:
    - entity body animation: `assets/maps.ldtk` root `spriteEditor`
-   - if the entity also takes a sprite id from metadata (`NpcGoodie` / `WeaponGoodie` / `ItemGoodie`), keep the LDtk
-     state timing and only override the `stand` frame sprite id in code
+   - if the entity uses a typed LDtk `sprite` placement field (`NpcGoodie` / `WeaponGoodie` / `ItemGoodie`), edit that
+     LDtk field for per-instance visuals; the runtime applies the `stand` frame override automatically
 2. Update the gameplay entity's LDtk `body` boxes, or update `this.bbox` only if you are editing a script trigger.
 3. Verify behavior in both facings (left/right mirroring).
 4. If changing attacks, update:
@@ -232,8 +229,8 @@ When changing visuals/collision for an entity:
 - Gameplay body animation is now sourced from LDtk `spriteEditor`.
 - Gameplay body hitboxes are now sourced from LDtk `spriteEditor` `body` boxes.
 - Player weapon attack hitboxes are now sourced from LDtk `spriteEditor` `attack` boxes.
-- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still need runtime sprite-id overrides from metadata, so changing their
-  authored default tile in LDtk does not replace metadata-provided sprite ids.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still use typed LDtk `sprite` fields for per-instance visuals, so
+  changing their authored default tile in root `spriteEditor` does not replace those per-instance LDtk field values.
 - If `assets/maps.ldtk` is missing required runtime sprite definitions, entity construction throws instead of silently
   falling back to hardcoded constructor tables.
 - If a gameplay LDtk sprite is missing its `body` boxes, entity construction/runtime bbox lookup throws instead of

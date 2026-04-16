@@ -49,6 +49,9 @@ LDtk field instances are normalized back into `entity.metadata`. Required fields
   - `sprite` (`int`, required)
   - `dialog` (`Multilines`, required JSON array of dialog entries)
 
+For `WeaponPickup`, `ItemPickup`, and `Npc`, the runtime now consumes the typed LDtk `sprite` field through a shared
+placement-sprite path and applies it to the seeded LDtk `stand` frame automatically during entity initialization.
+
 ## Strict Parsing
 
 - `dialog` and `contents` are parsed as JSON at load time.

@@ -37,18 +37,13 @@ export default class NpcGoodie extends Goodie {
   init(x, y, metadata = null) {
     super.init(x, y, metadata);
 
-    if (!Number.isInteger(this.metadata.sprite)) {
-      throw new Error(`Npc at ${this.tx},${this.ty} on "${map._name}" is missing integer metadata.sprite.`);
-    }
     if (!Array.isArray(this.metadata.dialog)) {
       throw new Error(`Npc at ${this.tx},${this.ty} on "${map._name}" is missing array metadata.dialog.`);
     }
 
     this.data = {
-      sprite: this.metadata.sprite,
       dialog: this.metadata.dialog,
     };
-    this.setSprite(this.data.sprite);
 
     for (let i = 0; i < this.data.dialog.length; i += 1) {
       const entry = this.data.dialog[i];
@@ -58,10 +53,6 @@ export default class NpcGoodie extends Goodie {
         );
       }
     }
-  }
-
-  setSprite(s) {
-    this.overrideSpriteEditorStateFrame('stand', 0, s);
   }
 
   update() {

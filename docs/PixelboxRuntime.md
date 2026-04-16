@@ -87,8 +87,8 @@ etc.) rather than read from a hidden `CompatSpriteId` field.
   - `chest_goodie`, `coin_goodie`, `door_goodie`, `grenade_projectile`, `item_goodie`, `npc_goodie`, `volcano_goodie`,
     `weapon_goodie`
   - `weapon_attack_dagger_0`, `weapon_attack_sword_0`, `weapon_attack_sword_1`, `weapon_attack_sword_2`
-- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still override their per-instance `stand` frame sprite id from entity
-  metadata after construction, but they no longer keep local `this.states` tables.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still use typed LDtk `sprite` fields for per-instance visuals, but the
+  generic runtime now normalizes and applies those `stand` frame overrides before class-specific gameplay logic runs.
 - Body-animation playback still supports the existing single-tile `8x8` sprite model only:
   - one tile per frame
   - tile placed at `(0,0)`

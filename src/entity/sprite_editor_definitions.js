@@ -5,6 +5,8 @@ export const WEAPON_SPRITE_SHEET_PATH = 'sprites/weapons';
 export const SPRITE_EDITOR_BODY_BOX_IDENTIFIER = 'body';
 export const SPRITE_EDITOR_ATTACK_BOX_IDENTIFIER = 'attack';
 export const SPRITE_EDITOR_WEAPON_ATTACK_STATE_IDENTIFIER = 'attack';
+export const SPRITE_EDITOR_PLACEMENT_SPRITE_STATE_IDENTIFIER = 'stand';
+export const LDTK_PLACEMENT_SPRITE_METADATA_KEY = '__ldtkPlacementSpriteId';
 
 export const SPRITE_EDITOR_IDENTIFIERS = Object.freeze({
   PLAYER_DEFAULT: 'player_default',

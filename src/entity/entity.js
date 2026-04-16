@@ -1,3 +1,8 @@
+import {
+  LDTK_PLACEMENT_SPRITE_METADATA_KEY,
+  SPRITE_EDITOR_PLACEMENT_SPRITE_STATE_IDENTIFIER,
+} from './sprite_editor_definitions.js';
+
 export default class Entity {
   constructor() {
     this.startX = 0;
@@ -61,6 +66,32 @@ export default class Entity {
     }
 
     this.metadata = metadata;
+    this.applyLdtkPlacementSpriteOverrideFromMetadata();
+  }
+
+  applyLdtkPlacementSpriteOverrideFromMetadata() {
+    const placementSpriteId = this.metadata[LDTK_PLACEMENT_SPRITE_METADATA_KEY];
+    if (placementSpriteId === undefined || placementSpriteId === null) {
+      return;
+    }
+    if (!Number.isInteger(placementSpriteId) || placementSpriteId < 0) {
+      throw new Error(
+        `${this.entityName} at (${this.tx}, ${this.ty}) on "${map._name}" received invalid ` +
+        `${LDTK_PLACEMENT_SPRITE_METADATA_KEY}. Expected a non-negative integer.`,
+      );
+    }
+    if (this.spriteEditorDefinition === null) {
+      throw new Error(
+        `${this.entityName} at (${this.tx}, ${this.ty}) on "${map._name}" cannot apply ` +
+        `${LDTK_PLACEMENT_SPRITE_METADATA_KEY} without an LDtk spriteEditorDefinition.`,
+      );
+    }
+
+    this.overrideSpriteEditorStateFrame(
+      SPRITE_EDITOR_PLACEMENT_SPRITE_STATE_IDENTIFIER,
+      0,
+      placementSpriteId,
+    );
   }
 
   get tx() {

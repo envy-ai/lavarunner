@@ -34,21 +34,13 @@ export default class ItemGoodie extends Goodie {
     );
   }
 
-  setSprite(s) {
-    this.overrideSpriteEditorStateFrame('stand', 0, s);
-  }
-
   init(x, y, metadata = null) {
     super.init(x, y, metadata);
 
-    if (!Number.isInteger(this.metadata.sprite)) {
-      throw new Error(`Item at ${this.tx},${this.ty} on "${map._name}" is missing integer metadata.sprite.`);
-    }
     if (typeof this.metadata.item !== 'string' || this.metadata.item.length === 0) {
       throw new Error(`Item at ${this.tx},${this.ty} on "${map._name}" is missing metadata.item.`);
     }
 
-    this.setSprite(this.metadata.sprite);
     this.itemName = this.metadata.item;
     this.y--;
   }

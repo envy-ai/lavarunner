@@ -1,0 +1,12 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^cd /home/bart/lavarunner && node src/procgen/platformer_map_generator_fresh\\.mjs \\d+$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^cd /home/bart/lavarunner && node src/procgen/platformer_map_generator_fresh\\.mjs 42 2>&1 \\| tail -5$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

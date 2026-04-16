@@ -531,6 +531,57 @@ Original prompt: You're a UI designer working on an intuitive design.  Test the 
     - `docs/developer_overview.md`
     - `docs/README.md`
 2026-03-23
+- LDtk placement-sprite runtime normalization:
+  - User requested that the remaining first-bucket metadata-driven visuals stop being applied by per-class gameplay code.
+  - Scoped decision applied:
+    - kept `dialog`, `weapon`, and `item` as gameplay-consumed LDtk entity fields
+    - moved only the per-instance visual stand-frame override into a shared runtime path
+    - explicitly did not switch to LDtk entity `__tile`, because current `Npc` / `WeaponPickup` / `ItemPickup`
+      definitions use generic type icons there rather than per-instance variant visuals
+  - Runtime changes:
+    - `src/pixelbox_compat.js`
+      - now recognizes typed LDtk entities `Npc`, `WeaponPickup`, and `ItemPickup` as placement-sprite consumers
+      - validates their typed LDtk `sprite` field during LDtk entity normalization
+      - stamps a reserved normalized metadata key `__ldtkPlacementSpriteId` onto the entity properties payload
+    - `src/entity/entity.js`
+      - now applies the reserved LDtk placement-sprite key generically during `init(...)`
+      - routes the value into the seeded LDtk `stand` frame through `overrideSpriteEditorStateFrame(...)`
+    - `src/entity/sprite_editor_definitions.js`
+      - added shared placement-sprite constants for the reserved metadata key and target state id
+  - Class cleanup:
+    - `src/entity/goodie/goodies/npc_goodie.js`
+      - removed class-local `metadata.sprite` validation and `setSprite(...)`
+      - NPC dialog logic still reads typed LDtk `dialog`
+    - `src/entity/goodie/goodies/weapon_goodie.js`
+      - removed class-local `metadata.sprite` validation and `setSprite(...)`
+      - weapon pickup logic still reads typed LDtk `weapon`
+    - `src/entity/goodie/goodies/item_goodie.js`
+      - removed class-local `metadata.sprite` validation and `setSprite(...)`
+      - item pickup logic still reads typed LDtk `item`
+  - Docs updated:
+    - `docs/AnimationAndHitboxes.md`
+    - `docs/PixelboxRuntime.md`
+    - `docs/developer_overview.md`
+    - `docs/EntityPlacement.md`
+    - `docs/README.md`
+  - Validation:
+    - `node --check` passed for:
+      - `src/entity/sprite_editor_definitions.js`
+      - `src/entity/entity.js`
+      - `src/pixelbox_compat.js`
+      - `src/entity/goodie/goodies/npc_goodie.js`
+      - `src/entity/goodie/goodies/weapon_goodie.js`
+      - `src/entity/goodie/goodies/item_goodie.js`
+    - Playwright smoke pass on `http://127.0.0.1:4173`:
+      - `tmp/ldtk-placement-sprite-runtime/state-0.json` => `currentMap="Home/main"`, `mapsLoaded=27`,
+        `entityObjects=3`, `fatalError=null`
+      - `tmp/ldtk-placement-sprite-runtime/errors-0.json` only shows the existing audio autoplay/404 failures
+      - `tmp/ldtk-placement-sprite-runtime/shot-0.png` remains the known black headless capture path
+    - Direct browser evaluation confirmed:
+      - `Npc` on `Home/main`: `metadata.__ldtkPlacementSpriteId=133`, `stand.anim[0]=133`, no `setSprite(...)`
+      - `Weapon` on `Level 1/main`: `metadata.__ldtkPlacementSpriteId=6`, `stand.anim[0]=6`, no `setSprite(...)`
+      - `Item` on `Level 3/main`: `metadata.__ldtkPlacementSpriteId=14`, `stand.anim[0]=14`, no `setSprite(...)`
+2026-03-23
 - LDtk player weapon-attack box migration:
   - User requested the next migration step: move player weapon attack hitboxes out of `assets/data/weapons.json` and
     into LDtk.

@@ -8,7 +8,8 @@
     "editor:dev": "npm --prefix tools/animation-editor run dev",
 		"editor:build": "npm --prefix tools/animation-editor run build",
 		"editor:test": "npm --prefix tools/animation-editor run test",
-		"editor:lint": "npm --prefix tools/animation-editor run lint"
+		"editor:lint": "npm --prefix tools/animation-editor run lint",
+    "test:procgen": "node tests/platformer_map_generator.smoke.mjs"
 	},
 	"dependencies": {
 		"pixelbox": "2.0.5",

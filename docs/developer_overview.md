@@ -27,8 +27,8 @@ Runtime source of truth is `assets/maps.ldtk`.
 - Map/layer/entity data comes from the LDtk level contents.
 - Gameplay entity body animations and body hitboxes also come from the root `spriteEditor` section in `assets/maps.ldtk`.
 - Player weapon attack hitboxes also come from root `spriteEditor` `weapon_attack_*` definitions.
-- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still choose their visible stand-frame sprite id in gameplay code,
-  but their animation timing/source is now LDtk-backed too.
+- `NpcGoodie`, `WeaponGoodie`, and `ItemGoodie` still use typed LDtk `sprite` fields for per-instance visuals, but the
+  shared runtime now applies those stand-frame overrides instead of class-specific gameplay code.
 - Script trigger hitboxes still use hardcoded `this.bbox`.
 - Player weapon visuals, origin, timing, knockback, and eval hooks still come from `assets/data/weapons.json`.
 
